@@ -1,0 +1,161 @@
+/* General Page Styling */
+body, html {
+    overflow: auto; /* Allow scrolling */
+    height: auto; /* Ensure height is not fixed */
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #333; /* Default text color */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9; /* Light background for e-commerce feel */
+}
+
+.add-product-container {
+    max-width: 1200px; /* Fixed width for the container */
+    margin: 40px auto; /* Center the container horizontally and add vertical spacing */
+    padding: 32px;
+    background: #ffffff; /* White background for contrast */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+}
+
+.add-product-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 32px; /* Add more spacing below the title */
+    text-align: center;
+    color: #333;
+}
+
+.add-product-form {
+    margin-bottom: 40px; /* Add more spacing below the form */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px; /* Increase spacing between form elements */
+    align-items: center;
+    justify-content: center;
+}
+
+.add-product-form input[type="file"] {
+    margin-bottom: 20px;
+}
+
+.image-preview {
+    margin-bottom: 24px; /* Add more spacing below the image preview */
+    text-align: center;
+}
+
+.image-preview img {
+    width: 200px; /* Fixed width */
+    height: 200px; /* Fixed height */
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.add-product-buttons {
+    display: flex;
+    gap: 20px; /* Increase spacing between buttons */
+    margin-top: 24px; /* Add more spacing above the buttons */
+    justify-content: center;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Maintain fixed size */
+    gap: 32px; /* Increase spacing between product cards */
+    margin-top: 40px; /* Add more spacing above the grid */
+    justify-content: center; /* Center the grid horizontally */
+    width: 100%; /* Ensure the grid takes full width of the container */
+}
+
+.product-grid:only-child {
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.product-card {
+    width: 300px; /* Fixed width for the card */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product-card img {
+    width: 100%; /* Full width of the card */
+    height: 200px; /* Fixed height */
+    object-fit: cover;
+}
+
+.product-card-content {
+    padding: 20px; /* Add more padding inside the card */
+    text-align: center;
+}
+
+.product-card-content h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 12px; /* Add more spacing below the product name */
+    color: #333;
+}
+
+.product-card-content h6 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px; /* Add more spacing below the product price */
+}
+
+.product-card-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px; /* Increase spacing between buttons */
+    margin-top: 16px;
+}
+
+.product-card-buttons button {
+    padding: 10px 20px; /* Increase button padding */
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.product-card-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+button.add-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+button.add-btn:hover {
+    background-color: #45a049;
+}
+
+button.cancel-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+button.cancel-btn:hover {
+    background-color: #d32f2f;
+}
