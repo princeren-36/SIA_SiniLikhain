@@ -2,67 +2,103 @@
 
 .home {
     background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    min-height: 85vh;
+    min-height: 90vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+}
+
+.home-image-half {
+    flex: 1;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.home-image {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
 }
 
 .container-home {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     background: #ffffff;
-    padding: 2rem;
-    border-radius: 12px;
+    padding: 4rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+.home-title {
     font-size: 3rem;
     font-weight: 600;
     color: #333;
     margin-bottom: 1rem;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
-h5 {
+.home-subtitle {
     font-size: 1.25rem;
     color: #666;
     margin-bottom: 2rem;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
-button {
-    font-size: 1.2rem;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    background: #4caf50;
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+.product-button {
+    font-size: 1.2rem !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    background: #4caf50 !important;
+    color: #fff !important;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
 }
 
-button:hover {
-    background: #45a049;
-    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+.product-button:hover {
+    background: #45a049 !important;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px) !important;
+}
+
+@media (max-width: 900px) {
+    .home {
+        flex-direction: column;
+    }
+    .home-image-half, .container-home {
+        width: 100%;
+        height: 50vh;
+        min-height: 250px;
+        padding: 2rem;
+    }
+    .home-image {
+        height: 50vh;
+    }
+    .container-home {
+        padding: 2rem;
+    }
 }
 
 @media (max-width: 600px) {
-    h1 {
+    .home-title {
         font-size: 2.5rem;
     }
-    
-    h5 {
+    .home-subtitle {
         font-size: 1.1rem;
     }
-    
-    button {
-        width: 100%;
+    .product-button {
+        width: 100% !important;
+    }
+    .container-home {
+        padding: 1rem;
     }
 }

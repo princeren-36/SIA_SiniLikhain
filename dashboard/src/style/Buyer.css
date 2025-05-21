@@ -1,0 +1,146 @@
+.buyer-container {
+  background: #ccc9dc;
+  min-height: 100vh;         /* Ensure container can grow */
+  max-height: 100vh;         /* Prevent overflow beyond viewport */
+  box-sizing: border-box;
+  overflow-y: auto;          /* Enable vertical scrolling */
+}
+
+.buyer-title {
+  color: #1b2a41;
+  font-weight: bold;
+}
+
+.buyer-subtitle {
+  color: #324a5f;
+  margin-bottom: 32px;
+}
+
+.buyer-grid {
+  justify-content: center;
+  margin-top: 1%;
+  margin-bottom: 5%;
+}
+
+.buyer-grid-item {
+  display: flex;
+  justify-content: center;
+}
+
+.buyer-card {
+  width: 220px;
+  height: 270px;
+  background: #fff;
+  border: 1px solid #324a5f;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #00000022;
+  transition: transform 0.2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buyer-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 4px 16px #324a5f33;
+}
+
+.buyer-card-img {
+  width: 100%;
+  height: 170px;         /* Increased image height */
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  background: #ccc9dc;
+}
+
+.buyer-card-content {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 0;        /* Less padding for compact text */
+}
+
+.buyer-product-name {
+  color: #1b2a41;
+  font-size: 0.92rem;    /* Smaller text */
+}
+
+.buyer-product-price {
+  color: #324a5f;
+  font-size: 0.85rem;    /* Smaller text */
+}
+
+.buyer-dialog-content {
+  text-align: center;
+  padding-top: 24px;
+}
+
+.buyer-dialog-img {
+  width: 100%;
+  max-width: 260px;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0 auto 16px auto;
+  display: block;
+  background: #ccc9dc;
+}
+
+.buyer-dialog-img-large {
+  width: 100%;
+  max-width: 350px;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 auto 12px auto;
+  display: block;
+  background: #ccc9dc;
+}
+
+.buyer-dialog-name {
+  margin-top: 8px;
+  color: #1b2a41;
+}
+
+.buyer-dialog-name-small {
+  font-size: 1.1rem;
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.buyer-dialog-price {
+  margin-bottom: 16px;
+  color: #324a5f;
+}
+
+.buyer-dialog-price-small {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.buyer-dialog-qty {
+  margin-bottom: 16px !important;
+  width: 100px;
+  text-align: center;
+}
+
+.buyer-dialog-available {
+  margin-bottom: 16px;
+}
+
+.buyer-dialog-available-small {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.buyer-dialog-add-btn {
+  margin-bottom: 8px;
+}
+
+.buyer-dialog-actions {
+  justify-content: center;
+  padding-bottom: 16px;
+}

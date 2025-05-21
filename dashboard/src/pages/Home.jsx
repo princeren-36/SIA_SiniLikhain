@@ -1,37 +1,26 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Typography } from "@mui/material";
-import Navbar from "./Navbar"; // Ensure the Navbar path is correct
-import "../style/Home.css"; // Import the external CSS file
+import Navbar from "../buyer/NavbarBuyer";
+import "../style/Home.css";
 
 function Home() {
   const navigate = useNavigate();
 
-  const handleProduct = () => {
-    navigate("/AddProduct");
-  };
-
   return (
-    <div>
+    <div style={{ height: "100vh", overflowY: "auto" }}>
       <Navbar />
-      <div>
-        <div className="home">
-          <div className="container-home">
-            <Typography variant="h3" style={{ marginBottom: "1rem", fontWeight: "bold" }}>
-              Welcome to SiniLikhain
-            </Typography>
-            <Typography variant="h5" style={{ marginBottom: "2rem", color: "gray" }}>
-              Discover unique handmade products crafted by skilled artisans.
-            </Typography>
-            <Button
-              onClick={handleProduct}
-              variant="contained"
-              color="primary"
-              className="product-button"
-            >
-              VIEW PRODUCTS
-            </Button>
-          </div>
+      <div className="home">
+        <div className="home-image-half">
+          <img
+            src="../src/images/3.jpg"
+            alt="home"
+            className="home-image"
+          />
+        </div>
+        <div className="container-home">
+          <h1 className="home-title">Welcome to Artisan Marketplace</h1>
+          <p className="home-subtitle">
+            Discover unique handmade products from local artisans.
+          </p>
         </div>
       </div>
     </div>
