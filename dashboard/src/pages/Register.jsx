@@ -6,19 +6,56 @@ import "../style/Loginn.css"; // Reuse the login CSS for layout/background
 
 function Register() {
   const [userData, setUserData] = useState({ username: '', password: '', role: 'buyer' });
+  const [errors, setErrors] = useState({}); // State to hold validation errors
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
+    // Clear the error for the specific field when user starts typing
+    setErrors(prev => ({ ...prev, [e.target.name]: '' }));
+  };
+
+  const validateForm = () => {
+    let currentErrors = {};
+    let isValid = true;
+
+    if (!userData.username.trim()) {
+      currentErrors.username = "Username is required.";
+      isValid = false;
+    } else if (userData.username.trim().length < 3) {
+      currentErrors.username = "Username must be at least 3 characters long.";
+      isValid = false;
+    }
+
+    if (!userData.password.trim()) {
+      currentErrors.password = "Password is required.";
+      isValid = false;
+    } else if (userData.password.trim().length < 6) { // Common practice for minimum password length
+      currentErrors.password = "Password must be at least 6 characters long.";
+      isValid = false;
+    }
+
+    setErrors(currentErrors);
+    return isValid;
   };
 
   const handleRegister = async () => {
+    if (!validateForm()) {
+      return; // Stop if validation fails
+    }
+
     try {
-      await axios.post("http://localhost:5000/users/register", userData);
-      alert("Registration successful!");
-      navigate("/"); // Redirect to login
+      const response = await axios.post("http://localhost:5000/users/register", userData);
+      alert("Registration successful! You can now log in."); // More informative message
+      navigate("/"); // Redirect to login page
     } catch (err) {
-      alert("Username already exists or registration failed.");
+      if (err.response && err.response.data && err.response.data.message) {
+        // Use the specific message from the backend if available
+        alert(err.response.data.message); // E.g., "User already exists"
+      } else {
+        // Generic error for network issues or unexpected server errors
+        alert("Registration failed. Please try again later.");
+      }
     }
   };
 
@@ -42,6 +79,8 @@ function Register() {
           margin="normal"
           value={userData.username}
           onChange={handleChange}
+          error={!!errors.username} // Show error state
+          helperText={errors.username} // Display error message
         />
         <TextField
           label="Password"
@@ -52,6 +91,8 @@ function Register() {
           margin="normal"
           value={userData.password}
           onChange={handleChange}
+          error={!!errors.password} // Show error state
+          helperText={errors.password} // Display error message
         />
         <TextField
           select
@@ -64,7 +105,6 @@ function Register() {
         >
           <MenuItem value="artisan">Artisan</MenuItem>
           <MenuItem value="buyer">Buyer</MenuItem>
-          <MenuItem value="admin">Admin</MenuItem>
         </TextField>
         <Button variant="contained" fullWidth onClick={handleRegister} sx={{ mt: 2 }}>
           Register
@@ -84,4 +124,3 @@ function Register() {
 }
 
 export default Register;
-
