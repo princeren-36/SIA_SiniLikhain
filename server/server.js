@@ -1,5 +1,4 @@
 // filepath: server.js
-require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -16,7 +15,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve images
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect("mongodb+srv://renatoperas36:adventuretime36@cluster0.iluvg0w.mongodb.net/SiniLikhainDB")
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
@@ -24,7 +23,7 @@ mongoose.connect(process.env.MONGODB_URI)
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
 
-app.use("/users", userRoutes);      // User registration & login
-app.use("/products", productRoutes); // Product CRUD + image upload
+app.use("/users", userRoutes);
+app.use("/products", productRoutes);
 
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
