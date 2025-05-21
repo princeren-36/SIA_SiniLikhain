@@ -4,6 +4,7 @@ import { Button, TextField, Typography, Grid, Box, Dialog, DialogTitle, DialogCo
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import NavbarArtisan from "./NavbarArtisan";
+import Rating from "@mui/material/Rating";
 import "../style/AddProduct.css";
 
 function AddProduct() {
@@ -245,6 +246,22 @@ function AddProduct() {
                 <Typography variant="h6">{selectedProduct.name}</Typography>
                 <Typography variant="subtitle1" sx={{ mb: 2 }}>₱{selectedProduct.price}</Typography>
                 <Typography variant="body2" sx={{ mb: 2 }}>Quantity: {selectedProduct.quantity}</Typography>
+                {/* Show average rating */}
+                <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+                  <Rating
+                    name="product-rating"
+                    value={
+                      selectedProduct.ratings && selectedProduct.ratings.length
+                        ? selectedProduct.ratings.reduce((sum, r) => sum + r.value, 0) / selectedProduct.ratings.length
+                        : 0
+                    }
+                    precision={0.5}
+                    readOnly
+                  />
+                  <Typography variant="body2" sx={{ ml: 1 }}>
+                    ({selectedProduct.ratings ? selectedProduct.ratings.length : 0})
+                  </Typography>
+                </Box>
               </>
             )}
           </DialogContent>

@@ -3,6 +3,7 @@ import { Box, Typography, Grid, Card, CardMedia, CardContent, Dialog, DialogTitl
 import SearchIcon from '@mui/icons-material/Search';
 import NavbarBuyer from "./NavbarBuyer";
 import axios from 'axios';
+import Rating from '@mui/material/Rating';
 import "../style/Buyer.css";
 
 function Buyer() {
@@ -161,6 +162,46 @@ function Buyer() {
               >
                 Add to Cart
               </Button>
+              <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
+                <Rating
+                  name="product-rating"
+                  value={
+                    selectedProduct.ratings && selectedProduct.ratings.length
+                      ? selectedProduct.ratings.reduce((sum, r) => sum + r.value, 0) / selectedProduct.ratings.length
+                      : 0
+                  }
+                  precision={0.5}
+                  readOnly
+                />
+                <Typography variant="body2" sx={{ ml: 1 }}>
+                  ({selectedProduct.ratings ? selectedProduct.ratings.length : 0})
+                </Typography>
+              </Box>
+              <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+                <Typography variant="body2" sx={{ mr: 1 }}>Your Rating:</Typography>
+                <Rating
+                  name="user-rating"
+                  value={
+                    selectedProduct.ratings
+                      ? (selectedProduct.ratings.find(r => r.user === (JSON.parse(localStorage.getItem("user"))?.username))?.value || 0)
+                      : 0
+                  }
+                  onChange={async (e, newValue) => {
+                    if (!newValue) return;
+                    const user = JSON.parse(localStorage.getItem("user"))?.username;
+                    await axios.post(`http://localhost:5000/products/${selectedProduct._id}/rate`, {
+                      user,
+                      value: newValue
+                    });
+                    // Refresh product details
+                    const { data } = await axios.get(`http://localhost:5000/products`);
+                    const updated = data.find(p => p._id === selectedProduct._id);
+                    setSelectedProduct(updated);
+                    // Also update products list for new average
+                    setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
+                  }}
+                />
+              </Box>
             </>
           )}
         </DialogContent>

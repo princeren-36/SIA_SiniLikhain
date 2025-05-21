@@ -63,4 +63,21 @@ router.post("/buy", async (req, res) => {
   }
 });
 
+// POST /products/:id/rate
+router.post("/:id/rate", async (req, res) => {
+  const { user, value } = req.body;
+  if (!user || !value) return res.status(400).json({ message: "Missing user or value" });
+
+  const product = await Product.findById(req.params.id);
+  if (!product) return res.status(404).json({ message: "Product not found" });
+
+  // Remove previous rating by this user if exists
+  product.ratings = product.ratings.filter(r => r.user !== user);
+  // Add new rating
+  product.ratings.push({ user, value });
+  await product.save();
+
+  res.json(product);
+});
+
 module.exports = router;

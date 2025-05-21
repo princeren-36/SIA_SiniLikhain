@@ -1,73 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.about-container {
+  padding: 40px 20px;
+  font-family: 'Poppins', Arial, sans-serif;
+  background-color: #f5f7fa;
+  height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.about {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+.about-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1b2a41;
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.container-about {
-    max-width: 800px;
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.about-subtitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1b2a41;
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
 }
 
-h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 1rem;
+.about-text {
+  font-size: 1rem;
+  color: #324a5f;
+  line-height: 1.6;
+  text-align: justify;
+  transition: color 0.3s ease;
 }
 
-p {
-    font-size: 1.2rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+.about-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-button {
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background: #1976d2;
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+.about-row:hover {
+  background-color: #407ecf;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
-    background: #1565c0;
-    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+.about-row:hover .about-subtitle,
+.about-row:hover .about-text {
+  color: #ffffff;
 }
 
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2rem;
-    }
+.about-row.reverse {
+  flex-direction: row-reverse;
+}
 
-    p {
-        font-size: 1rem;
-    }
+.about-text-block {
+  flex: 1;
+  padding: 20px;
+}
 
-    button {
-        width: 100%;
-    }
+.about-img-block {
+  flex: 1;
+  padding: 20px;
+}
+
+.about-img-block img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.about-img-block img:hover {
+  transform: scale(1.03);
 }

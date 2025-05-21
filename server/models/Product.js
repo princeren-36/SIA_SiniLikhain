@@ -6,7 +6,13 @@ const productSchema = new mongoose.Schema({
   image: String,
   artisan: String,
   quantity: { type: Number, default: 1 },
-  category: String, // <-- Add this line
+  category: String,
+  ratings: [
+    {
+      user: String, // username or user id
+      value: Number // 1-5
+    }
+  ]
 });
 
 module.exports = mongoose.model("Product", productSchema);
