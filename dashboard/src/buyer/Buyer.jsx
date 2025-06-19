@@ -18,15 +18,12 @@ function Buyer() {
 
   useEffect(() => {
     axios.get("http://localhost:5000/products").then(res => {
-      // Only show products with quantity > 0
       setProducts(res.data.filter(p => p.quantity > 0));
-      // Set categories based on existing products
       const cats = Array.from(new Set(res.data.map(p => p.category).filter(Boolean)));
       setCategories(cats);
     });
   }, []);
 
-  // Filtered products based on search and category
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category ? product.category === category : true;
@@ -37,13 +34,11 @@ function Buyer() {
     const existingIndex = cart.findIndex(item => item._id === product._id);
     let updatedCart;
     if (existingIndex !== -1) {
-      // Already in cart: add up to max available
       const existing = cart[existingIndex];
       const newQty = Math.min(existing.quantity + qty, product.quantity);
       updatedCart = [...cart];
       updatedCart[existingIndex] = { ...existing, quantity: newQty };
     } else {
-      // Not in cart: add new
       updatedCart = [...cart, { ...product, quantity: qty }];
     }
     setCart(updatedCart);
@@ -53,7 +48,7 @@ function Buyer() {
 
   const handleOpenProduct = (product) => {
     setSelectedProduct(product);
-    setQuantity(1); // Reset quantity when opening dialog
+    setQuantity(1);
   };
 
   return (
@@ -65,7 +60,7 @@ function Buyer() {
           alignItems="center"
           gap={2}
           mb={3}
-          justifyContent="center" // Center the filter/search bar
+          justifyContent="center"
         >
           <TextField
             label="Search"
@@ -120,7 +115,6 @@ function Buyer() {
           ))}
         </Grid>
       </Box>
-      {/* Product Details Dialog */}
       <Dialog open={!!selectedProduct} onClose={() => setSelectedProduct(null)} maxWidth="xs" fullWidth>
         <DialogTitle>Product Details</DialogTitle>
         <DialogContent className="buyer-dialog-content">
@@ -193,11 +187,10 @@ function Buyer() {
                       user,
                       value: newValue
                     });
-                    // Refresh product details
+
                     const { data } = await axios.get(`http://localhost:5000/products`);
                     const updated = data.find(p => p._id === selectedProduct._id);
                     setSelectedProduct(updated);
-                    // Also update products list for new average
                     setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
                   }}
                 />

@@ -12,24 +12,22 @@ function AddProduct() {
   const [formData, setFormData] = useState({ name: "", price: "", image: null, quantity: 1, category: "" });
   const [preview, setPreview] = useState(null);
   const [editId, setEditId] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null); // For dialog
-  const [openForm, setOpenForm] = useState(false); // For add/edit dialog
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [openForm, setOpenForm] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect if user is not an artisan or not logged in
     if (!user || user.role !== "artisan") {
-      navigate("/"); // Or redirect to a forbidden page
+      navigate("/");
     } else {
       axios.get("http://localhost:5000/products").then((res) => {
         const artisanProducts = res.data.filter(p => p.artisan === user.username);
         setProducts(artisanProducts);
       }).catch(err => {
         console.error("Error fetching products:", err);
-        // Handle error, maybe show an alert
       });
     }
   }, [user, navigate]);
@@ -40,7 +38,6 @@ function AddProduct() {
       ...prev,
       [name]: name === "quantity" ? Math.max(1, parseInt(value) || 1) : value,
     }));
-    // Clear the error for the specific field when user starts typing
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
@@ -49,7 +46,7 @@ function AddProduct() {
     setFormData((prev) => ({ ...prev, image: file }));
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setErrors(prev => ({ ...prev, image: '' })); // Clear image error
+      setErrors(prev => ({ ...prev, image: '' }));
     } else {
       setPreview(null);
     }
@@ -79,7 +76,6 @@ function AddProduct() {
       isValid = false;
     }
 
-    // Image is required only when adding a new product (not editing without changing image)
     if (!editId && !formData.image) {
       currentErrors.image = "Product image is required.";
       isValid = false;
@@ -91,27 +87,25 @@ function AddProduct() {
 
   const handleSubmit = async () => {
     if (!validateForm()) {
-      return; // Stop submission if validation fails
+      return;
     }
 
     const data = new FormData();
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("artisan", user.username);
-    if (formData.image) data.append("image", formData.image); // Only append if a new image is selected
+    if (formData.image) data.append("image", formData.image);
     data.append("quantity", formData.quantity);
     data.append("category", formData.category);
 
     try {
       if (editId) {
-        // Edit product
         const res = await axios.put(`http://localhost:5000/products/${editId}`, data);
         setProducts((prev) =>
           prev.map((p) => (p._id === editId ? res.data : p))
         );
         alert("Product updated successfully!");
       } else {
-        // Add product
         const res = await axios.post("http://localhost:5000/products", data);
         setProducts((prev) => [...prev, res.data]);
         alert("Product added successfully!");
@@ -120,10 +114,9 @@ function AddProduct() {
       setFormData({ name: "", price: "", image: null, quantity: 1, category: "" });
       setPreview(null);
       setOpenForm(false);
-      setErrors({}); // Clear all errors on successful submission
+      setErrors({});
     } catch (err) {
       console.error("Error submitting product:", err);
-      // More specific error handling based on backend response could be added here
       alert("Error saving product. Please try again.");
     }
   };
@@ -133,14 +126,14 @@ function AddProduct() {
     setFormData({
       name: product.name,
       price: product.price,
-      image: null, // Set to null as image is not re-uploaded by default
+      image: null,
       quantity: product.quantity || 1,
       category: product.category || "",
     });
     setPreview(product.image ? `http://localhost:5000${product.image}` : null);
     setOpenForm(true);
-    setSelectedProduct(null); // Close details dialog if open
-    setErrors({}); // Clear any previous errors when opening edit form
+    setSelectedProduct(null);
+    setErrors({});
   };
 
   const handleDelete = async (id) => {
@@ -148,13 +141,13 @@ function AddProduct() {
       try {
         await axios.delete(`http://localhost:5000/products/${id}`);
         setProducts((prev) => prev.filter((p) => p._id !== id));
-        if (editId === id) { // If currently editing the deleted product
+        if (editId === id) {
           setEditId(null);
           setFormData({ name: "", price: "", image: null, quantity: 1, category: "" });
           setPreview(null);
           setOpenForm(false);
         }
-        setSelectedProduct(null); // Close details dialog if open
+        setSelectedProduct(null);
         alert("Product deleted successfully!");
       } catch (err) {
         console.error("Error deleting product:", err);
@@ -168,7 +161,7 @@ function AddProduct() {
     setFormData({ name: "", price: "", image: null, quantity: 1, category: "" });
     setPreview(null);
     setOpenForm(true);
-    setErrors({}); // Clear any previous errors when opening add form
+    setErrors({});
   };
 
   const handleCloseForm = () => {
@@ -176,7 +169,7 @@ function AddProduct() {
     setFormData({ name: "", price: "", image: null, quantity: 1, category: "" });
     setPreview(null);
     setOpenForm(false);
-    setErrors({}); // Clear all errors when closing the form
+    setErrors({});
   };
 
   return (
@@ -201,7 +194,6 @@ function AddProduct() {
           </Box>
         </Box>
 
-        {/* Add/Edit Product Dialog */}
         <Dialog open={openForm} onClose={handleCloseForm} maxWidth="xs" fullWidth>
           <DialogTitle>{editId ? "Edit Product" : "Add Product"}</DialogTitle>
           <DialogContent>
@@ -324,7 +316,6 @@ function AddProduct() {
           )}
         </Grid>
 
-        {/* Product Details Dialog */}
         <Dialog open={!!selectedProduct} onClose={() => setSelectedProduct(null)} maxWidth="xs" fullWidth>
           <DialogTitle>Product Details</DialogTitle>
           <DialogContent sx={{ textAlign: "center" }}>
@@ -339,7 +330,6 @@ function AddProduct() {
                 <Typography variant="h6">{selectedProduct.name}</Typography>
                 <Typography variant="subtitle1" sx={{ mb: 2 }}>₱{selectedProduct.price}</Typography>
                 <Typography variant="body2" sx={{ mb: 2 }}>Quantity: {selectedProduct.quantity}</Typography>
-                {/* Show average rating */}
                 <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
                   <Rating
                     name="product-rating"

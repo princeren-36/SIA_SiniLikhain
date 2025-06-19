@@ -5,7 +5,6 @@ const Product = require("../models/Product");
 
 const router = express.Router();
 
-// Multer Storage
 const storage = multer.diskStorage({
   destination: "./uploads",
   filename: (req, file, cb) => {
@@ -14,39 +13,50 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET all products
 router.get("/", async (req, res) => {
-  const products = await Product.find();
+  const { admin } = req.query;
+  let products;
+  if (admin === "true") {
+    products = await Product.find();
+  } else {
+    products = await Product.find({ approved: true });
+  }
   res.json(products);
 });
 
-// POST create product
 router.post("/", upload.single("image"), async (req, res) => {
-  const { name, price, artisan, quantity, category } = req.body; // add category
+  const { name, price, artisan, quantity, category } = req.body;
   const image = req.file ? `/uploads/${req.file.filename}` : "";
-  const newProduct = new Product({ name, price, image, artisan, quantity, category }); // add category
+  const newProduct = new Product({ name, price, image, artisan, quantity, category, approved: false });
   await newProduct.save();
   res.json(newProduct);
 });
 
-// PUT update product
+router.patch("/:id/approve", async (req, res) => {
+  const product = await Product.findByIdAndUpdate(req.params.id, { approved: true }, { new: true });
+  res.json(product);
+});
+
+router.patch("/:id/reject", async (req, res) => {
+  const product = await Product.findByIdAndUpdate(req.params.id, { approved: false }, { new: true });
+  res.json(product);
+});
+
 router.put("/:id", upload.single("image"), async (req, res) => {
-  const { name, price, quantity, category } = req.body; // add category
-  const update = { name, price, quantity, category }; // add category
+  const { name, price, quantity, category } = req.body;
+  const update = { name, price, quantity, category };
   if (req.file) update.image = `/uploads/${req.file.filename}`;
   const product = await Product.findByIdAndUpdate(req.params.id, update, { new: true });
   res.json(product);
 });
 
-// DELETE product
 router.delete("/:id", async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);
   res.json({ message: "Product deleted" });
 });
 
-// POST /products/buy
 router.post("/buy", async (req, res) => {
-  const { cart } = req.body; // [{_id, quantity}, ...]
+  const { cart } = req.body;
   try {
     for (const item of cart) {
       const product = await Product.findById(item._id);
@@ -55,7 +65,6 @@ router.post("/buy", async (req, res) => {
         await product.save();
       }
     }
-    // Optionally, remove products with quantity 0
     await Product.deleteMany({ quantity: { $lte: 0 } });
     res.json({ success: true });
   } catch (err) {
@@ -63,7 +72,6 @@ router.post("/buy", async (req, res) => {
   }
 });
 
-// POST /products/:id/rate
 router.post("/:id/rate", async (req, res) => {
   const { user, value } = req.body;
   if (!user || !value) return res.status(400).json({ message: "Missing user or value" });
@@ -71,9 +79,7 @@ router.post("/:id/rate", async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (!product) return res.status(404).json({ message: "Product not found" });
 
-  // Remove previous rating by this user if exists
   product.ratings = product.ratings.filter(r => r.user !== user);
-  // Add new rating
   product.ratings.push({ user, value });
   await product.save();
 

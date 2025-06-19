@@ -62,7 +62,6 @@ function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Confirmation Dialog */}
       <Dialog open={openDialog} onClose={handleCancelLogout}>
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
@@ -80,7 +79,6 @@ function Navbar() {
         </DialogActions>
       </Dialog>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={1000}

@@ -28,7 +28,7 @@ function NavbarArtisan() {
     setOpenDialog(false);
     setOpenSnackbar(true);
     setTimeout(() => {
-      window.location.href = "/"; // Redirect to login page after logout
+      window.location.href = "/";
     }, 1000);
   };
 
@@ -58,7 +58,6 @@ function NavbarArtisan() {
         </Toolbar>
       </AppBar>
 
-      {/* Confirmation Dialog */}
       <Dialog open={openDialog} onClose={handleCancelLogout}>
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
@@ -76,7 +75,6 @@ function NavbarArtisan() {
         </DialogActions>
       </Dialog>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={1000}

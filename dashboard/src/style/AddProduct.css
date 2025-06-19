@@ -3,7 +3,7 @@
   overflow-y: auto;
   background: #f5f7fa;
   box-sizing: border-box;
-  padding-bottom: 1000px; /* Enough space for bottom content/buttons */
+  padding-bottom: 1000px;
 }
 
 .addproduct-title {
@@ -21,17 +21,17 @@
 }
 
 .addproduct-input {
-  margin-top: 16px !important;     /* Make the field narrower */
+  margin-top: 16px !important;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   display: block;
-  font-size: 0.92rem;    /* Smaller text */
+  font-size: 0.92rem;
 }
 
 .addproduct-input input {
-  font-size: 0.92rem;    /* Ensure input text is also smaller */
-  padding: auto;      /* Reduce padding for a more compact look */ /* Center the text inside the TextField */
+  font-size: 0.92rem;
+  padding: auto;
 }
 
 .addproduct-file-input {
@@ -81,13 +81,13 @@
 .addproduct-product-img {
   width: 180px;
   height: 180px;
-  object-fit: contain; /* Show the whole image */
+  object-fit: contain;
   display: block;
-  margin: 16px auto 16px auto; /* Add top and bottom margin for spacing */
-  padding: 12px; /* Add padding so the image doesn't touch the border */
+  margin: 16px auto 16px auto;
+  padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  background: #fff; /* Optional: white background for better visibility */
+  background: #fff;
 }
 
 .addproduct-product-name {

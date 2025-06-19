@@ -2,7 +2,6 @@ const express = require("express");
 const User = require("../models/User");
 const router = express.Router();
 
-// Register
 router.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
 
@@ -17,7 +16,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username, password });
@@ -25,6 +23,21 @@ router.post("/login", async (req, res) => {
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
   res.json({ user });
+});
+
+router.get("/all", async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+router.put("/:id", async (req, res) => {
+  const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
+});
+
+router.delete("/:id", async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
 });
 
 module.exports = router;

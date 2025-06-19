@@ -1,5 +1,5 @@
 import Navbar from "./NavbarArtisan";
-import "../style/About.css"; // Make sure this file is included in your project
+import "../style/About.css";
 
 function AboutArtisan() {
   return (
@@ -7,8 +7,6 @@ function AboutArtisan() {
       <Navbar />
       <div className="about-container">
         <h1 className="about-title">About SiniLikhain</h1>
-
-        {/* Introduction */}
         <div className="about-row">
           <div className="about-text-block">
             <h2 className="about-subtitle">Introduction</h2>
@@ -23,8 +21,6 @@ function AboutArtisan() {
             <img src="../src/images/2.jpg" alt="handmade products" />
           </div>
         </div>
-
-        {/* Mission */}
         <div className="about-row reverse">
           <div className="about-text-block">
             <h2 className="about-subtitle">Our Mission</h2>
@@ -38,8 +34,6 @@ function AboutArtisan() {
             <img src="../src/images/4.jpg" alt="mission image" />
           </div>
         </div>
-
-        {/* Vision */}
         <div className="about-row">
           <div className="about-text-block">
             <h2 className="about-subtitle">Our Vision</h2>
@@ -53,8 +47,6 @@ function AboutArtisan() {
             <img src="../src/images/1.jpg" alt="vision image" />
           </div>
         </div>
-
-        {/* History */}
         <div className="about-row reverse">
           <div className="about-text-block">
             <h2 className="about-subtitle">Our History</h2>
@@ -68,8 +60,6 @@ function AboutArtisan() {
             <img src="../src/images/5.jpg" alt="history image" />
           </div>
         </div>
-
-        {/* Background */}
         <div className="about-row">
           <div className="about-text-block">
             <h2 className="about-subtitle">Background</h2>

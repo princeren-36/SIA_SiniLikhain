@@ -1,9 +1,9 @@
 .buyer-container {
   background: #ccc9dc;
-  min-height: 100vh;         /* Ensure container can grow */
-  max-height: 100vh;         /* Prevent overflow beyond viewport */
+  min-height: 100vh;
+  max-height: 100vh;
   box-sizing: border-box;
-  overflow-y: auto;          /* Enable vertical scrolling */
+  overflow-y: auto;
 }
 
 .buyer-title {
@@ -48,7 +48,7 @@
 
 .buyer-card-img {
   width: 100%;
-  height: 170px;         /* Increased image height */
+  height: 170px;
   object-fit: cover;
   border-radius: 12px 12px 0 0;
   background: #ccc9dc;
@@ -60,17 +60,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4px 0;        /* Less padding for compact text */
+  padding: 4px 0;
 }
 
 .buyer-product-name {
   color: #1b2a41;
-  font-size: 0.92rem;    /* Smaller text */
+  font-size: 0.92rem;
 }
 
 .buyer-product-price {
   color: #324a5f;
-  font-size: 0.85rem;    /* Smaller text */
+  font-size: 0.85rem;
 }
 
 .buyer-dialog-content {

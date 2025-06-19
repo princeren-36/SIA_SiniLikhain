@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { Box, Button, TextField, Typography, Paper, MenuItem } from "@mui/material";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import "../style/Loginn.css"; // Reuse the login CSS for layout/background
+import "../style/Loginn.css";
 
 function Register() {
   const [userData, setUserData] = useState({ username: '', password: '', role: 'buyer' });
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
-    // Clear the error for the specific field when user starts typing
     setErrors(prev => ({ ...prev, [e.target.name]: '' }));
   };
 
@@ -30,7 +29,7 @@ function Register() {
     if (!userData.password.trim()) {
       currentErrors.password = "Password is required.";
       isValid = false;
-    } else if (userData.password.trim().length < 6) { // Common practice for minimum password length
+    } else if (userData.password.trim().length < 6) {
       currentErrors.password = "Password must be at least 6 characters long.";
       isValid = false;
     }
@@ -41,19 +40,17 @@ function Register() {
 
   const handleRegister = async () => {
     if (!validateForm()) {
-      return; // Stop if validation fails
+      return;
     }
 
     try {
       const response = await axios.post("http://localhost:5000/users/register", userData);
-      alert("Registration successful! You can now log in."); // More informative message
-      navigate("/"); // Redirect to login page
+      alert("Registration successful! You can now log in.");
+      navigate("/"); 
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        // Use the specific message from the backend if available
-        alert(err.response.data.message); // E.g., "User already exists"
+        alert(err.response.data.message);
       } else {
-        // Generic error for network issues or unexpected server errors
         alert("Registration failed. Please try again later.");
       }
     }
@@ -79,8 +76,8 @@ function Register() {
           margin="normal"
           value={userData.username}
           onChange={handleChange}
-          error={!!errors.username} // Show error state
-          helperText={errors.username} // Display error message
+          error={!!errors.username}
+          helperText={errors.username}
         />
         <TextField
           label="Password"
@@ -91,8 +88,8 @@ function Register() {
           margin="normal"
           value={userData.password}
           onChange={handleChange}
-          error={!!errors.password} // Show error state
-          helperText={errors.password} // Display error message
+          error={!!errors.password}
+          helperText={errors.password}
         />
         <TextField
           select

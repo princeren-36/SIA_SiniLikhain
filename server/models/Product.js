@@ -9,10 +9,11 @@ const productSchema = new mongoose.Schema({
   category: String,
   ratings: [
     {
-      user: String, // username or user id
-      value: Number // 1-5
+      user: String,
+      value: Number
     }
-  ]
+  ],
+  approved: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model("Product", productSchema);
