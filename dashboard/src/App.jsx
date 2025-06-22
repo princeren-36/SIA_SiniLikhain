@@ -10,12 +10,15 @@ import Admin from "./pages/Admin";
 import Buyer from "./buyer/Buyer";
 import Artisan from "./artisan/Artisan";
 import Cart from "./buyer/Cart";
+import RegisterArtisan from "./pages/RegisterArtisan";
+import RegisterBuyer from "./pages/RegisterBuyer";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/Loginn" element={<Login />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/AddProduct" element={<AddProduct />} />
@@ -25,9 +28,10 @@ function App() {
         <Route path="/Buyer" element={<Buyer />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/Artisan" element={<Artisan />} />
+        <Route path="/registerartisan" element={<RegisterArtisan />} />
+        <Route path="/registerbuyer" element={<RegisterBuyer />} />
       </Routes>
     </BrowserRouter>
-    
   );
 }
 

@@ -1,94 +1,56 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Snackbar,
-  Alert
-} from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import "../style/Navbar.css";
 
 function Navbar() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const handleLogoutClick = () => {
-    setOpenDialog(true);
-  };
-
+  const handleLogoutClick = () => setOpenDialog(true);
   const handleConfirmLogout = () => {
     localStorage.removeItem("user");
     setOpenDialog(false);
     setOpenSnackbar(true);
     setTimeout(() => {
-      window.location.href = "/";
+      window.location.href = "/Loginn";
     }, 1000);
   };
-
-  const handleCancelLogout = () => {
-    setOpenDialog(false);
-  };
+  const handleCancelLogout = () => setOpenDialog(false);
 
   return (
     <>
-      <AppBar position="static" sx={{ background: "#1b2a41" }}>
-        <Toolbar className="navbar-toolbar">
-          <Typography variant="h6" className="navbar-title" sx={{ flexGrow: 1 }} >
-            SiniLikhain
-          </Typography>
-          <Button color="inherit" component={Link} to="/home" className="navbar-button">
-            Home
-          </Button>
-          <Button color="inherit" component={Link} to="/buyer" className="navbar-button">
-            Products
-          </Button>
-          <Button color="inherit" component={Link} to="/cart" className="navbar-button">
-            Cart
-          </Button>
-          <Button color="inherit" component={Link} to="/aboutbuyer" className="navbar-button">
-            About
-          </Button>
-          <Button color="inherit" onClick={handleLogoutClick} className="navbar-button">
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <nav className="bg-[#1b2a41] px-4 py-2 flex items-center justify-between" style={{ fontFamily: 'SF Pro Display, SF Pro Icons, Arial, sans-serif' }}>
+        <div className="text-white text-2xl font-bold tracking-wide">SiniLikhain</div>
+        <div className="flex gap-4">
+          <Link to="/home" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">Home</Link>
+          <Link to="/buyer" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">Products</Link>
+          <Link to="/cart" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">Cart</Link>
+          <Link to="/aboutbuyer" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">About</Link>
+          <button onClick={handleLogoutClick} className="text-white hover:text-red-400 px-3 py-1 rounded transition-colors duration-200 font-medium">Logout</button>
+        </div>
+      </nav>
 
-      <Dialog open={openDialog} onClose={handleCancelLogout}>
-        <DialogTitle>Confirm Logout</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to log out of your account?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelLogout} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmLogout} color="error">
-            Logout
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Logout Dialog */}
+      {openDialog && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-80" style={{ fontFamily: 'SF Pro Display, SF Pro Icons, Arial, sans-serif' }}>
+            <div className="text-lg font-semibold mb-2">Confirm Logout</div>
+            <div className="mb-4 text-gray-700">Are you sure you want to log out of your account?</div>
+            <div className="flex justify-end gap-2">
+              <button onClick={handleCancelLogout} className="px-4 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium">Cancel</button>
+              <button onClick={handleConfirmLogout} className="px-4 py-1 rounded bg-red-500 hover:bg-red-600 text-white font-medium">Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={1000}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
-          Successfully logged out!
-        </Alert>
-      </Snackbar>
+      {/* Snackbar */}
+      {openSnackbar && (
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-green-600 text-white px-6 py-2 rounded shadow-lg font-medium" style={{ fontFamily: 'SF Pro Display, SF Pro Icons, Arial, sans-serif' }}>
+            Successfully logged out!
+          </div>
+        </div>
+      )}
     </>
   );
 }

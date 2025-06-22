@@ -28,7 +28,7 @@ function Admin() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    navigate("/");
+    navigate("/Loginn");
   };
 
   const handleEditClick = (user) => {

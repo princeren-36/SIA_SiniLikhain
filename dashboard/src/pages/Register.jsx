@@ -1,122 +1,39 @@
-import { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper, MenuItem } from "@mui/material";
-import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../style/Loginn.css";
-
+~
 function Register() {
-  const [userData, setUserData] = useState({ username: '', password: '', role: 'buyer' });
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
-    setErrors(prev => ({ ...prev, [e.target.name]: '' }));
-  };
-
-  const validateForm = () => {
-    let currentErrors = {};
-    let isValid = true;
-
-    if (!userData.username.trim()) {
-      currentErrors.username = "Username is required.";
-      isValid = false;
-    } else if (userData.username.trim().length < 3) {
-      currentErrors.username = "Username must be at least 3 characters long.";
-      isValid = false;
-    }
-
-    if (!userData.password.trim()) {
-      currentErrors.password = "Password is required.";
-      isValid = false;
-    } else if (userData.password.trim().length < 6) {
-      currentErrors.password = "Password must be at least 6 characters long.";
-      isValid = false;
-    }
-
-    setErrors(currentErrors);
-    return isValid;
-  };
-
-  const handleRegister = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    try {
-      const response = await axios.post("http://localhost:5000/users/register", userData);
-      alert("Registration successful! You can now log in.");
-      navigate("/"); 
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        alert(err.response.data.message);
-      } else {
-        alert("Registration failed. Please try again later.");
-      }
+  const handleRoleSelect = (e) => {
+    const role = e.target.value;
+    if (role === "artisan") {
+      navigate("/registerartisan");
+    } else if (role === "buyer") {
+      navigate("/registerbuyer");
     }
   };
 
   return (
-    <Box className="login" display="flex" height="100vh">
-      <Box className="image" flex={1}>
-        <img
-          src="..\src\images\pexels-korhan-erdol-1123380-2344613.jpg"
-          alt="register"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      </Box>
-
-      <Paper className="container-login" elevation={6} sx={{ p: 4, width: "25%", margin: "auto" }}>
-        <Typography variant="h5" gutterBottom>Register</Typography>
-        <TextField
-          label="Username"
-          name="username"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={userData.username}
-          onChange={handleChange}
-          error={!!errors.username}
-          helperText={errors.username}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={userData.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-        />
-        <TextField
-          select
-          label="Role"
-          name="role"
-          fullWidth
-          margin="normal"
-          value={userData.role}
-          onChange={handleChange}
-        >
-          <MenuItem value="artisan">Artisan</MenuItem>
-          <MenuItem value="buyer">Buyer</MenuItem>
-        </TextField>
-        <Button variant="contained" fullWidth onClick={handleRegister} sx={{ mt: 2 }}>
-          Register
-        </Button>
-        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-          Already have an account?{" "}
-          <span
-            onClick={() => navigate("/")}
-            style={{ cursor: "pointer", color: "#1976d2" }}
+    <div className="flex h-screen items-center justify-center bg-gray-100" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+      <div className="flex flex-col justify-center items-center w-full max-w-md bg-white shadow-lg p-8 mx-auto rounded-3xl m-4">
+        <h1 className="text-4xl font-bold mb-4 text-black" style={{ fontFamily: 'Source Code Pro, monospace' }}>Register</h1>
+        <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Source Code Pro, monospace' }}>Create your account</h2>
+        <div className="w-full mb-4">
+          <label className="block mb-1 text-gray-700 text-sm font-semibold" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you a/an?</label>
+          <select
+            name="role"
+            defaultValue=""
+            onChange={handleRoleSelect}
+            className="w-full px-4 py-3 text-base text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white"
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
           >
-            Login
-          </span>
-        </Typography>
-      </Paper>
-    </Box>
+            <option value="" disabled>Select role...</option>
+            <option value="artisan">Artisan</option>
+            <option value="buyer">Buyer</option>
+          </select>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import axios from 'axios';
-import "../style/Loginn.css";
+import loginImg from '../images/login.jpg';
 
 function Login() {
   const navigate = useNavigate();
@@ -47,44 +46,74 @@ function Login() {
   };
 
   return (
-    <Box className="login" display="flex" height="100vh">
-      <Box className="image" flex={1}>
-        <img src="../src/images/1000_F_498999508_PSgnnT9YiDQ6lFnDgYyHohV8yVw90b2c.jpg" alt="login" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      </Box>
-
-      <Paper className="container-login" elevation={6} sx={{ p: 4, width: "25%", margin: "auto" }}>
-        <Typography variant="h5" gutterBottom>Login</Typography>
-        <TextField
-          label="Username"
-          name="username"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={credentials.username}
-          onChange={handleChange}
-          error={!!errors.username}
-          helperText={errors.username}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={credentials.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-        />
-        <Button variant="contained" fullWidth onClick={handleLogin} sx={{ mt: 2 }}>
+    <div className="flex h-screen items-center justify-center bg-gray-100" style={{ fontFamily: 'Verdana, monospace' }}>
+      <div className="flex-1 hidden md:block h-full md:w-[55%] lg:w-[60%] xl:w-[65%]">
+        <img src={loginImg} alt="login" className="w-full h-full object-cover" style={{ minWidth: '350px' }} />
+      </div>
+      <div className="flex flex-col justify-center items-center w-full md:w-1/3 bg-white shadow-lg p-8 mx-auto rounded-3xl m-4 md:m-8">
+        <h1 className="text-4xl font-bold mb-4 text-black" style={{ fontFamily: 'Verdana, monospace' }}>Login</h1>
+        <div className="w-full mb-4 relative">
+          <input
+            type="text"
+            name="username"
+            value={credentials.username}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 text-base text-black border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Verdana, monospace', fontWeight: 400 }}
+            autoComplete="off"
+            required
+          />
+          <label
+            htmlFor="username"
+            className={`absolute left-4 ${credentials.username ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
+              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
+            style={{ fontFamily: 'Verdana, monospace', fontWeight: 400 }}
+          >
+            Enter Username
+          </label>
+          {errors.username && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Verdana, monospace' }}>{errors.username}</p>}
+        </div>
+        <div className="h-4"></div>
+        <div className="w-full mb-4 relative">
+          <input
+            type="password"
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 text-base text-black border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Verdana, monospace', fontWeight: 400 }}
+            autoComplete="off"
+            required
+          />
+          <label
+            htmlFor="password"
+            className={`absolute left-4 ${credentials.password ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
+              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
+            style={{ fontFamily: 'Verdana, monospace', fontWeight: 400 }}
+          >
+            Enter Password
+          </label>
+          {errors.password && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Verdana, monospace' }}>{errors.password}</p>}
+        </div>
+        <button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-200 mb-2"
+          onClick={handleLogin}
+        >
           Login
-        </Button>
-        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-          Don't have an account? <span onClick={() => navigate("/register")} style={{ cursor: "pointer", color: "#1976d2" }}>Register</span>
-        </Typography>
-      </Paper>
-    </Box>
+        </button>
+        <p className="text-center text-gray-600 mt-4 text-sm">
+          Don't have an account?{' '}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-blue-600 hover:underline cursor-pointer"
+          >
+            Register
+          </span>
+        </p>
+      </div>
+    </div>
   );
 }
 
