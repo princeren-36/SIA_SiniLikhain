@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const handleLogoutClick = () => setOpenDialog(true);
+  const handleLogoutClick = () => {
+    if (!user) {
+      navigate("/Loginn");
+    } else {
+      setOpenDialog(true);
+    }
+  };
+
   const handleConfirmLogout = () => {
     localStorage.removeItem("user");
     setOpenDialog(false);
@@ -25,12 +34,14 @@ function Navbar() {
           <Link to="/buyer" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">Products</Link>
           <Link to="/cart" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">Cart</Link>
           <Link to="/aboutbuyer" className="text-white hover:text-blue-300 px-3 py-1 rounded transition-colors duration-200 font-medium">About</Link>
-          <button onClick={handleLogoutClick} className="text-white hover:text-red-400 px-3 py-1 rounded transition-colors duration-200 font-medium">Logout</button>
+          <button onClick={handleLogoutClick} className="text-white hover:text-red-400 px-3 py-1 rounded transition-colors duration-200 font-medium">
+            {user ? "Logout" : "Login"}
+          </button>
         </div>
       </nav>
 
       {/* Logout Dialog */}
-      {openDialog && (
+      {openDialog && user && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-80" style={{ fontFamily: 'SF Pro Display, SF Pro Icons, Arial, sans-serif' }}>
             <div className="text-lg font-semibold mb-2">Confirm Logout</div>

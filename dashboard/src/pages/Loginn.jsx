@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import loginImg from '../images/login.jpg';
+import logo from '../../public/circular-logo.png';
 
 function Login() {
   const navigate = useNavigate();
@@ -47,6 +48,10 @@ function Login() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100" style={{ fontFamily: 'Verdana, monospace' }}>
+      {/* Logo at the top, links to landing page */}
+      <div className="absolute top-6 left-6 cursor-pointer z-10" onClick={() => navigate("/")}>
+        <img src={logo} alt="SiniLikhain Logo" className="w-20 h-20 rounded-full shadow-lg border-2 border-blue-400 hover:scale-105 transition-transform duration-200" />
+      </div>
       <div className="flex-1 hidden md:block h-full md:w-[55%] lg:w-[60%] xl:w-[65%]">
         <img src={loginImg} alt="login" className="w-full h-full object-cover" style={{ minWidth: '350px' }} />
       </div>
