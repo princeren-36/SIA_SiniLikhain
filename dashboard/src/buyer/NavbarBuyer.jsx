@@ -9,7 +9,7 @@ function Navbar() {
 
   const handleLogoutClick = () => {
     if (!user) {
-      navigate("/Loginn");
+      navigate("/Login");
     } else {
       setOpenDialog(true);
     }
@@ -20,7 +20,7 @@ function Navbar() {
     setOpenDialog(false);
     setOpenSnackbar(true);
     setTimeout(() => {
-      window.location.href = "/Loginn";
+      window.location.href = "/Login";
     }, 1000);
   };
   const handleCancelLogout = () => setOpenDialog(false);

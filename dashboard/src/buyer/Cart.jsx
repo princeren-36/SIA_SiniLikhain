@@ -184,7 +184,7 @@ function Cart() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setLoginPromptOpen(false)} color="inherit">No</Button>
-          <Button onClick={() => { setLoginPromptOpen(false); navigate('/Loginn'); }} color="primary">Yes</Button>
+          <Button onClick={() => { setLoginPromptOpen(false); navigate('/Login'); }} color="primary">Yes</Button>
         </DialogActions>
       </Dialog>
     </>

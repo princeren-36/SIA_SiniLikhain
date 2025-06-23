@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import signupImg from '../images/signup.jpg';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 function RegisterArtisan() {
   const [userData, setUserData] = useState({
@@ -22,8 +18,16 @@ function RegisterArtisan() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
-    setErrors(prev => ({ ...prev, [e.target.name]: '' }));
+    const { name, value } = e.target;
+    if (name === 'phone') {
+      // Only allow up to 15 digits
+      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 15);
+      setUserData({ ...userData, [name]: numericValue });
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    } else {
+      setUserData({ ...userData, [name]: value });
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const validateForm = () => {
@@ -74,7 +78,7 @@ function RegisterArtisan() {
       const { confirmPassword, ...submitData } = userData;
       await axios.post("http://localhost:5000/users/register", submitData);
       alert("Registration successful! You can now log in.");
-      navigate("/Loginn");
+      navigate("/Login");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         alert(err.response.data.message);
@@ -85,161 +89,185 @@ function RegisterArtisan() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 flex-row" style={{ fontFamily: 'Source Code Pro, monospace' }}>
-      <div className="flex-1 hidden md:block h-full md:w-[55%] lg:w-[60%] xl:w-[65%]">
-        <img src={signupImg} alt="register" className="w-full h-full object-cover" style={{ minWidth: '350px' }} />
-      </div>
-      <div className="flex flex-col justify-center items-center w-full md:w-1/3 bg-white shadow-lg p-8 mx-auto rounded-3xl m-4 md:m-8">
-        <h1 className="text-4xl font-bold mb-4 text-black">Register as Artisan</h1>
-        <div className="w-full mb-4 relative">
+    <div
+      className="flex h-screen items-center justify-center bg-cover bg-center flex-row"
+      style={{
+        backgroundImage: `url(${signupImg})`,
+        fontFamily: 'Poppins, Verdana, monospace',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="absolute inset-0 bg-black/60 z-0" />
+      <button
+        className="fixed top-8 left-8 z-30 bg-white/80 hover:bg-white text-black font-semibold px-4 py-2 rounded-full shadow border border-gray-300 transition-colors duration-200"
+        style={{ fontFamily: 'Poppins, Verdana, monospace' }}
+        onClick={() => navigate('/register')}
+      >
+        &#8592; Back
+      </button>
+      <div className="relative z-10 flex flex-col justify-center items-center w-full max-w-md bg-white/90 shadow-2xl p-10 rounded-3xl m-4 backdrop-blur-md border border-black" style={{ boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)', fontFamily: 'Poppins, Verdana, monospace' }}>
+        <h2 className="text-4xl font-bold mb-4 text-black" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>Register as Artisan</h2>
+        <p className="text-base text-black mb-6 text-center" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
+          Please fill out the form below to create your artisan account and join our community.
+        </p>
+        <div className="w-full mb-6 relative">
           <input
             type="text"
             name="username"
             value={userData.username}
             onChange={handleChange}
-            className={`w-full px-4 py-3 text-base text-black border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
           />
           <label
             htmlFor="username"
-            className={`absolute left-4 ${userData.username ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
-              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+              ${userData.username ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+            `}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
           >
             Enter Username
           </label>
-          {errors.username && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.username}</p>}
+          {errors.username && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.username}</p>}
         </div>
-        <div className="h-4"></div>
-        <div className="w-full mb-4 relative">
+        <div className="w-full mb-6 relative">
           <input
             type="email"
             name="email"
             value={userData.email}
             onChange={handleChange}
-            className={`w-full px-4 py-3 text-base text-black border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
           />
           <label
             htmlFor="email"
-            className={`absolute left-4 ${userData.email ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
-              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+              ${userData.email ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+            `}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
           >
             Enter Email
           </label>
-          {errors.email && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.email}</p>}
+          {errors.email && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.email}</p>}
         </div>
-        <div className="h-4"></div>
-        <div className="w-full mb-4 relative">
+        <div className="w-full mb-6 relative">
           <input
             type="text"
             name="phone"
             value={userData.phone}
             onChange={handleChange}
-            className={`w-full px-4 py-3 text-base text-black border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
           />
           <label
             htmlFor="phone"
-            className={`absolute left-4 ${userData.phone ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
-              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+              ${userData.phone ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+            `}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
           >
             Enter Phone Number
           </label>
-          {errors.phone && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.phone}</p>}
+          {errors.phone && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.phone}</p>}
         </div>
-        <div className="h-4"></div>
-        <div className="w-full mb-4 relative">
+        <div className="w-full mb-6 relative">
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             value={userData.password}
             onChange={handleChange}
-            className={`w-full px-4 py-3 text-base text-black border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword((show) => !show)}
-                  edge="end"
-                  tabIndex={-1}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-black hover:text-gray-700 focus:outline-none"
+            tabIndex={-1}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            style={{ background: 'none', border: 'none', padding: 0, margin: 0 }}
+          >
+            {showPassword ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.94 17.94A10.05 10.05 0 0112 19c-5.523 0-10-7-10-7a21.77 21.77 0 015.06-5.94M22.54 12.42A21.77 21.77 0 0012 5c-1.657 0-3.22.403-4.575 1.125M3 3l18 18" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
+            )}
+          </button>
           <label
             htmlFor="password"
-            className={`absolute left-4 ${userData.password ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
-              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+              ${userData.password ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+            `}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
           >
             Enter Password
           </label>
-          {errors.password && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.password}</p>}
+          {errors.password && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.password}</p>}
         </div>
-        <div className="h-4"></div>
-        <div className="w-full mb-4 relative">
+        <div className="w-full mb-6 relative">
           <input
             type={showConfirmPassword ? "text" : "password"}
             name="confirmPassword"
             value={userData.confirmPassword}
             onChange={handleChange}
-            className={`w-full px-4 py-3 text-base text-black border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle confirm password visibility"
-                  onClick={() => setShowConfirmPassword((show) => !show)}
-                  edge="end"
-                  tabIndex={-1}
-                >
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
           />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((prev) => !prev)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-black hover:text-gray-700 focus:outline-none"
+            tabIndex={-1}
+            aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+            style={{ background: 'none', border: 'none', padding: 0, margin: 0 }}
+          >
+            {showConfirmPassword ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.94 17.94A10.05 10.05 0 0112 19c-5.523 0-10-7-10-7a21.77 21.77 0 015.06-5.94M22.54 12.42A21.77 21.77 0 0012 5c-1.657 0-3.22.403-4.575 1.125M3 3l18 18" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
+            )}
+          </button>
           <label
             htmlFor="confirmPassword"
-            className={`absolute left-4 ${userData.confirmPassword ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
-              peer-hover:-top-3 peer-hover:text-xs peerHover:text-blue-700 peer-hover:translate-y-0`}
-            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+              ${userData.confirmPassword ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+            `}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
           >
             Confirm Password
           </label>
-          {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.confirmPassword}</p>}
         </div>
         <button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-200 mb-2"
+          className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide"
+          style={{ fontFamily: 'Poppins, Verdana, monospace' }}
           onClick={handleRegister}
         >
           Register
         </button>
-        <p className="text-center text-gray-600 mt-4 text-sm">
+        <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
           Already have an account?{' '}
           <span
-            onClick={() => navigate("/Loginn")}
-            className="text-blue-600 hover:underline cursor-pointer"
+            onClick={() => navigate("/login")}
+            className="text-black underline cursor-pointer font-semibold"
+            style={{ fontFamily: 'Poppins, Verdana, monospace' }}
           >
             Login
           </span>

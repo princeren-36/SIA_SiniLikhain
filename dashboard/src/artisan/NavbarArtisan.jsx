@@ -28,7 +28,7 @@ function NavbarArtisan() {
     setOpenDialog(false);
     setOpenSnackbar(true);
     setTimeout(() => {
-      window.location.href = "/Loginn";
+      window.location.href = "/Login";
     }, 1000);
   };
 
