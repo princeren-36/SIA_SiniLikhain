@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, Drawer, List, ListItem, ListItemText, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import { Box, Button, Typography, Drawer, List, ListItem, ListItemText, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField, IconButton, InputAdornment } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,6 +12,7 @@ function Admin() {
   const [view, setView] = useState('overview');
   const [editUserId, setEditUserId] = useState(null);
   const [editUserData, setEditUserData] = useState({ username: '', role: '' });
+  const [showPasswordId, setShowPasswordId] = useState(null);
 
   useEffect(() => {
     axios.get("http://localhost:5000/users/all").then(res => setUsers(res.data));
@@ -33,7 +36,13 @@ function Admin() {
 
   const handleEditClick = (user) => {
     setEditUserId(user._id);
-    setEditUserData({ username: user.username, role: user.role });
+    setEditUserData({
+      username: user.username || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      password: user.password || '',
+      role: user.role || ''
+    });
   };
 
   const handleEditChange = (e) => {
@@ -41,6 +50,32 @@ function Admin() {
   };
 
   const handleEditSave = async (id) => {
+    // Data validation
+    let currentErrors = {};
+    let isValid = true;
+    if (!editUserData.username.trim()) {
+      currentErrors.username = "Username is required.";
+      isValid = false;
+    } else if (editUserData.username.trim().length < 3) {
+      currentErrors.username = "Username must be at least 3 characters long.";
+      isValid = false;
+    }
+    if (!editUserData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editUserData.email.trim())) {
+      currentErrors.email = "Valid email is required.";
+      isValid = false;
+    }
+    if (!editUserData.phone || !/^\d{10,15}$/.test(editUserData.phone.trim())) {
+      currentErrors.phone = "Phone number must be 10-15 digits.";
+      isValid = false;
+    }
+    if (!editUserData.password || editUserData.password.length < 6) {
+      currentErrors.password = "Password must be at least 6 characters long.";
+      isValid = false;
+    }
+    if (!isValid) {
+      alert(Object.values(currentErrors).join('\n'));
+      return;
+    }
     const res = await axios.put(`http://localhost:5000/users/${id}`, editUserData);
     setUsers(users.map(u => u._id === id ? res.data : u));
     setEditUserId(null);
@@ -55,7 +90,7 @@ function Admin() {
     { label: "Overview", value: "overview" },
     { label: "Buyers", value: "buyer" },
     { label: "Artisans", value: "artisan" },
-    { label: "CRUD Products", value: "crud" }
+    { label: "Products", value: "crud" }
   ];
 
   const buyers = users.filter(u => u.role === "buyer");
@@ -104,7 +139,9 @@ function Admin() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Username</TableCell>
-                    <TableCell>Role</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Phone Number</TableCell>
+                    <TableCell>Password</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -120,9 +157,54 @@ function Admin() {
                       </TableCell>
                       <TableCell>
                         {editUserId === u._id ? (
-                          <TextField name="role" value={editUserData.role} onChange={handleEditChange} size="small" />
+                          <TextField name="email" value={editUserData.email || u.email || ''} onChange={handleEditChange} size="small" />
                         ) : (
-                          u.role
+                          u.email || ''
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editUserId === u._id ? (
+                          <TextField name="phone" value={editUserData.phone || u.phone || ''} onChange={handleEditChange} size="small" />
+                        ) : (
+                          u.phone || ''
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editUserId === u._id ? (
+                          <TextField
+                            name="password"
+                            value={editUserData.password || ''}
+                            onChange={handleEditChange}
+                            size="small"
+                            type={showPasswordId === u._id ? "text" : "password"}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setShowPasswordId(showPasswordId === u._id ? null : u._id)}
+                                    edge="end"
+                                    tabIndex={-1}
+                                  >
+                                    {showPasswordId === u._id ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        ) : (
+                          <span style={{ fontFamily: 'monospace' }}>
+                            {showPasswordId === u._id ? (u.password || '') : (u.password ? '••••••' : '')}
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={() => setShowPasswordId(showPasswordId === u._id ? null : u._id)}
+                              edge="end"
+                              size="small"
+                              tabIndex={-1}
+                            >
+                              {showPasswordId === u._id ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                            </IconButton>
+                          </span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -154,7 +236,9 @@ function Admin() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Username</TableCell>
-                    <TableCell>Role</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Phone Number</TableCell>
+                    <TableCell>Password</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -170,9 +254,54 @@ function Admin() {
                       </TableCell>
                       <TableCell>
                         {editUserId === u._id ? (
-                          <TextField name="role" value={editUserData.role} onChange={handleEditChange} size="small" />
+                          <TextField name="email" value={editUserData.email || u.email || ''} onChange={handleEditChange} size="small" />
                         ) : (
-                          u.role
+                          u.email || ''
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editUserId === u._id ? (
+                          <TextField name="phone" value={editUserData.phone || u.phone || ''} onChange={handleEditChange} size="small" />
+                        ) : (
+                          u.phone || ''
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editUserId === u._id ? (
+                          <TextField
+                            name="password"
+                            value={editUserData.password || ''}
+                            onChange={handleEditChange}
+                            size="small"
+                            type={showPasswordId === u._id ? "text" : "password"}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setShowPasswordId(showPasswordId === u._id ? null : u._id)}
+                                    edge="end"
+                                    tabIndex={-1}
+                                  >
+                                    {showPasswordId === u._id ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                </InputAdornment>
+                              )
+                            }}
+                          />
+                        ) : (
+                          <span style={{ fontFamily: 'monospace' }}>
+                            {showPasswordId === u._id ? (u.password || '') : (u.password ? '••••••' : '')}
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={() => setShowPasswordId(showPasswordId === u._id ? null : u._id)}
+                              edge="end"
+                              size="small"
+                              tabIndex={-1}
+                            >
+                              {showPasswordId === u._id ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                            </IconButton>
+                          </span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -198,7 +327,7 @@ function Admin() {
 
         {view === "crud" && (
           <>
-            <Typography variant="h4" gutterBottom>CRUD Products</Typography>
+            <Typography variant="h4" gutterBottom>Products</Typography>
             <Paper>
               <Table>
                 <TableHead>
@@ -224,6 +353,12 @@ function Admin() {
                         {p.approved && (
                           <Button color="warning" onClick={() => handleReject(p._id)}>Reject</Button>
                         )}
+                        <Button color="error" onClick={async () => {
+                          if(window.confirm('Are you sure you want to delete this product?')) {
+                            await axios.delete(`http://localhost:5000/products/${p._id}`);
+                            setProducts(products.filter(prod => prod._id !== p._id));
+                          }
+                        }}>Delete</Button>
                       </TableCell>
                     </TableRow>
                   ))}

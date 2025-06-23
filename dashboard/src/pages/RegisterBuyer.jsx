@@ -4,7 +4,14 @@ import axios from 'axios';
 import signupImg from '../images/signup.jpg';
 
 function RegisterBuyer() {
-  const [userData, setUserData] = useState({ username: '', password: '', role: 'buyer' });
+  const [userData, setUserData] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    role: 'buyer'
+  });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -23,11 +30,32 @@ function RegisterBuyer() {
       currentErrors.username = "Username must be at least 3 characters long.";
       isValid = false;
     }
+    if (!userData.email.trim()) {
+      currentErrors.email = "Email is required.";
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email.trim())) {
+      currentErrors.email = "Invalid email format.";
+      isValid = false;
+    }
+    if (!userData.phone.trim()) {
+      currentErrors.phone = "Phone number is required.";
+      isValid = false;
+    } else if (!/^\d{10,15}$/.test(userData.phone.trim())) {
+      currentErrors.phone = "Phone number must be 10-15 digits.";
+      isValid = false;
+    }
     if (!userData.password.trim()) {
       currentErrors.password = "Password is required.";
       isValid = false;
     } else if (userData.password.trim().length < 6) {
       currentErrors.password = "Password must be at least 6 characters long.";
+      isValid = false;
+    }
+    if (!userData.confirmPassword.trim()) {
+      currentErrors.confirmPassword = "Please confirm your password.";
+      isValid = false;
+    } else if (userData.password !== userData.confirmPassword) {
+      currentErrors.confirmPassword = "Passwords do not match.";
       isValid = false;
     }
     setErrors(currentErrors);
@@ -37,7 +65,8 @@ function RegisterBuyer() {
   const handleRegister = async () => {
     if (!validateForm()) return;
     try {
-      await axios.post("http://localhost:5000/users/register", userData);
+      const { confirmPassword, ...submitData } = userData;
+      await axios.post("http://localhost:5000/users/register", submitData);
       alert("Registration successful! You can now log in.");
       navigate("/Loginn");
     } catch (err) {
@@ -81,6 +110,52 @@ function RegisterBuyer() {
         <div className="h-4"></div>
         <div className="w-full mb-4 relative">
           <input
+            type="email"
+            name="email"
+            value={userData.email}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 text-base text-black border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            autoComplete="off"
+            required
+          />
+          <label
+            htmlFor="email"
+            className={`absolute left-4 ${userData.email ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
+              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+          >
+            Enter Email
+          </label>
+          {errors.email && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.email}</p>}
+        </div>
+        <div className="h-4"></div>
+        <div className="w-full mb-4 relative">
+          <input
+            type="text"
+            name="phone"
+            value={userData.phone}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 text-base text-black border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            autoComplete="off"
+            required
+          />
+          <label
+            htmlFor="phone"
+            className={`absolute left-4 ${userData.phone ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
+              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+          >
+            Enter Phone Number
+          </label>
+          {errors.phone && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.phone}</p>}
+        </div>
+        <div className="h-4"></div>
+        <div className="w-full mb-4 relative">
+          <input
             type="password"
             name="password"
             value={userData.password}
@@ -100,6 +175,29 @@ function RegisterBuyer() {
             Enter Password
           </label>
           {errors.password && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.password}</p>}
+        </div>
+        <div className="h-4"></div>
+        <div className="w-full mb-4 relative">
+          <input
+            type="password"
+            name="confirmPassword"
+            value={userData.confirmPassword}
+            onChange={handleChange}
+            className={`w-full px-4 py-3 text-base text-black border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 bg-white peer`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+            autoComplete="off"
+            required
+          />
+          <label
+            htmlFor="confirmPassword"
+            className={`absolute left-4 ${userData.confirmPassword ? '-top-3 text-xs text-blue-700 translate-y-0' : 'top-1/2 -translate-y-1/2 text-gray-500'} bg-white px-1 transition-all duration-300 pointer-events-none
+              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-700 peer-focus:translate-y-0
+              peer-hover:-top-3 peer-hover:text-xs peer-hover:text-blue-700 peer-hover:translate-y-0`}
+            style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 400 }}
+          >
+            Confirm Password
+          </label>
+          {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Source Code Pro, monospace' }}>{errors.confirmPassword}</p>}
         </div>
         <button
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-200 mb-2"

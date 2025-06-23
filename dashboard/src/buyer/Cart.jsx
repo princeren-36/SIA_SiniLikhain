@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Card, CardMedia, CardContent, Button, Grid, Snackbar, Alert, TextField } from "@mui/material";
 import NavbarBuyer from "./NavbarBuyer";
 import axios from "axios";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const [cart, setCart] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
+  const navigate = useNavigate ? useNavigate() : () => {};
 
   const calculateCartTotal = (currentCart) => {
     return currentCart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
@@ -59,6 +66,11 @@ function Cart() {
   };
 
   const handleBuy = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setLoginPromptOpen(true);
+      return;
+    }
     try {
       const itemsToPurchase = cart.filter(item => item.quantity > 0);
       if (itemsToPurchase.length === 0) {
@@ -165,6 +177,16 @@ function Cart() {
           Purchase successful!
         </Alert>
       </Snackbar>
+      <Dialog open={loginPromptOpen} onClose={() => setLoginPromptOpen(false)}>
+        <DialogTitle>Login Required</DialogTitle>
+        <DialogContent>
+          <Typography>You must be logged in to buy products. Do you want to log in now?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLoginPromptOpen(false)} color="inherit">No</Button>
+          <Button onClick={() => { setLoginPromptOpen(false); navigate('/Loginn'); }} color="primary">Yes</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
