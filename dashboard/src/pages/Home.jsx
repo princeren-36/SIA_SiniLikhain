@@ -1,28 +1,98 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../buyer/NavbarBuyer";
-import "../style/Home.css";
+import logo from "../images/homepage.jpg";
+import React, { useState } from "react";
+
+// Baybayin for: si, ni, li, khai, n
+const baybayin = [
+  "ᜐᜒ", // si
+  "ᜈᜒ", // ni
+  "ᜎᜒ", // li
+  "ᜃᜑᜒ", // khai
+  "ᜈ᜔", // n
+];
+const latin = ["Si", "ni", "Li", "khai", "n"];
+
+function SiniLikhainBaybayin() {
+  const [hovered, setHovered] = useState(Array(latin.length).fill(false));
+
+  const handleMouseEnter = (idx) => {
+    setHovered((h) => h.map((v, i) => (i === idx ? true : v)));
+  };
+  const handleMouseLeave = (idx) => {
+    setHovered((h) => h.map((v, i) => (i === idx ? false : v)));
+  };
+
+  return (
+    <h2
+      className="mb-2 text-4xl md:text-6xl font-extrabold tracking-widest text-white flex justify-center gap-4 select-none"
+      style={{ letterSpacing: "0.05em" }}
+    >
+      {latin.map((char, idx) => (
+        <span
+          key={idx}
+          className="transition-all duration-300 ease-in-out cursor-pointer relative"
+          onMouseEnter={() => handleMouseEnter(idx)}
+          onMouseLeave={() => handleMouseLeave(idx)}
+          style={{
+            display: "inline-block",
+            minWidth: "2.5ch",
+            position: "relative",
+            textAlign: "center",
+          }}
+        >
+          <span
+            className={`block transition-all duration-300 ${
+              hovered[idx] ? "opacity-0 scale-75" : "opacity-100 scale-100"
+            }`}
+            style={{ position: "absolute", left: 0, right: 0 }}
+          >
+            {char}
+          </span>
+          <span
+            className={`block transition-all duration-300 ${
+              hovered[idx] ? "opacity-100 scale-100" : "opacity-0 scale-125"
+            }`}
+            style={{ position: "relative" }}
+          >
+            {baybayin[idx]}
+          </span>
+        </span>
+      ))}
+    </h2>
+  );
+}
 
 function Home() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ height: "100vh", overflowY: "auto" }}>
+    <div className="relative min-h-screen flex flex-col bg-black">
       <Navbar />
-      <div className="home">
-        <div className="home-image-half">
-          <img
-            src="../src/images/3.jpg"
-            alt="home"
-            className="home-image"
-          />
-        </div>
-        <div className="container-home">
-          <h1 className="home-title">Welcome to Artisan Marketplace</h1>
-          <p className="home-subtitle">
-            Discover unique handmade products from local artisans.
-          </p>
-        </div>
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src={logo}
+          alt="SiniLikhain artisan background"
+          className="w-full h-full object-cover pointer-events-none"
+        />
       </div>
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 py-20">
+        <SiniLikhainBaybayin />
+        <span className="text-white text-base md:text-lg tracking-widest mb-4 font-[source-code-pro,monospace] opacity-90">
+          What we learned so far
+        </span>
+        <h1 className="text-2xl md:text-4xl font-bold font-[source-code-pro,monospace] text-white mb-8 leading-tight tracking-wide">
+         In simplicity, the seed of creation;
+          <br />
+          in humble tools, the birth of brilliance.
+        </h1>
+        <a
+          href="/aboutbuyer"
+          className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black transition-colors duration-200"
+        >
+          VIEW MORE
+        </a>
+      </main>
     </div>
   );
 }

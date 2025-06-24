@@ -108,13 +108,11 @@ function Admin() {
   }, [users, products]);
 
   const handleApprove = async (id) => {
-    if (!window.confirm('Do you want to approve this product?')) return;
     await axios.patch(`http://localhost:5000/products/${id}/approve`);
     setProducts(products => products.map(p => p._id === id ? { ...p, approved: true } : p));
   };
 
   const handleReject = async (id) => {
-    if (!window.confirm('Do you want to reject this product?')) return;
     await axios.patch(`http://localhost:5000/products/${id}/reject`);
     setProducts(products => products.map(p => p._id === id ? { ...p, approved: false } : p));
   };
@@ -186,7 +184,7 @@ function Admin() {
   const buyers = users.filter(u => u.role === "buyer");
   const artisans = users.filter(u => u.role === "artisan");
   return (
-    <div className={`flex h-screen ${darkMode ? 'bg-[#18181b] text-gray-100' : 'bg-gray-100 text-black'}`}>
+    <div className={`flex h-screen ${darkMode ? 'bg-[#18181b] text-gray-100' : 'bg-gray-100 text-black'} poppins-font`}>
       <AdminSidebar
         view={view}
         setView={setView}
@@ -264,9 +262,7 @@ function Admin() {
                           ) : u.phone || ''}
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-mono">
-                            {'••••••'}
-                          </span>
+                          <span>{'••••••'}</span>
                         </td>
                         <td className="px-6 py-4">
                           {editUserId === u._id ? (
@@ -358,9 +354,7 @@ function Admin() {
                           ) : u.phone || ''}
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-mono">
-                            {'••••••'}
-                          </span>
+                          <span>{'••••••'}</span>
                         </td>
                         <td className="px-6 py-4">
                           {editUserId === u._id ? (

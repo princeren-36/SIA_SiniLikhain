@@ -62,13 +62,13 @@ function AdminDashboard({ users, products, buyers, artisans, chartData, darkMode
   };
 
   return (
-    <div className={`space-y-8 font-poppins transition-colors duration-300 ${darkMode ? 'bg-[#18181b] text-gray-100' : ''}`}>
+    <div className={`space-y-8 poppins-font transition-colors duration-300 ${darkMode ? 'bg-[#18181b] text-gray-100' : ''}`}>
       <div className="flex items-center justify-between mb-4">
         <h2 className={`text-3xl font-extrabold tracking-tight flex items-center gap-3 ${darkMode ? 'text-gray-100' : 'text-[#1b2a41]'}`}> 
           <FontAwesomeIcon icon={faGaugeHigh} className={`h-8 w-8 drop-shadow-md ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
           Admin Dashboard
         </h2>
-        <span className={`text-lg font-mono hidden md:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Artisan-made. Culture-inspired.</span>
+        <span className={`text-lg hidden md:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Artisan-made. Culture-inspired.</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${darkMode ? 'bg-[#23232b] border-blue-800' : 'bg-gradient-to-br from-blue-100 to-blue-50 border-blue-500'}`}> 

@@ -146,7 +146,7 @@ function Login() {
       }}
     >
       <div
-        className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
+        className="relative min-h-screen flex items-center justify-center bg-cover bg-center poppins-font"
         style={{
           backgroundImage: `url(${loginImg})`,
           fontFamily: 'Poppins, Verdana, monospace',
@@ -175,7 +175,7 @@ function Login() {
               )}
             </p>
             <p className="mt-4 text-base md:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
-              Please log in to your account to continue.
+              Please log in your account to continue.
             </p>
           </div>
           {loginError && (
@@ -183,7 +183,7 @@ function Login() {
               <p className="text-black text-center text-sm font-semibold bg-white border border-black rounded-md py-2 px-3" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{loginError}</p>
             </div>
           )}
-          <div className="w-full mb-4 relative">
+          <div className="w-full mb-2 relative">
             <input
               type="text"
               name="username"
@@ -191,24 +191,35 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
+              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm ${errors.username ? 'border-red-500' : ''}`}
               style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
               autoComplete="off"
               required
+              id="username"
             />
             <label
               htmlFor="username"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-                ${(credentials.username || usernameFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: '-0.25rem' }}
+                ${(credentials.username || usernameFocused || errors.username) ? 'top-2 text-xs translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm'}
+                ${errors.username ? 'text-red-500' : 'text-black'}`}
+              style={{
+                fontFamily: 'Poppins, Verdana, monospace',
+                fontWeight: 400,
+                zIndex: 10,
+                background: errors.username ? 'white' : 'transparent',
+                pointerEvents: 'none',
+                width: 'fit-content',
+                maxWidth: '90%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
             >
               Enter Username
             </label>
-            {errors.username && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.username}</p>}
+            {errors.username && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace', marginTop: '0.25rem' }}>{errors.username}</p>}
           </div>
-          <div className="h-4"></div>
-          <div className="w-full mb-4 relative">
+          <div className="w-full mb-2 relative">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -216,15 +227,20 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
+              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm ${errors.password ? 'border-red-500' : ''}`}
               style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, border: 'none', boxShadow: 'none' }}
               autoComplete="off"
               required
+              id="password"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-black hover:text-gray-700 focus:outline-none"
+              className={`absolute right-4 transition-all duration-300 text-black hover:text-gray-700 focus:outline-none
+                ${(credentials.password || passwordFocused || errors.password)
+                  ? 'top-3 translate-y-0'
+                  : 'top-1/2 -translate-y-1/2'}
+              `}
               tabIndex={-1}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               style={{ background: 'none', border: 'none', padding: 0, margin: 0 }}
@@ -238,13 +254,24 @@ function Login() {
             <label
               htmlFor="password"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-                ${(credentials.password || passwordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: '-0.25rem' }}
+                ${(credentials.password || passwordFocused || errors.password) ? 'top-2 text-xs translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm'}
+                ${errors.password ? 'text-red-500' : 'text-black'}`}
+              style={{
+                fontFamily: 'Poppins, Verdana, monospace',
+                fontWeight: 400,
+                zIndex: 10,
+                background: errors.password ? 'white' : 'transparent',
+                pointerEvents: 'none',
+                width: 'fit-content',
+                maxWidth: '90%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
             >
               Enter Password
             </label>
-            {errors.password && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace', marginTop: '0.25rem' }}>{errors.password}</p>}
           </div>
           <div className="w-full flex items-center mb-4">
             <input
