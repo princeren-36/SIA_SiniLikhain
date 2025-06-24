@@ -137,17 +137,17 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border ${errors.username ? 'border-black' : 'border-black'} rounded-md focus:outline-none focus:ring-2 ${errors.username ? 'focus:ring-black' : 'focus:ring-black'} transition-all duration-300 bg-white peer shadow-sm`}
+              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
               style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
               autoComplete="off"
               required
             />
             <label
               htmlFor="username"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none
-                ${(credentials.username || usernameFocused) ? 'top-2 text-xs text-black' : 'top-1/2 -translate-y-1/2 text-gray-500'}
+              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+                ${(credentials.username || usernameFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, padding: 0 }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
             >
               Enter Username
             </label>
@@ -162,7 +162,7 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black rounded-md focus:outline-none focus:ring-2 transition-all duration-300 bg-white peer shadow-sm`}
+              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
               style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, border: 'none', boxShadow: 'none' }}
               autoComplete="off"
               required
@@ -183,10 +183,10 @@ function Login() {
             </button>
             <label
               htmlFor="password"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none
-                ${(credentials.password || passwordFocused) ? 'top-2 text-xs text-black' : 'top-1/2 -translate-y-1/2 text-gray-500'}
+              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
+                ${(credentials.password || passwordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, padding: 0 }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
             >
               Enter Password
             </label>

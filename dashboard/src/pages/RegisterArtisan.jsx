@@ -15,6 +15,11 @@ function RegisterArtisan() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [usernameFocused, setUsernameFocused] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [phoneFocused, setPhoneFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -112,85 +117,98 @@ function RegisterArtisan() {
         <p className="text-base text-black mb-6 text-center" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
           Please fill out the form below to create your artisan account and join our community.
         </p>
+        {/* Username */}
         <div className="w-full mb-6 relative">
           <input
             type="text"
             name="username"
             value={userData.username}
             onChange={handleChange}
-            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            onFocus={() => setUsernameFocused(true)}
+            onBlur={() => setUsernameFocused(false)}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
             style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
+            id="username"
           />
           <label
             htmlFor="username"
             className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-              ${userData.username ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+              ${(userData.username || usernameFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
             `}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
           >
             Enter Username
           </label>
-          {errors.username && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.username}</p>}
+          {errors.username && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.username}</p>}
         </div>
+        {/* Email */}
         <div className="w-full mb-6 relative">
           <input
             type="email"
             name="email"
             value={userData.email}
             onChange={handleChange}
-            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
             style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
+            id="email"
           />
           <label
             htmlFor="email"
             className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-              ${userData.email ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+              ${(userData.email || emailFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
             `}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
           >
             Enter Email
           </label>
-          {errors.email && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.email}</p>}
+          {errors.email && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.email}</p>}
         </div>
+        {/* Phone */}
         <div className="w-full mb-6 relative">
           <input
             type="text"
             name="phone"
             value={userData.phone}
             onChange={handleChange}
-            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
+            onFocus={() => setPhoneFocused(true)}
+            onBlur={() => setPhoneFocused(false)}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
             style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
             autoComplete="off"
             required
+            id="phone"
           />
           <label
             htmlFor="phone"
             className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-              ${userData.phone ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+              ${(userData.phone || phoneFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
             `}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
           >
             Enter Phone Number
           </label>
-          {errors.phone && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.phone}</p>}
+          {errors.phone && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.phone}</p>}
         </div>
+        {/* Password */}
         <div className="w-full mb-6 relative">
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             value={userData.password}
             onChange={handleChange}
-            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
+            onFocus={() => setPasswordFocused(true)}
+            onBlur={() => setPasswordFocused(false)}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, border: 'none', boxShadow: 'none' }}
             autoComplete="off"
             required
+            id="password"
           />
           <button
             type="button"
@@ -209,25 +227,28 @@ function RegisterArtisan() {
           <label
             htmlFor="password"
             className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-              ${userData.password ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+              ${(userData.password || passwordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
             `}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
           >
             Enter Password
           </label>
-          {errors.password && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.password}</p>}
+          {errors.password && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.password}</p>}
         </div>
+        {/* Confirm Password */}
         <div className="w-full mb-6 relative">
           <input
             type={showConfirmPassword ? "text" : "password"}
             name="confirmPassword"
             value={userData.confirmPassword}
             onChange={handleChange}
-            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer`}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
+            onFocus={() => setConfirmPasswordFocused(true)}
+            onBlur={() => setConfirmPasswordFocused(false)}
+            className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm`}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, border: 'none', boxShadow: 'none' }}
             autoComplete="off"
             required
+            id="confirmPassword"
           />
           <button
             type="button"
@@ -246,14 +267,13 @@ function RegisterArtisan() {
           <label
             htmlFor="confirmPassword"
             className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-              ${userData.confirmPassword ? '-top-3 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-              peer-focus:-top-3 peer-focus:text-xs peer-focus:text-black peer-focus:translate-y-0 peer-focus:top-1
+              ${(userData.confirmPassword || confirmPasswordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
             `}
-            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, background: 'white' }}
+            style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
           >
             Confirm Password
           </label>
-          {errors.confirmPassword && <p className="text-black text-xs mt-2 mb-3 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text-black text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{errors.confirmPassword}</p>}
         </div>
         <button
           className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide"
