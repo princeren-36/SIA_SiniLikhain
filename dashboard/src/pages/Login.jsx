@@ -38,6 +38,53 @@ function Login() {
   const [usernameFocused, setUsernameFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
+  // Typing animation states
+  const animatedText = "Artisan-made. Culture-inspired.";
+  const [displayedText, setDisplayedText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+  const [pause, setPause] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Cursor blinking effect
+  React.useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  React.useEffect(() => {
+    let typingTimeout;
+    if (!isDeleting && !showDeleted && charIndex < animatedText.length) {
+      typingTimeout = setTimeout(() => {
+        setDisplayedText(animatedText.slice(0, charIndex + 1));
+        setCharIndex((prev) => prev + 1);
+      }, 60);
+    } else if (!isDeleting && !showDeleted && charIndex === animatedText.length && !pause) {
+      setPause(true);
+      typingTimeout = setTimeout(() => {
+        setIsDeleting(true);
+        setPause(false);
+      }, 1200);
+    } else if (isDeleting && !showDeleted && charIndex > 0) {
+      typingTimeout = setTimeout(() => {
+        setDisplayedText(animatedText.slice(0, charIndex - 1));
+        setCharIndex((prev) => prev - 1);
+      }, 30);
+    } else if (isDeleting && !showDeleted && charIndex === 0) {
+      setShowDeleted(true);
+      typingTimeout = setTimeout(() => {
+        setShowDeleted(false);
+        setIsDeleting(false);
+        setCharIndex(0);
+        setDisplayedText("");
+      }, 1000);
+    }
+    return () => clearTimeout(typingTimeout);
+  }, [charIndex, isDeleting, pause, animatedText, showDeleted]);
+
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
     setErrors(prev => ({ ...prev, [e.target.name]: '' }));
@@ -117,8 +164,15 @@ function Login() {
             <h1 className="text-3xl md:text-4xl font-bold text-black drop-shadow-lg leading-tight" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#111' }}>
               Welcome to SiniLikhain
             </h1>
-            <p className="text-base md:text-lg mt-2 font-medium text-black" style={{ fontFamily: 'Source Code Pro, monospace', color: '#222' }}>
-              Artisan-made. Culture-inspired.
+            <p className="text-base md:text-lg mt-2 font-medium text-black min-h-[1.5em]" style={{ fontFamily: 'Source Code Pro, monospace', color: '#222', letterSpacing: '0.5px', whiteSpace: 'pre' }}>
+              {showDeleted ? (
+                <span style={{ textDecoration: 'line-through', color: '#888' }}>{animatedText}</span>
+              ) : (
+                <>
+                  {displayedText}
+                  <span style={{ opacity: showCursor ? 1 : 0 }}>|</span>
+                </>
+              )}
             </p>
             <p className="mt-4 text-base md:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
               Please log in to your account to continue.
@@ -146,9 +200,8 @@ function Login() {
               htmlFor="username"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
                 ${(credentials.username || usernameFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-                ${errors.username ? '!top-2 !text-xs !text-black !translate-y-0' : ''}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: errors.username ? '-0.5rem' : '-0.25rem' }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: '-0.25rem' }}
             >
               Enter Username
             </label>
@@ -186,9 +239,8 @@ function Login() {
               htmlFor="password"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
                 ${(credentials.password || passwordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
-                ${errors.password ? '!top-2 !text-xs !text-black !translate-y-0' : ''}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: errors.password ? '-0.5rem' : '-0.25rem' }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: '-0.25rem' }}
             >
               Enter Password
             </label>
