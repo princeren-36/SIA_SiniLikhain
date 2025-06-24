@@ -146,8 +146,9 @@ function Login() {
               htmlFor="username"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
                 ${(credentials.username || usernameFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+                ${errors.username ? '!top-2 !text-xs !text-black !translate-y-0' : ''}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: errors.username ? '-0.5rem' : '-0.25rem' }}
             >
               Enter Username
             </label>
@@ -185,8 +186,9 @@ function Login() {
               htmlFor="password"
               className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
                 ${(credentials.password || passwordFocused) ? 'top-2 text-xs text-black translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm text-black'}
+                ${errors.password ? '!top-2 !text-xs !text-black !translate-y-0' : ''}
               `}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10 }}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, zIndex: 10, marginTop: errors.password ? '-0.5rem' : '-0.25rem' }}
             >
               Enter Password
             </label>
