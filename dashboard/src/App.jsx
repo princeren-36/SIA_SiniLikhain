@@ -6,7 +6,7 @@ import AddProduct from "./artisan/AddProduct";
 import AboutBuyer from "./buyer/AboutBuyer";
 import AboutArtisan from "./artisan/AboutArtisan";
 import Register from "./pages/Register";
-import Admin from "./pages/Admin";
+import Admin from "./admin/Admin";
 import Buyer from "./buyer/Buyer";
 import Artisan from "./artisan/Artisan";
 import Cart from "./buyer/Cart";
