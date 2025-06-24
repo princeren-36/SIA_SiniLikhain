@@ -96,7 +96,7 @@ function RegisterArtisan() {
   return (
     <div className="poppins-font">
       <div
-        className="flex h-screen items-center justify-center bg-cover bg-center flex-row"
+        className="flex h-screen items-center justify-center bg-cover bg-center flex-row relative"
         style={{
           backgroundImage: `url(${signupImg})`,
           fontFamily: 'Poppins, Verdana, monospace',
@@ -105,7 +105,8 @@ function RegisterArtisan() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="absolute inset-0 bg-black/60 z-0" />
+        {/* Blurred overlay */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-0" />
         <button
           className="fixed top-8 left-8 z-30 bg-white/80 hover:bg-white text-black font-semibold px-4 py-2 rounded-full shadow border border-gray-300 transition-colors duration-200"
           style={{ fontFamily: 'Poppins, Verdana, monospace' }}

@@ -96,7 +96,7 @@ function RegisterBuyer() {
   return (
     <div className="font-poppins poppins-font">
       <div
-        className="flex h-screen items-center justify-center bg-cover bg-center flex-row font-poppins"
+        className="flex h-screen items-center justify-center bg-cover bg-center flex-row font-poppins relative"
         style={{
           backgroundImage: `url(${signupImg})`,
           backgroundSize: 'cover',
@@ -104,7 +104,8 @@ function RegisterBuyer() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="absolute inset-0 bg-black/60 z-0 font-poppins" />
+        {/* Blurred overlay */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-0" />
         <button
           className="fixed top-8 left-8 z-30 bg-white/80 hover:bg-white text-black font-semibold px-4 py-2 rounded-full shadow border border-gray-300 transition-colors duration-200 font-poppins"
           onClick={() => navigate('/register')}
