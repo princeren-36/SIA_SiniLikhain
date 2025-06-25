@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import AdminDashboard from './AdminDashboard';
 import AdminSidebar from './AdminSidebar';
+import { Snackbar, Alert } from '@mui/material';
 
 ChartJS.register(
   CategoryScale,
@@ -36,6 +37,7 @@ function Admin() {
     datasets: []
   });
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') !== 'light');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
@@ -118,9 +120,9 @@ function Admin() {
   };
 
   const handleLogout = () => {
-    if (!window.confirm('Do you want to logout?')) return;
     localStorage.removeItem("user");
-    navigate("/Login");
+    setSnackbarOpen(true);
+    setTimeout(() => navigate("/Login"), 1200);
   };
 
   const handleEditClick = (user) => {
@@ -467,6 +469,16 @@ function Admin() {
           </div>
         )}
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1200}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>
+          Successfully logged out!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

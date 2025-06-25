@@ -1,32 +1,9 @@
-import React, { useState } from 'react';
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import loginImg from '../images/login.jpg';
 
 const logo = '/circular-logo.png';
-
-function GoogleLoginButton() {
-  const { loginWithRedirect, isLoading } = useAuth0();
-  return (
-    <button
-      className="w-full flex items-center justify-center bg-white border border-black hover:bg-gray-100 text-black font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide gap-2"
-      style={{ fontFamily: 'Poppins, Verdana, monospace' }}
-      onClick={() => loginWithRedirect({ connection: 'google-oauth2' })}
-      disabled={isLoading}
-    >
-      <svg width="24" height="24" viewBox="0 0 48 48" className="mr-2" style={{ display: 'inline' }}>
-        <g>
-          <path fill="#4285F4" d="M24 9.5c3.54 0 6.36 1.22 8.3 2.98l6.18-6.18C34.64 2.7 29.74 0 24 0 14.82 0 6.88 5.8 2.88 14.1l7.2 5.6C12.18 13.18 17.62 9.5 24 9.5z"/>
-          <path fill="#34A853" d="M46.1 24.5c0-1.64-.14-3.22-.4-4.74H24v9.04h12.4c-.54 2.92-2.18 5.4-4.66 7.08l7.2 5.6C43.12 37.2 46.1 31.4 46.1 24.5z"/>
-          <path fill="#FBBC05" d="M10.08 28.7c-1.08-3.22-1.08-6.68 0-9.9l-7.2-5.6C.98 17.38 0 20.6 0 24c0 3.4.98 6.62 2.88 9.8l7.2-5.6z"/>
-          <path fill="#EA4335" d="M24 48c6.48 0 11.92-2.14 15.9-5.8l-7.2-5.6c-2.02 1.36-4.6 2.16-8.7 2.16-6.38 0-11.82-3.68-14.92-9.1l-7.2 5.6C6.88 42.2 14.82 48 24 48z"/>
-        </g>
-      </svg>
-      Sign in with Google
-    </button>
-  );
-}
 
 function Login() {
   const navigate = useNavigate();
@@ -85,6 +62,14 @@ function Login() {
     return () => clearTimeout(typingTimeout);
   }, [charIndex, isDeleting, pause, animatedText, showDeleted]);
 
+  // Prefill username if lastUsername exists in localStorage
+  React.useEffect(() => {
+    const lastUsername = localStorage.getItem('lastUsername');
+    if (lastUsername) {
+      setCredentials((prev) => ({ ...prev, username: lastUsername }));
+    }
+  }, []);
+
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
     setErrors(prev => ({ ...prev, [e.target.name]: '' }));
@@ -113,8 +98,10 @@ function Login() {
       const user = response.data.user;
       if (rememberMe) {
         localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("lastUsername", credentials.username); // Save last used username only if Remember Me is checked
       } else {
         sessionStorage.setItem("user", JSON.stringify(user));
+        localStorage.removeItem("lastUsername"); // Remove lastUsername if Remember Me is not checked
       }
 
       console.log('Logged in user:', user);
@@ -138,13 +125,6 @@ function Login() {
   };
 
   return (
-    <Auth0Provider
-      domain="YOUR_AUTH0_DOMAIN"
-      clientId="YOUR_AUTH0_CLIENT_ID"
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-      }}
-    >
       <div
         className="relative min-h-screen flex items-center justify-center bg-cover bg-center poppins-font"
         style={{
@@ -292,7 +272,6 @@ function Login() {
           >
             Login
           </button>
-          <GoogleLoginButton />
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
             Don't have an account?{' '}
             <span
@@ -305,7 +284,6 @@ function Login() {
           </p>
         </div>
       </div>
-    </Auth0Provider>
   );
 }
 
