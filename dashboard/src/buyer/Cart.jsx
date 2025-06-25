@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../utils/auth";
 
 function Cart() {
   const [cart, setCart] = useState([]);
@@ -66,7 +67,7 @@ function Cart() {
   };
 
   const handleBuy = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getCurrentUser();
     if (!user) {
       setLoginPromptOpen(true);
       return;
