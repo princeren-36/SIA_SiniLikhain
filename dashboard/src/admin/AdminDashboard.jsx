@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGaugeHigh, faUser, faPalette, faBoxesStacked, faCheck, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { Line } from 'react-chartjs-2';
@@ -61,6 +61,20 @@ function AdminDashboard({ users, products, buyers, artisans, chartData, darkMode
     ]
   };
 
+  // Typing animation for subtitle
+  const subtitleFull = "Artisan-made. Culture-inspired.";
+  const [subtitle, setSubtitle] = useState("");
+  useEffect(() => {
+    setSubtitle("");
+    let i = 0;
+    const interval = setInterval(() => {
+      setSubtitle(subtitleFull.slice(0, i + 1));
+      i++;
+      if (i === subtitleFull.length) clearInterval(interval);
+    }, 40);
+    return () => clearInterval(interval);
+  }, [darkMode]);
+
   return (
     <div className={`space-y-8 poppins-font transition-colors duration-300 ${darkMode ? 'bg-[#18181b] text-gray-100' : ''}`}>
       <div className="flex items-center justify-between mb-4">
@@ -68,15 +82,15 @@ function AdminDashboard({ users, products, buyers, artisans, chartData, darkMode
           <FontAwesomeIcon icon={faGaugeHigh} className={`h-8 w-8 drop-shadow-md ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
           Admin Dashboard
         </h2>
-        <span className={`text-lg hidden md:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Artisan-made. Culture-inspired.</span>
+        <span className={`text-lg hidden md:block ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>{subtitle}<span className="border-r-2 border-gray-400 ml-1 animate-pulse" style={{visibility: subtitle.length < subtitleFull.length ? 'visible' : 'hidden'}}>&nbsp;</span></span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${darkMode ? 'bg-[#23232b] border-blue-800' : 'bg-gradient-to-br from-blue-100 to-blue-50 border-blue-500'}`}> 
           <div className="absolute right-4 top-4 opacity-10 text-7xl"><FontAwesomeIcon icon={faUser} /></div>
           <div className="flex flex-col gap-2 z-10 relative">
             <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Users</span>
-            <div className={`text-4xl font-extrabold ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>{users.length}</div>
-            <div className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{Math.round(buyers.length)} buyer/s, {Math.round(artisans.length)} artisan/s</div>
+            <div className={`text-4xl font-extrabold ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>{Math.round(buyers.length) + Math.round(artisans.length) + 1}</div>
+            <div className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{Math.round(buyers.length)} buyer/s, {Math.round(artisans.length)} artisan/s, 1 admin</div>
           </div>
         </div>
         <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${darkMode ? 'bg-[#23232b] border-amber-800' : 'bg-gradient-to-br from-amber-100 to-amber-50 border-amber-500'}`}> 
@@ -87,14 +101,35 @@ function AdminDashboard({ users, products, buyers, artisans, chartData, darkMode
             <div className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{Math.round(products.filter(p => p.approved).length)} approved, {Math.round(products.filter(p => !p.approved).length)} pending</div>
           </div>
         </div>
-        <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${darkMode ? 'bg-[#23232b] border-green-800' : 'bg-gradient-to-br from-green-100 to-green-50 border-green-500'}`}> 
-          <div className="absolute right-4 top-4 opacity-10 text-7xl"><FontAwesomeIcon icon={faCheck} /></div>
-          <div className="flex flex-col gap-2 z-10 relative">
-            <span className={`font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Approval Rate</span>
-            <div className={`text-4xl font-extrabold ${darkMode ? 'text-green-400' : 'text-green-700'}`}>{products.length > 0 ? Math.round((products.filter(p => p.approved).length / products.length) * 100) : 0}%</div>
-            <div className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{products.filter(p => p.approved).length} of {products.length} products</div>
-          </div>
-        </div>
+        {(() => {
+          const approvalRate = products.length > 0 ? (products.filter(p => p.approved).length / products.length) * 100 : 0;
+          const isLow = approvalRate < 50;
+          const borderColor = isLow
+            ? (darkMode ? 'border-red-800' : 'border-red-500')
+            : (darkMode ? 'border-green-800' : 'border-green-500');
+          const bgColor = isLow
+            ? (darkMode ? 'bg-[#2b2323]' : 'bg-gradient-to-br from-red-100 to-red-50')
+            : (darkMode ? 'bg-[#23232b]' : 'bg-gradient-to-br from-green-100 to-green-50');
+          const rateColor = isLow
+            ? (darkMode ? 'text-red-400' : 'text-red-700')
+            : (darkMode ? 'text-green-400' : 'text-green-700');
+          const labelColor = isLow
+            ? (darkMode ? 'text-red-300' : 'text-red-600')
+            : (darkMode ? 'text-gray-300' : 'text-gray-600');
+          const countColor = isLow
+            ? (darkMode ? 'text-red-400' : 'text-red-700')
+            : (darkMode ? 'text-gray-400' : 'text-gray-500');
+          return (
+            <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${bgColor} ${borderColor}`}> 
+              <div className="absolute right-4 top-4 opacity-10 text-7xl"><FontAwesomeIcon icon={faCheck} /></div>
+              <div className="flex flex-col gap-2 z-10 relative">
+                <span className={`font-semibold ${labelColor}`}>Approval Rate</span>
+                <div className={`text-4xl font-extrabold ${rateColor}`}>{Math.round(approvalRate)}%</div>
+                <div className={`text-sm mt-1 ${countColor}`}>{products.filter(p => p.approved).length} of {products.length} products</div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
       <div className={`p-8 rounded-2xl shadow-xl mb-6 border ${darkMode ? 'bg-[#23232b] border-blue-900' : 'bg-white border-blue-100'}`}>
         <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>

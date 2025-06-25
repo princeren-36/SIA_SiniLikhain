@@ -88,7 +88,10 @@ function Home() {
         </h1>
         <a
           href="/aboutbuyer"
-          className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black transition-colors duration-200"
+          className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black hover:!bg-black hover:!text-white transition-colors duration-200 group"
+          style={{ transition: "color 0.2s, background 0.2s" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "")}
         >
           VIEW MORE
         </a>

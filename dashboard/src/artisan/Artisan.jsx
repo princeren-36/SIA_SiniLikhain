@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./NavbarArtisan";
 import logo from "../images/homepage.jpg";
 import React, { useState } from "react";
-import "../style/Home.css";
 
 // Baybayin for: si, ni, li, khai, n
 const baybayin = [
@@ -89,7 +88,10 @@ function Artisan() {
         </h1>
         <a
           href="/aboutartisan"
-          className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black transition-colors duration-200"
+          className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black hover:!bg-black hover:!text-white transition-colors duration-200 group"
+          style={{ transition: "color 0.2s, background 0.2s" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "")}
         >
           VIEW MORE
         </a>

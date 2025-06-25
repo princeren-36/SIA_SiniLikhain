@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NavbarBuyer from "./NavbarBuyer";
 import axios from 'axios';
+import cartBg from '../images/2.jpg';
 
 function Buyer() {
   const [products, setProducts] = useState([]);
@@ -40,6 +41,7 @@ function Buyer() {
     }
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event("cart-updated")); // live update for navbar
     setSnackbarOpen(true);
     setAddedProductId(product._id);
     setTimeout(() => setAddedProductId(null), 1200);
@@ -61,7 +63,16 @@ function Buyer() {
   return (
     <>
       <NavbarBuyer />
-      <div className="p-4 min-h-screen" style={{ background: 'white' }}>
+      <div className="p-4 min-h-screen" style={{ background: 'white', overflow: 'hidden' }}>
+        {/* Image section with message */}
+        <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-8 rounded-2xl overflow-hidden shadow-lg" style={{height: '320px', maxHeight: '400px', marginTop: '-1rem'}}>
+          <img src={cartBg} alt="Shopping Cart Background" className="w-full h-full object-cover opacity-80" style={{height: '100%'}} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-wider drop-shadow-lg">OUR PRODUCTS</h1>
+            <p className="text-base md:text-lg text-white font-mono drop-shadow-lg text-center px-4">Crafted with intention, each piece tells a story—handmade goods that honor tradition, design, and soul.</p>
+          </div>
+        </div>
+        <div className="h-18" />
         <div className="flex w-full items-start gap-8">
           {/* Product grid on the left */}
           <div className="flex-1">
@@ -95,8 +106,16 @@ function Buyer() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
               {filteredProducts.map((product) => (
                 <div key={product._id} className="w-[320px] flex flex-col items-center shadow-none rounded-none relative" style={{ boxShadow: 'none', background: 'white' }}>
-                  {/* Image card, visually separated */}
-                  <div className="w-full flex justify-center pt-8 pb-4 min-h-[180px]" style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
+                  {/* Image card, visually separated, now clickable for modal */}
+                  <div
+                    className="w-full flex justify-center pt-8 pb-4 min-h-[180px] cursor-pointer"
+                    style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                    onClick={() => handleOpenProduct(product)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`View details for ${product.name}`}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleOpenProduct(product); }}
+                  >
                     <img
                       src={`http://localhost:5000${product.image}`}
                       alt={product.name}
@@ -105,12 +124,12 @@ function Buyer() {
                     />
                   </div>
                   {/* Product info card with borders */}
-                  <div className="w-full border-t border-b border-l border-r border-[#bfa181]" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                    <div className="text-center py-4 px-2 border-b border-[#bfa181]">
+                  <div className="w-full border-t border-b border-l border-r" style={{ borderColor: '#5e503f', borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                    <div className="text-center py-4 px-2 border-b" style={{ borderColor: '#5e503f' }}>
                       <span className="font-mono text-lg font-semibold tracking-wider text-black uppercase letter-spacing-wider">{product.name}</span>
                     </div>
-                    <div className="flex flex-row border-b border-[#bfa181] relative">
-                      <div className="flex items-center justify-center border-r border-[#bfa181] py-3 w-1/2">
+                    <div className="flex flex-row border-b relative" style={{ borderColor: '#5e503f' }}>
+                      <div className="flex items-center justify-center border-r py-3 w-1/2" style={{ borderColor: '#5e503f' }}>
                         <span className="font-mono text-base text-black">₱{Number(product.price).toFixed(2)}</span>
                       </div>
                       <div className="w-1/2 relative flex items-center justify-center">
@@ -135,7 +154,6 @@ function Buyer() {
               ))}
             </div>
           </div>
-          {/* Cart block on the right, not a sidebar, not a card */}
           <div className="max-w-xs w-full">
             <div className="flex items-center justify-between border-b border-[#bfa181] pb-2 mb-2">
               <span className="font-mono text-xl font-semibold tracking-widest text-black">CART</span>
@@ -170,14 +188,16 @@ function Buyer() {
             {cart.length > 0 && (
               <div className="flex gap-2 mt-2">
                 <button
-                  className="w-1/2 border border-[#bfa181] bg-white text-[#bfa181] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#f5eee6] transition-colors duration-150"
+                  className="w-1/2 border border-[#bfa181] bg-white text-[#bfa181] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#f5eee6] transition-colors duration-150 cursor-pointer"
                   style={{ letterSpacing: 2 }}
+                  onClick={() => window.location.href = '/cart'}
                 >
                   VIEW CART
                 </button>
                 <button
                   className="w-1/2 border border-[#bfa181] bg-white text-[#bfa181] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#f5eee6] transition-colors duration-150"
                   style={{ letterSpacing: 2 }}
+                  onClick={() => window.location.href = '/cart#checkout'}
                 >
                   CHECKOUT
                 </button>
@@ -188,7 +208,7 @@ function Buyer() {
       </div>
       {/* Dialog */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', background: 'rgba(0,0,0,0.10)'}}>
           <div className="bg-white rounded-2xl shadow-2xl max-w-xs w-full p-6 relative">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl font-bold"
@@ -200,36 +220,12 @@ function Buyer() {
             <img
               src={`http://localhost:5000${selectedProduct.image}`}
               alt={selectedProduct.name}
-              className="buyer-dialog-img-large w-full h-48 object-cover rounded-lg mb-4"
+              className="w-full h-48 object-cover rounded-lg mb-4"
             />
-            <div className="buyer-dialog-name-small font-semibold text-lg text-black mb-1">{selectedProduct.name}</div>
-            <div className="buyer-dialog-price-small text-black font-bold mb-2">₱{selectedProduct.price}</div>
-            <div className="mb-2">
-              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-              <input
-                id="quantity"
-                type="number"
-                value={quantity}
-                min={1}
-                max={selectedProduct.quantity}
-                onChange={e => setQuantity(
-                  Math.max(1, Math.min(selectedProduct.quantity, parseInt(e.target.value) || 1))
-                )}
-                className="buyer-dialog-qty w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-              />
-            </div>
-            <div className="buyer-dialog-available-small text-xs text-gray-500 mb-2">Available: {selectedProduct.quantity}</div>
-            <button
-              className="buyer-dialog-add-btn w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg mb-2 disabled:opacity-50"
-              disabled={quantity > selectedProduct.quantity}
-              onClick={() => {
-                handleAddToCart(selectedProduct, quantity);
-                setSelectedProduct(null);
-              }}
-            >
-              Add to Cart
-            </button>
-            {/* Ratings (read-only) */}
+            <div className="font-semibold text-lg text-black mb-1 text-center">{selectedProduct.name}</div>
+            <div className="text-black font-bold mb-2 text-center">₱{selectedProduct.price}</div>
+            <div className="text-xs text-gray-500 mb-2 text-center">Available: {selectedProduct.quantity}</div>
+            {/* Ratings (read-only average) */}
             <div className="flex items-center justify-center mb-1">
               <span className="text-yellow-400 mr-1">★</span>
               <span className="text-sm text-black font-medium">
@@ -241,7 +237,7 @@ function Buyer() {
                 ({selectedProduct.ratings ? selectedProduct.ratings.length : 0})
               </span>
             </div>
-            {/* User rating (simple clickable stars) */}
+            {/* User rating (clickable stars) */}
             <div className="flex items-center justify-center mb-2">
               <span className="text-sm text-gray-700 mr-2">Your Rating:</span>
               {[1,2,3,4,5].map(star => {

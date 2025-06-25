@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar({ showLinks = true }) {
@@ -6,6 +6,7 @@ function Navbar({ showLinks = true }) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [hovered, setHovered] = useState("");
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [cartCount, setCartCount] = useState(0);
   const navRefs = useRef({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,8 +34,19 @@ function Navbar({ showLinks = true }) {
   const navLinks = [
     { to: "/home", label: "Home" },
     { to: "/buyer", label: "Products" },
-    { to: "/cart", label: "Cart" },
     { to: "/aboutbuyer", label: "About" },
+    { to: "/cart", label: (
+      <span className="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-9V6a2 2 0 10-4 0v3" />
+        </svg>
+        {cartCount > 0 && (
+          <span className="absolute -top-2 -right-2 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] flex items-center justify-center" style={{fontSize:'0.75rem',lineHeight:'1rem',background:'#5e503f'}}>
+            {cartCount}
+          </span>
+        )}
+      </span>
+    ), isIcon: true },
   ];
 
   const updateUnderline = (key) => {
@@ -64,6 +76,21 @@ function Navbar({ showLinks = true }) {
     if (activeKey) updateUnderline(activeKey); else clearUnderline();
   };
 
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cart.reduce((sum, item) => sum + item.quantity, 0));
+    };
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    // Listen for custom event from Buyer.jsx
+    window.addEventListener("cart-updated", updateCartCount);
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cart-updated", updateCartCount);
+    };
+  }, []);
+
   React.useEffect(() => {
     const activeKey = navLinks.find(l => location.pathname === l.to)?.to || (location.pathname === "/login" ? "logout" : "");
     if (activeKey) updateUnderline(activeKey); else clearUnderline();
@@ -71,7 +98,7 @@ function Navbar({ showLinks = true }) {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black/60 backdrop-blur-md" style={{position:'sticky'}}>
+      <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black backdrop-blur-md" style={{position:'sticky'}}>
         <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl" style={{ fontFamily: 'Source Code Pro, monospace' }}>SiniLikhain</div>
         {showLinks && (
           <div className="flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
@@ -81,11 +108,12 @@ function Navbar({ showLinks = true }) {
                 to={link.to}
                 ref={el => navRefs.current[link.to] = el}
                 className={
-                  `px-4 py-1 transition-colors duration-150 relative z-10 ` +
+                  `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
                   (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
                 }
                 style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
                 onMouseEnter={() => handleMouseEnter(link.to)}
+                aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
               >
                 {link.label}
               </Link>
@@ -94,21 +122,22 @@ function Navbar({ showLinks = true }) {
               ref={el => navRefs.current.logout = el}
               onClick={handleLogoutClick}
               className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 ` +
-                (location.pathname === "/login" ? "text-white" : "text-[#ccc9dc]")
+                (location.pathname === "/login" ? "text-white bg-black" : "text-[#ccc9dc]")
               }
-              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600 }}
+              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, background: location.pathname === "/login" ? '#000' : 'transparent', color: location.pathname === "/login" ? '#fff' : '#ccc9dc' }}
               onMouseEnter={() => handleMouseEnter("logout")}
             >
               {user ? "Logout" : "Login"}
             </button>
             {/* Underline bar */}
             <span
-              className="absolute bottom-[-8px] h-[3px] bg-[#d2a47d] transition-all duration-200"
+              className="absolute bottom-[-8px] h-[3px] transition-all duration-200"
               style={{
                 left: underlineStyle.left,
                 width: underlineStyle.width,
                 opacity: underlineStyle.opacity,
                 pointerEvents: 'none',
+                background: '#5e503f',
               }}
             />
           </div>
@@ -125,8 +154,8 @@ function Navbar({ showLinks = true }) {
             </div>
             <div className="mb-5 text-[#1b2a41]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you sure you want to log out of your account?</div>
             <div className="flex justify-end gap-3">
-              <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] hover:bg-[#324a5f] hover:text-white text-[#1b2a41] font-semibold shadow-sm transition" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
-              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg bg-red-400 hover:bg-red-500 text-white font-semibold shadow-sm transition" style={{ fontFamily: 'Source Code Pro, monospace' }}>Logout</button>
+              <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
+              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}>Logout</button>
             </div>
           </div>
         </div>

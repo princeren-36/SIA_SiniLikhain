@@ -18,14 +18,14 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
       className={`${sidebarOpen ? 'w-64' : 'w-20'} transition-all duration-300 shrink-0 shadow-lg font-poppins flex flex-col h-full`}
       style={{
         background: darkMode ? '#181a1b' : '#1b2a41',
-        color: darkMode ? '#e0e0e0' : '#ccc9dc',
+        color: '#fff',
         minHeight: '100vh',
         boxShadow: '2px 0 8px rgba(0,0,0,0.08)',
       }}
     >
       <div className="p-4 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-bold text-xl" style={{ letterSpacing: '1px', color: darkMode ? '#e0e0e0' : '#fff' }}>SiniLikhain Admin Panel</h1>
+          <h1 className="font-bold text-xl" style={{ letterSpacing: '1px', color: '#fff' }}>SiniLikhain Admin Panel</h1>
           <button
             aria-label="Toggle dark mode"
             onClick={toggleDarkMode}
@@ -43,7 +43,7 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
                 className={`w-full flex items-center p-2 rounded-lg transition-colors duration-150 ${view === item.value ? '' : ''}`}
                 style={{
                   background: view === item.value ? 'rgba(30,64,175,0.18)' : 'transparent',
-                  color: view === item.value ? '#60a5fa' : (darkMode ? '#e0e0e0' : '#ccc9dc'),
+                  color: view === item.value ? '#60a5fa' : '#fff',
                   fontWeight: view === item.value ? 600 : 500,
                   boxShadow: view === item.value ? '0 2px 8px rgba(30,64,175,0.08)' : 'none',
                 }}
@@ -51,15 +51,15 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
                 <FontAwesomeIcon
                   icon={item.icon}
                   className="w-5 h-5"
-                  style={{ color: view === item.value ? '#60a5fa' : (darkMode ? '#e0e0e0' : '#ccc9dc'), transition: 'color 0.2s' }}
+                  style={{ color: view === item.value ? '#60a5fa' : '#fff', transition: 'color 0.2s' }}
                 />
                 <span className={`ml-3 ${!sidebarOpen && 'hidden'}`}>{item.label}</span>
               </button>
             </li>
           ))}
         </ul>
-        <div className="mb-4 text-xs text-center select-none" style={{ color: darkMode ? '#bdbdbd' : '#a0aec0' }}>
-          Signed in as <span className="font-semibold" style={{ color: darkMode ? '#fff' : '#f3f4f6' }}>admin@sinilikhain.com</span>
+        <div className="mb-4 text-xs text-center select-none" style={{ color: '#fff' }}>
+          Signed in as <span className="font-semibold" style={{ color: '#fff' }}>admin@sinilikhain.com</span>
         </div>
         <div className="mt-auto">
           <button
@@ -67,13 +67,13 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
             className="w-full flex items-center p-2 rounded-lg transition-colors duration-150"
             style={{
               background: 'transparent',
-              color: darkMode ? '#e0e0e0' : '#ccc9dc',
+              color: '#fff',
               fontWeight: 600,
             }}
             onMouseOver={e => e.currentTarget.style.background = 'rgba(30,64,175,0.12)'}
             onMouseOut={e => e.currentTarget.style.background = 'transparent'}
           >
-            <FontAwesomeIcon icon={faSignOut} className="w-5 h-5" style={{ color: darkMode ? '#e57373' : '#ccc9dc' }} />
+            <FontAwesomeIcon icon={faSignOut} className="w-5 h-5" style={{ color: '#fff' }} />
             <span className={`ml-3 ${!sidebarOpen && 'hidden'}`}>Logout</span>
           </button>
         </div>
@@ -87,13 +87,15 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
             <div className="flex gap-4 w-full">
               <button
                 onClick={handleConfirmLogout}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg shadow"
+                className="flex-1 font-semibold py-2 rounded-lg shadow"
+                style={{ background: '#386641', color: '#fff', fontWeight: 600, boxShadow: '0 1px 4px rgba(0,0,0,0.04)', border: 'none', outline: 'none' }}
               >
                 Yes
               </button>
               <button
                 onClick={handleCancelLogout}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 rounded-lg shadow"
+                className="flex-1 font-semibold py-2 rounded-lg shadow"
+                style={{ background: '#f5efe6', color: '#222', fontWeight: 600, boxShadow: '0 1px 4px rgba(0,0,0,0.04)', border: 'none', outline: 'none' }}
               >
                 No
               </button>

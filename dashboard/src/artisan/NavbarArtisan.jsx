@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import "../style/Navbar.css";
 
 function NavbarArtisan({ showLinks = true }) {
   const [openDialog, setOpenDialog] = useState(false);
@@ -71,7 +70,7 @@ function NavbarArtisan({ showLinks = true }) {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 fixed top-0 left-0 right-0 z-30 bg-black/60 backdrop-blur-md" style={{position:'relative'}}>
+      <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black backdrop-blur-md" style={{position:'sticky'}}>
         <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl" style={{ fontFamily: 'Source Code Pro, monospace' }}>SiniLikhain</div>
         {showLinks && (
           <div className="flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
@@ -81,10 +80,11 @@ function NavbarArtisan({ showLinks = true }) {
                 to={link.to}
                 ref={el => navRefs.current[link.to] = el}
                 className={
-                  `px-4 py-1 transition-colors duration-150 relative z-10 ` +
-                  (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
+                  `px-4 py-1 transition-colors duration-150 relative z-10 outline-none ring-0 focus:outline-none focus:ring-0 active:outline-none active:ring-0 ` +
+                  (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]") +
+                  " hover:text-white focus:text-white active:text-white"
                 }
-                style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500, boxShadow: 'none', outline: 'none' }}
                 onMouseEnter={() => handleMouseEnter(link.to)}
               >
                 {link.label}
@@ -93,22 +93,21 @@ function NavbarArtisan({ showLinks = true }) {
             <button
               ref={el => navRefs.current.logout = el}
               onClick={handleLogoutClick}
-              className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 ` +
-                (location.pathname === "/login" ? "text-white" : "text-[#ccc9dc]")
-              }
-              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600 }}
+              className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 !bg-black text-white rounded-lg shadow focus:text-white active:text-white outline-none ring-0 focus:outline-none focus:ring-0 active:outline-none active:ring-0`}
+              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, backgroundColor: '#000', boxShadow: 'none', outline: 'none' }}
               onMouseEnter={() => handleMouseEnter("logout")}
             >
               {user ? "Logout" : "Login"}
             </button>
             {/* Underline bar */}
             <span
-              className="absolute bottom-[-8px] h-[3px] bg-[#d2a47d] transition-all duration-200"
+              className="absolute bottom-[-8px] h-[3px] transition-all duration-200"
               style={{
                 left: underlineStyle.left,
                 width: underlineStyle.width,
                 opacity: underlineStyle.opacity,
                 pointerEvents: 'none',
+                background: '#5e503f',
               }}
             />
           </div>
@@ -125,8 +124,8 @@ function NavbarArtisan({ showLinks = true }) {
             </div>
             <div className="mb-5 text-[#1b2a41]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you sure you want to log out of your account?</div>
             <div className="flex justify-end gap-3">
-              <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] hover:bg-[#324a5f] hover:text-white text-[#1b2a41] font-semibold shadow-sm transition" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
-              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg bg-red-400 hover:bg-red-500 text-white font-semibold shadow-sm transition" style={{ fontFamily: 'Source Code Pro, monospace' }}>Logout</button>
+             <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
+              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none', background: '#660708' }}>Logout</button>
             </div>
           </div>
         </div>

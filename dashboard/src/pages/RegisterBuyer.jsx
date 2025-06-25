@@ -278,6 +278,7 @@ function RegisterBuyer() {
           </div>
           <button
             className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide"
+            style={{ background: '#000', color: '#fff', border: 'none', outline: 'none' }}
             onClick={handleRegister}
           >
             Register

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, TextField, Typography, Grid, Box, Dialog, DialogTitle, DialogContent, DialogActions, Fab, MenuItem } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import NavbarArtisan from "./NavbarArtisan";
-import Rating from "@mui/material/Rating";
-import "../style/AddProduct.css";
+import cartBg from '../images/2.jpg';
 
 function AddProduct() {
   const [products, setProducts] = useState([]);
@@ -115,7 +112,7 @@ function AddProduct() {
       } else {
         const res = await axios.post("http://localhost:5000/products", data);
         setProducts((prev) => [...prev, res.data]);
-        alert("Product added successfully!");
+        alert("The piece is in place. Await the gatekeeper's glance before it takes its place.");
       }
       setEditId(null);
       setFormData({ name: "", price: "", image: null, quantity: 1, category: "" });
@@ -179,205 +176,215 @@ function AddProduct() {
     setErrors({});
   };
 
+  // Simple average rating calculation for display
+  const getAverageRating = (ratings) => {
+    if (!ratings || !ratings.length) return 0;
+    const sum = ratings.reduce((acc, r) => acc + r.value, 0);
+    return (sum / ratings.length).toFixed(1);
+  };
+
   return (
     <>
       <NavbarArtisan />
-      <Box className="addproduct-main" p={4}>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h4" className="addproduct-title">
-            My Products
-          </Typography>
-          <Box display="flex" alignItems="center">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              className="addproduct-add-btn"
-              onClick={handleOpenAdd}
-              sx={{ boxShadow: "none", textTransform: "none" }}
-            >
-              Add Product
-            </Button>
-          </Box>
-        </Box>
+      {/* Image section at the top, similar to Cart.jsx, with correct overflow hidden */}
+      <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-8 rounded-2xl shadow-lg overflow-hidden max-w-full" style={{height: '320px', maxHeight: '400px', marginTop: '-1rem'}}>
+        <img src={cartBg} alt="Products Background" className="w-full h-full object-cover opacity-80 select-none pointer-events-none" style={{height: '100%', maxWidth: '100%'}} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+          <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-wider drop-shadow-lg">MY PRODUCTS</h1>
+          <p className="text-base md:text-lg text-white font-mono drop-shadow-lg text-center px-4">Showcase your creations and manage your artisan shop here.</p>
+        </div>
+      </div>
+      <div className="addproduct-main p-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold addproduct-title">My Products</h2>
+          <button
+            className="addproduct-add-btn flex items-center gap-2 bg-black hover:bg-gray-900 text-white px-4 py-2 rounded-lg shadow transition border border-black"
+            style={{ backgroundColor: '#000', color: '#fff', borderColor: '#000' }}
+            onClick={handleOpenAdd}
+          >
+            <span className="text-xl font-bold">+</span> Add Product
+          </button>
+        </div>
 
-        <Dialog open={openForm} onClose={handleCloseForm} maxWidth="xs" fullWidth>
-          <DialogTitle>{editId ? "Edit Product" : "Add Product"}</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              fullWidth
-              className="addproduct-input"
-              margin="normal"
-              error={!!errors.name}
-              helperText={errors.name}
-            />
-            <TextField
-              label="Price"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              fullWidth
-              className="addproduct-input"
-              margin="normal"
-              error={!!errors.price}
-              helperText={errors.price}
-            />
-            <TextField
-              label="Quantity"
-              name="quantity"
-              type="number"
-              value={formData.quantity}
-              onChange={handleChange}
-              fullWidth
-              className="addproduct-input"
-              margin="normal"
-              inputProps={{ min: 1 }}
-              error={!!errors.quantity}
-              helperText={errors.quantity}
-            />
-            <TextField
-              select
-              label="Category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              fullWidth
-              className="addproduct-input"
-              margin="normal"
-              sx={{ marginTop: 2 }}
-              error={!!errors.category}
-              helperText={errors.category}
-            >
-              <MenuItem value="">Select Category</MenuItem>
-              <MenuItem value="Accessories">Accessories</MenuItem>
-              <MenuItem value="Clothing">Clothing</MenuItem>
-              <MenuItem value="Home Decor">Home Decor</MenuItem>
-              <MenuItem value="Art">Art</MenuItem>
-              <MenuItem value="Other">Other</MenuItem>
-            </TextField>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImage}
-              className="addproduct-file-input"
-              style={{ marginTop: '16px' }}
-            />
-            {!!errors.image && (
-              <Typography color="error" variant="caption" sx={{ display: 'block', mt: 1 }}>
-                {errors.image}
-              </Typography>
-            )}
-            {preview && (
-              <img src={preview} alt="Preview" className="addproduct-preview-img" style={{ marginTop: '16px', maxWidth: '100%', height: 'auto' }} />
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              className="addproduct-submit-btn"
-              onClick={handleSubmit}
-            >
-              {editId ? "Update" : "Submit"}
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              className="addproduct-cancel-btn"
-              onClick={handleCloseForm}
-            >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* Add/Edit Product Modal */}
+        {openForm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Blurry overlay */}
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0"></div>
+            <div className="bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-md border-t-4 border-blue-800 animate-fadeIn relative flex flex-col items-center z-10" style={{minHeight: 'unset', maxHeight: '90vh'}}>
+              <button className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl" onClick={handleCloseForm}>&times;</button>
+              <h3 className="text-xl font-bold mb-4">{editId ? "Edit Product" : "Add Product"}</h3>
+              <form onSubmit={e => { e.preventDefault(); handleSubmit(); }} className="w-full flex flex-col items-center">
+                <div className="mb-3 w-full">
+                  <label className="block font-semibold mb-1">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
+                </div>
+                <div className="mb-3 w-full">
+                  <label className="block font-semibold mb-1">Price</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.price && <div className="text-red-500 text-xs mt-1">{errors.price}</div>}
+                </div>
+                <div className="mb-3 w-full">
+                  <label className="block font-semibold mb-1">Quantity</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.quantity ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {errors.quantity && <div className="text-red-500 text-xs mt-1">{errors.quantity}</div>}
+                </div>
+                <div className="mb-3 w-full">
+                  <label className="block font-semibold mb-1">Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Home Decor">Home Decor</option>
+                    <option value="Art">Art</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {errors.category && <div className="text-red-500 text-xs mt-1">{errors.category}</div>}
+                </div>
+                <div className="mb-3 w-full">
+                  <label className="block font-semibold mb-1">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImage}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                  {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
+                  {preview && (
+                    <img src={preview} alt="Preview" className="mt-2 max-w-full h-auto rounded" style={{maxHeight:'120px'}} />
+                  )}
+                </div>
+                <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-2 -mt-2 w-full">
+                  <button
+                    type="submit"
+                    className="addproduct-submit-btn text-white px-5 py-2 rounded-lg font-semibold shadow transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
+                    style={{ backgroundColor: '#073b4c' }}
+                  >
+                    {editId ? "Update" : "Submit"}
+                  </button>
+                  <button
+                    type="button"
+                    className="addproduct-cancel-btn border border-gray-400 text-gray-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
+                    onClick={handleCloseForm}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
-        <Grid container spacing={2} className="addproduct-grid-container">
+        {/* Product Grid */}
+        <div className="addproduct-grid-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8 justify-items-center">
           {products.length === 0 ? (
-            <Typography variant="h6" sx={{ mt: 4, width: '100%', textAlign: 'center' }}>
-              You have no products yet. Click "Add Product" to get started!
-            </Typography>
-          ) : (
+            <div className="col-span-full text-center text-lg mt-8">You have no products yet. Click "Add Product" to get started!</div>
+          ) :
             products.map((p) => (
-              <Grid item xs={12} sm={6} md={4} key={p._id} className="addproduct-grid-item">
-                <Box
-                  className="addproduct-product-box"
-                  border={1}
-                  borderRadius={2}
-                  p={2}
-                  onClick={() => setSelectedProduct(p)}
-                >
+              <div key={p._id} className="w-[320px] flex flex-col items-center shadow-none rounded-none relative cursor-pointer" style={{ boxShadow: 'none', background: 'white' }} onClick={() => setSelectedProduct(p)}>
+                {/* Image card, visually separated */}
+                <div className="w-full flex justify-center pt-8 pb-4 min-h-[180px]" style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
                   <img
                     src={`http://localhost:5000${p.image}`}
                     alt={p.name}
-                    className="addproduct-product-img"
+                    className="object-contain h-36 w-36"
+                    style={{ background: 'white', border: 'none' }}
                   />
-                  <Typography className="addproduct-product-name">{p.name}</Typography>
-                  <Typography className="addproduct-product-price">₱{p.price}</Typography>
-                  <Typography className="addproduct-product-qty">Qty: {p.quantity}</Typography>
-                </Box>
-              </Grid>
+                </div>
+                {/* Product info card with borders */}
+                <div className="w-full border-t border-b border-l border-r border-[#bfa181]" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                  <div className="text-center py-4 px-2 border-b border-[#bfa181]">
+                    <span className="font-mono text-lg font-semibold tracking-wider text-black uppercase letter-spacing-wider">{p.name}</span>
+                  </div>
+                  <div className="flex flex-row border-b border-[#bfa181] relative">
+                    <div className="flex items-center justify-center border-r border-[#bfa181] py-3 w-1/2">
+                      <span className="font-mono text-base text-black">₱{Number(p.price).toFixed(2)}</span>
+                    </div>
+                    <div className="w-1/2 relative flex items-center justify-center">
+                      <span className="font-mono text-base text-black">Qty: {p.quantity}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))
-          )}
-        </Grid>
+          }
+        </div>
 
-        <Dialog open={!!selectedProduct} onClose={() => setSelectedProduct(null)} maxWidth="xs" fullWidth>
-          <DialogTitle>Product Details</DialogTitle>
-          <DialogContent sx={{ textAlign: "center" }}>
-            {selectedProduct && (
-              <>
-                <img
-                  src={`http://localhost:5000${selectedProduct.image}`}
-                  alt={selectedProduct.name}
-                  className="addproduct-product-img"
-                  style={{ marginBottom: 16 }}
-                />
-                <Typography variant="h6">{selectedProduct.name}</Typography>
-                <Typography variant="subtitle1" sx={{ mb: 2 }}>₱{selectedProduct.price}</Typography>
-                <Typography variant="body2" sx={{ mb: 2 }}>Quantity: {selectedProduct.quantity}</Typography>
-                <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
-                  <Rating
-                    name="product-rating"
-                    value={
-                      selectedProduct.ratings && selectedProduct.ratings.length
-                        ? selectedProduct.ratings.reduce((sum, r) => sum + r.value, 0) / selectedProduct.ratings.length
-                        : 0
-                    }
-                    precision={0.5}
-                    readOnly
-                  />
-                  <Typography variant="body2" sx={{ ml: 1 }}>
-                    ({selectedProduct.ratings ? selectedProduct.ratings.length : 0})
-                  </Typography>
-                </Box>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
-            <Button
-              variant="outlined"
-              onClick={() => handleEdit(selectedProduct)}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => handleDelete(selectedProduct._id)}
-            >
-              Delete
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => setSelectedProduct(null)}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+        {/* Product Details Modal */}
+        {selectedProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Blurry overlay */}
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0"></div>
+            <div className="bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-md border-t-4 border-blue-800 animate-fadeIn relative flex flex-col items-center z-10" style={{minHeight: 'unset', maxHeight: '90vh'}}>
+              <button className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl" onClick={() => setSelectedProduct(null)}>&times;</button>
+              <img
+                src={`http://localhost:5000${selectedProduct.image}`}
+                alt={selectedProduct.name}
+                className="w-40 h-40 object-contain rounded-xl mb-4"
+                style={{flexShrink:0}}
+              />
+              <div className="flex flex-col items-center w-full">
+                <div className="text-xl font-bold mb-1 truncate w-full text-center">{selectedProduct.name}</div>
+                <div className="text-black font-semibold mb-2 text-lg">₱{selectedProduct.price}</div>
+                <div className="text-gray-600 mb-2 text-base">Quantity: {selectedProduct.quantity}</div>
+                <div className="flex items-center gap-2 mb-4 justify-center">
+                  <span className="text-yellow-500 text-lg">★</span>
+                  <span className="font-semibold">{getAverageRating(selectedProduct.ratings)}</span>
+                  <span className="text-gray-500 text-sm">({selectedProduct.ratings ? selectedProduct.ratings.length : 0})</span>
+                </div>
+                <div className="flex justify-center gap-2 mt-2 w-full">
+                  <button
+                    className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
+                    style={{ backgroundColor: '#073b4c', color: '#fff', borderColor: '#073b4c' }}
+                    onClick={() => handleEdit(selectedProduct)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
+                    style={{ backgroundColor: '#c1121f', color: '#fff', borderColor: '#c1121f' }}
+                    onClick={() => handleDelete(selectedProduct._id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
+                    style={{ backgroundColor: '#000', color: '#fff', borderColor: '#000' }}
+                    onClick={() => setSelectedProduct(null)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }
