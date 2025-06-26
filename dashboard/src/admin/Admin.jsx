@@ -177,7 +177,7 @@ function Admin() {
     setUsers(users.filter(u => u._id !== id));
   };
   const navItems = [
-    { label: "Overview", value: "overview", icon: faGaugeHigh },
+    { label: "Dashboard", value: "overview", icon: faGaugeHigh },
     { label: "Buyers", value: "buyer", icon: faUser },
     { label: "Artisans", value: "artisan", icon: faPalette },
     { label: "Products", value: "crud", icon: faBoxesStacked }
