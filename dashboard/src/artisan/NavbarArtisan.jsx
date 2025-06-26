@@ -90,6 +90,12 @@ function NavbarArtisan({ showLinks = true }) {
                 {link.label}
               </Link>
             ))}
+            {/* Username after nav links, before logout */}
+            {user && user.role === 'artisan' && (
+              <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
+                {user.username}
+              </span>
+            )}
             <button
               ref={el => navRefs.current.logout = el}
               onClick={handleLogoutClick}

@@ -99,10 +99,28 @@ function Navbar({ showLinks = true }) {
   return (
     <>
       <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black backdrop-blur-md" style={{position:'sticky'}}>
-        <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl" style={{ fontFamily: 'Source Code Pro, monospace' }}>SiniLikhain</div>
+        <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl flex items-center gap-4" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+          SiniLikhain
+        </div>
         {showLinks && (
           <div className="flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
-            {navLinks.map(link => (
+            {/* Home link */}
+            <Link
+              key={navLinks[0].to}
+              to={navLinks[0].to}
+              ref={el => navRefs.current[navLinks[0].to] = el}
+              className={
+                `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                (location.pathname === navLinks[0].to ? "text-white" : "text-[#ccc9dc]")
+              }
+              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+              onMouseEnter={() => handleMouseEnter(navLinks[0].to)}
+              aria-label={typeof navLinks[0].label === 'string' ? navLinks[0].label : 'Home'}
+            >
+              {navLinks[0].label}
+            </Link>
+            {/* Render the rest of the nav links */}
+            {navLinks.slice(1).map(link => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -118,6 +136,12 @@ function Navbar({ showLinks = true }) {
                 {link.label}
               </Link>
             ))}
+            {/* Username after cart, before logout */}
+            {user && user.role === 'buyer' && (
+              <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
+                {user.username}
+              </span>
+            )}
             <button
               ref={el => navRefs.current.logout = el}
               onClick={handleLogoutClick}
