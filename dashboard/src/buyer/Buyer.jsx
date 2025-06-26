@@ -41,7 +41,7 @@ function Buyer() {
     }
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    window.dispatchEvent(new Event("cart-updated")); // live update for navbar
+    window.dispatchEvent(new Event("cart-updated"));
     setSnackbarOpen(true);
     setAddedProductId(product._id);
     setTimeout(() => setAddedProductId(null), 1200);
@@ -241,13 +241,20 @@ function Buyer() {
             <div className="flex items-center justify-center mb-2">
               <span className="text-sm text-gray-700 mr-2">Your Rating:</span>
               {[1,2,3,4,5].map(star => {
-                const user = JSON.parse(localStorage.getItem("user"))?.username;
+                // Get user from localStorage or sessionStorage
+                let user = null;
+                try {
+                  user = JSON.parse(localStorage.getItem("user"))?.username || JSON.parse(sessionStorage.getItem("user"))?.username;
+                } catch (e) {
+                  user = null;
+                }
                 const userRating = selectedProduct.ratings ? (selectedProduct.ratings.find(r => r.user === user)?.value || 0) : 0;
                 return (
                   <button
                     key={star}
                     className={`text-xl ${star <= userRating ? 'text-yellow-400' : 'text-gray-300'} focus:outline-none`}
                     onClick={async () => {
+                      if (!user) return;
                       await axios.post(`http://localhost:5000/products/${selectedProduct._id}/rate`, {
                         user,
                         value: star
