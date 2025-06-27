@@ -6,6 +6,7 @@ import { Line as ChartLine } from 'react-chartjs-2';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../style/calendar-theme.css';
+import { API_BASE } from "../utils/api";
 
 const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#a78bfa", "#f472b6", "#38bdf8", "#facc15"];
 
@@ -33,7 +34,7 @@ const ArtisanDashboard = () => {
   useEffect(() => {
     if (!user || user.role !== "artisan") return;
     setLoading(true);
-    axios.get("http://localhost:5000/products")
+    axios.get(`${API_BASE}/products`)
       .then((res) => {
         // Inject status if missing (for demo/testing)
         const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
@@ -50,7 +51,7 @@ const ArtisanDashboard = () => {
       });
     // Polling: refresh products every 15 seconds
     const poll = setInterval(() => {
-      axios.get("http://localhost:5000/products")
+      axios.get(`${API_BASE}/products`)
         .then((res) => {
           // Inject status if missing (for demo/testing)
           const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
