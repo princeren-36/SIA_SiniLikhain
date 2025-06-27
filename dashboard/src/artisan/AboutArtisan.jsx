@@ -1,19 +1,7 @@
 import ArtisanLayout from "./ArtisanLayout";
-import Navbar from "./NavbarArtisan";
-import "../style/About.css";
 import React from "react";
 
 function AboutArtisan() {
-  // Sidebar state (example, you may want to lift this up if you have a parent layout)
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
-  const [view, setView] = React.useState("about");
-  const [darkMode, setDarkMode] = React.useState(false);
-  const handleLogout = () => {
-    // Implement logout logic here
-    window.location.href = "/";
-  };
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
-
   return (
     <ArtisanLayout>
       <div className="about-container" style={{ overflow: 'visible' }}>

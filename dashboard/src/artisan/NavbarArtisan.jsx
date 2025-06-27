@@ -33,7 +33,7 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
 
   const navLinks = [
     { to: "/artisan", label: "Home" },
-    { to: "/AddProduct", label: "My Products" },
+    { to: "/artisan/add-product", label: "Add Product" },
     { to: "/artisanprofile", label: "Profile" },
     { to: "/aboutartisan", label: "About" },
   ];

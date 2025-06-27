@@ -3,7 +3,8 @@ import ArtisanLayout from "./ArtisanLayout";
 
 const ProductList = () => (
   <ArtisanLayout>
-    <div className="p-8">
+
+    <div className="flex flex-col w-full p-8">
       <h2 className="text-2xl font-bold mb-4 text-white">Product List</h2>
       <p className="text-white">
         Here are your products.

@@ -1,26 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import ArtisanSidebar from "./ArtisanSidebar";
-import NavbarArtisan from "./NavbarArtisan";
+import Navbar from "./NavbarArtisan";
 
-const SIDEBAR_WIDTH = 320; // 20rem
-const SIDEBAR_COLLAPSED = 80; // 5rem
+const SIDEBAR_WIDTH_OPEN = 320;
+const SIDEBAR_WIDTH_CLOSED = 80;
 
 const ArtisanLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = React.useState(true);
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen flex bg-black">
       <ArtisanSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div
-        className="flex flex-col relative z-10"
-        style={{
-          marginLeft: sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED,
-          transition: "margin-left 0.3s",
-        }}
+        className="flex-1 flex flex-col relative z-10 transition-all duration-300"
+        style={{ marginLeft: sidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED }}
       >
-        <NavbarArtisan toggleSidebar={toggleSidebar} />
-        <main className="relative z-10 flex flex-1 flex-col px-4 py-8">
+        <Navbar toggleSidebar={toggleSidebar} />
+        <main className="relative z-10 flex-1">
           {children}
         </main>
       </div>

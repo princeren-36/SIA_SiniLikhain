@@ -180,63 +180,151 @@ const ArtisanDashboard = () => {
 
   return (
     <ArtisanLayout>
-      <div className="p-8">
-        <h2 className="text-2xl font-bold mb-4 text-white">Artisan Dashboard</h2>
-        <p className="text-white mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>
-        {/* Product Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-green-900 rounded-lg p-6 text-center min-h-[100px]">
-            <div className="text-3xl font-bold text-green-300">{approvedCount}</div>
-            <div className="text-white mt-2">Approved Products</div>
+      <div className="flex flex-col w-full">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold mb-4 text-white">Artisan Dashboard</h2>
+          <p className="text-white mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>
+          {/* Product Status Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-green-900 rounded-lg p-6 text-center min-h-[100px]">
+              <div className="text-3xl font-bold text-green-300">{approvedCount}</div>
+              <div className="text-white mt-2">Approved Products</div>
+            </div>
+            <div className="bg-yellow-900 rounded-lg p-6 text-center min-h-[100px]">
+              <div className="text-3xl font-bold text-yellow-300">{pendingCount}</div>
+              <div className="text-white mt-2">Pending/Rejected Products</div>
+            </div>
           </div>
-          <div className="bg-yellow-900 rounded-lg p-6 text-center min-h-[100px]">
-            <div className="text-3xl font-bold text-yellow-300">{pendingCount}</div>
-            <div className="text-white mt-2">Pending/Rejected Products</div>
-          </div>
-        </div>
-        {loading ? (
-          <p className="text-white">Loading analytics...</p>
-        ) : error ? (
-          <p className="text-red-400">{error}</p>
-        ) : (
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Main Content (left and center) */}
-            <div className="flex-1 min-w-0">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {/* Analytics Cards */}
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
-                  <div className="text-3xl font-bold text-blue-300">{totalProducts}</div>
-                  <div className="text-white mt-2">Total Products</div>
+          {loading ? (
+            <p className="text-white">Loading analytics...</p>
+          ) : error ? (
+            <p className="text-red-400">{error}</p>
+          ) : (
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Main Content (left and center) */}
+              <div className="flex-1 min-w-0">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  {/* Analytics Cards */}
+                  <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
+                    <div className="text-3xl font-bold text-blue-300">{totalProducts}</div>
+                    <div className="text-white mt-2">Total Products</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
+                    <div className="text-3xl font-bold text-green-300">{totalQuantity}</div>
+                    <div className="text-white mt-2">Total Quantity</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
+                    <div className="text-3xl font-bold text-yellow-300">₱{totalValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                    <div className="text-white mt-2">Total Inventory Value</div>
+                  </div>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
-                  <div className="text-3xl font-bold text-green-300">{totalQuantity}</div>
-                  <div className="text-white mt-2">Total Quantity</div>
+                {/* Graphs */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div className="bg-gray-800 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Product Quantities</h3>
+                    <div className="mb-4">
+                      <label htmlFor="category-select" className="text-white mr-2">Category:</label>
+                      <select
+                        id="category-select"
+                        value={selectedCategory}
+                        onChange={e => setSelectedCategory(e.target.value)}
+                        className="bg-gray-700 text-white rounded px-2 py-1"
+                      >
+                        {categories.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="h-[250px] w-full">
+                      <ChartLine
+                        data={getProductQuantitiesChartData()}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: false,
+                            },
+                            tooltip: {
+                              backgroundColor: isDarkMode ? '#23232b' : 'rgba(255,255,255,0.95)',
+                              titleColor: isDarkMode ? '#e5e7eb' : '#111',
+                              bodyColor: isDarkMode ? '#e5e7eb' : '#555',
+                              borderColor: isDarkMode ? '#333' : '#ddd',
+                              borderWidth: 1,
+                              padding: 12,
+                              boxPadding: 6,
+                              usePointStyle: true,
+                            }
+                          },
+                          scales: {
+                            y: {
+                              beginAtZero: true,
+                              grid: {
+                                color: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'
+                              },
+                              ticks: {
+                                color: isDarkMode ? '#e5e7eb' : undefined,
+                                stepSize: 1,
+                                callback: function(value) {
+                                  if (Number.isInteger(value)) return value;
+                                  return null;
+                                }
+                              }
+                            },
+                            x: {
+                              grid: { display: false },
+                              ticks: { color: isDarkMode ? '#e5e7eb' : undefined }
+                            }
+                          },
+                          interaction: { intersect: false, mode: 'index' },
+                          elements: { point: { radius: 4, hoverRadius: 7 } }
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Products by Category</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                          {pieData.map((entry, idx) => (
+                            <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Legend />
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
-                  <div className="text-3xl font-bold text-yellow-300">₱{totalValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
-                  <div className="text-white mt-2">Total Inventory Value</div>
-                </div>
-              </div>
-              {/* Graphs */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="bg-gray-800 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Product Quantities</h3>
-                  <div className="mb-4">
-                    <label htmlFor="category-select" className="text-white mr-2">Category:</label>
-                    <select
-                      id="category-select"
-                      value={selectedCategory}
-                      onChange={e => setSelectedCategory(e.target.value)}
-                      className="bg-gray-700 text-white rounded px-2 py-1"
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
+                {/* Stock Analysis Section */}
+                <div className="bg-gray-800 rounded-lg p-6 mb-8">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold text-white">Stock Analysis</h3>
+                    <div>
+                      <button
+                        className={`px-3 py-1 rounded-l bg-gray-700 text-white border-r border-gray-600 ${stockView === 'all' ? 'bg-blue-500 font-bold' : ''}`}
+                        onClick={() => setStockView('all')}
+                      >
+                        All
+                      </button>
+                      <button
+                        className={`px-3 py-1 bg-gray-700 text-white border-r border-gray-600 ${stockView === 'low' ? 'bg-red-500 font-bold' : ''}`}
+                        onClick={() => setStockView('low')}
+                      >
+                        Hide Low Stock
+                      </button>
+                      <button
+                        className={`px-3 py-1 rounded-r bg-gray-700 text-white ${stockView === 'high' ? 'bg-green-500 font-bold' : ''}`}
+                        onClick={() => setStockView('high')}
+                      >
+                        Hide High Stock
+                      </button>
+                    </div>
                   </div>
                   <div className="h-[250px] w-full">
                     <ChartLine
-                      data={getProductQuantitiesChartData()}
+                      data={getStockChartData()}
                       options={{
                         responsive: true,
                         maintainAspectRatio: false,
@@ -280,170 +368,84 @@ const ArtisanDashboard = () => {
                       }}
                     />
                   </div>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Products by Category</h3>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                        {pieData.map((entry, idx) => (
-                          <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Legend />
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <p className="mt-2 text-sm text-yellow-300">
+                    {stockView === 'all' && '* Showing all products by stock.'}
+                    {stockView === 'low' && '* Hiding low stock (≤ 5 units).'}
+                    {stockView === 'high' && '* Hiding high stock (> 5 units).'}
+                  </p>
                 </div>
               </div>
-              {/* Stock Analysis Section */}
-              <div className="bg-gray-800 rounded-lg p-6 mb-8">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-white">Stock Analysis</h3>
-                  <div>
-                    <button
-                      className={`px-3 py-1 rounded-l bg-gray-700 text-white border-r border-gray-600 ${stockView === 'all' ? 'bg-blue-500 font-bold' : ''}`}
-                      onClick={() => setStockView('all')}
-                    >
-                      All
-                    </button>
-                    <button
-                      className={`px-3 py-1 bg-gray-700 text-white border-r border-gray-600 ${stockView === 'low' ? 'bg-red-500 font-bold' : ''}`}
-                      onClick={() => setStockView('low')}
-                    >
-                      Hide Low Stock
-                    </button>
-                    <button
-                      className={`px-3 py-1 rounded-r bg-gray-700 text-white ${stockView === 'high' ? 'bg-green-500 font-bold' : ''}`}
-                      onClick={() => setStockView('high')}
-                    >
-                      Hide High Stock
-                    </button>
+              {/* Top Selling Products (right sidebar) */}
+              <div className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-6">
+                <div className="bg-gray-800 rounded-lg p-6 mb-0 h-full flex flex-col">
+                  <h3 className="text-lg font-semibold text-blue-300 mb-4">Top Selling Products</h3>
+                  <div className="flex-1 overflow-y-auto">
+                    <table className="w-full text-white text-sm">
+                      <thead>
+                        <tr>
+                          <th className="text-left pb-1">Product</th>
+                          <th className="text-right pb-1">Sold</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {products
+                          .slice()
+                          .sort((a, b) => (parseInt(b.sold) || 0) - (parseInt(a.sold) || 0))
+                          .slice(0, 5)
+                          .map((p, idx) => (
+                            <tr key={p._id || p.name || idx} className="border-t border-gray-600">
+                              <td className="py-1 pr-2">{p.name}</td>
+                              <td className="py-1 text-right">{p.sold || 0}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-                <div className="h-[250px] w-full">
-                  <ChartLine
-                    data={getStockChartData()}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          display: false,
-                        },
-                        tooltip: {
-                          backgroundColor: isDarkMode ? '#23232b' : 'rgba(255,255,255,0.95)',
-                          titleColor: isDarkMode ? '#e5e7eb' : '#111',
-                          bodyColor: isDarkMode ? '#e5e7eb' : '#555',
-                          borderColor: isDarkMode ? '#333' : '#ddd',
-                          borderWidth: 1,
-                          padding: 12,
-                          boxPadding: 6,
-                          usePointStyle: true,
-                        }
-                      },
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          grid: {
-                            color: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'
-                          },
-                          ticks: {
-                            color: isDarkMode ? '#e5e7eb' : undefined,
-                            stepSize: 1,
-                            callback: function(value) {
-                              if (Number.isInteger(value)) return value;
-                              return null;
-                            }
-                          }
-                        },
-                        x: {
-                          grid: { display: false },
-                          ticks: { color: isDarkMode ? '#e5e7eb' : undefined }
-                        }
-                      },
-                      interaction: { intersect: false, mode: 'index' },
-                      elements: { point: { radius: 4, hoverRadius: 7 } }
-                    }}
-                  />
-                </div>
-                <p className="mt-2 text-sm text-yellow-300">
-                  {stockView === 'all' && '* Showing all products by stock.'}
-                  {stockView === 'low' && '* Hiding low stock (≤ 5 units).'}
-                  {stockView === 'high' && '* Hiding high stock (> 5 units).'}
-                </p>
-              </div>
-            </div>
-            {/* Top Selling Products (right sidebar) */}
-            <div className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-6">
-              <div className="bg-gray-800 rounded-lg p-6 mb-0 h-full flex flex-col">
-                <h3 className="text-lg font-semibold text-blue-300 mb-4">Top Selling Products</h3>
-                <div className="flex-1 overflow-y-auto">
-                  <table className="w-full text-white text-sm">
-                    <thead>
-                      <tr>
-                        <th className="text-left pb-1">Product</th>
-                        <th className="text-right pb-1">Sold</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products
-                        .slice()
-                        .sort((a, b) => (parseInt(b.sold) || 0) - (parseInt(a.sold) || 0))
-                        .slice(0, 5)
-                        .map((p, idx) => (
-                          <tr key={p._id || p.name || idx} className="border-t border-gray-600">
-                            <td className="py-1 pr-2">{p.name}</td>
-                            <td className="py-1 text-right">{p.sold || 0}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              {/* Realtime Calendar as a separate card */}
-              <div className={`bg-gray-800 rounded-lg p-6 ${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'}`}> 
-                <h4 className="text-md font-semibold text-white mb-2">Calendar</h4>
-                <Calendar value={currentDate} className={isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'} />
-                <div className="text-xs text-white text-center mt-2">
-                  Today: {currentDate.toLocaleDateString()}<br/>
-                  Time: {currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {/* Realtime Calendar as a separate card */}
+                <div className={`bg-gray-800 rounded-lg p-6 ${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'}`}> 
+                  <h4 className="text-md font-semibold text-white mb-2">Calendar</h4>
+                  <Calendar value={currentDate} className={isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'} />
+                  <div className="text-xs text-white text-center mt-2">
+                    Today: {currentDate.toLocaleDateString()}<br/>
+                    Time: {currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {/* Purchases Table */}
-        <div className="bg-gray-800 rounded-lg p-6 mt-8 overflow-x-auto">
-          <h3 className="text-lg font-semibold text-white mb-4">Purchases</h3>
-          <table className="min-w-full text-white">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left">Date</th>
-                <th className="px-4 py-2 text-left">Reference</th>
-                <th className="px-4 py-2 text-left">Supplier</th>
-                <th className="px-4 py-2 text-left">Payment Mode</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {purchases.map((row, idx) => (
-                <tr key={idx} className="border-t border-gray-700">
-                  <td className="px-4 py-2">{row.date}</td>
-                  <td className="px-4 py-2">{row.reference}</td>
-                  <td className="px-4 py-2">{row.supplier}</td>
-                  <td className="px-4 py-2">{row.payment}</td>
-                  <td className="px-4 py-2">
-                    {row.status === 'Complete' && <span className="bg-green-400/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold">Complete</span>}
-                    {row.status === 'Partial' && <span className="bg-purple-400/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold">Partial</span>}
-                    {row.status === 'Unpaid' && <span className="bg-red-400/20 text-red-400 px-3 py-1 rounded-full text-xs font-semibold">Unpaid</span>}
-                  </td>
-                  <td className="px-4 py-2">{row.amount}</td>
+          )}
+          {/* Purchases Table */}
+          <div className="bg-gray-800 rounded-lg p-6 mt-8 overflow-x-auto">
+            <h3 className="text-lg font-semibold text-white mb-4">Purchases</h3>
+            <table className="min-w-full text-white">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-left">Date</th>
+                  <th className="px-4 py-2 text-left">Reference</th>
+                  <th className="px-4 py-2 text-left">Supplier</th>
+                  <th className="px-4 py-2 text-left">Payment Mode</th>
+                  <th className="px-4 py-2 text-left">Status</th>
+                  <th className="px-4 py-2 text-left">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {purchases.map((row, idx) => (
+                  <tr key={idx} className="border-t border-gray-700">
+                    <td className="px-4 py-2">{row.date}</td>
+                    <td className="px-4 py-2">{row.reference}</td>
+                    <td className="px-4 py-2">{row.supplier}</td>
+                    <td className="px-4 py-2">{row.payment}</td>
+                    <td className="px-4 py-2">
+                      {row.status === 'Complete' && <span className="bg-green-400/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold">Complete</span>}
+                      {row.status === 'Partial' && <span className="bg-purple-400/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold">Partial</span>}
+                      {row.status === 'Unpaid' && <span className="bg-red-400/20 text-red-400 px-3 py-1 rounded-full text-xs font-semibold">Unpaid</span>}
+                    </td>
+                    <td className="px-4 py-2">{row.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </ArtisanLayout>
