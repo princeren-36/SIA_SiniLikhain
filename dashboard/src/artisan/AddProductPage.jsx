@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ArtisanLayout from "./ArtisanLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import cartBg from '../images/2.jpg';
 
 const AddProductPage = () => {
   const [formData, setFormData] = useState({ name: "", price: "", image: null, quantity: 1, category: "" });
@@ -82,138 +83,192 @@ const AddProductPage = () => {
     if (formData.image) data.append("image", formData.image);
     data.append("quantity", formData.quantity);
     data.append("category", formData.category);
+    // Set product status as pending for admin approval
+    data.append("status", "pending");
     try {
       await axios.post("http://localhost:5000/products", data);
-      alert("Product added successfully!");
+      alert("Product submitted successfully and awaiting admin approval!");
       navigate("/artisan/products");
     } catch (err) {
-      alert("Error saving product. Please try again.");
+      alert("Error submitting product. Please try again.");
     }
   };
-
-  const bgColor = isDarkMode ? 'bg-[#18181b]' : 'bg-gray-100';
-  const textColor = isDarkMode ? 'text-white' : 'text-black';
-  const labelColor = isDarkMode ? 'text-gray-200' : 'text-gray-800';
-  const inputBg = isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300';
 
   return (
     <ArtisanLayout>
       <div className="flex flex-col w-full">
-        <div className={`min-h-screen w-full ${bgColor} py-8 flex flex-col`}>
-          <div className="w-full max-w-7xl mx-auto flex flex-col h-full">
-            {/* Upper left: Title and Description */}
-            <div className="w-full md:w-2/3 lg:w-1/2 mb-6 px-4 md:px-0">
-              <h1 className={`text-4xl font-bold mb-2 ${textColor}`}>Add Product</h1>
-              <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Fill out the form to add a new product to your artisan shop. Make sure to provide accurate details and a clear product image.</p>
-            </div>
-            {/* Form full width below heading, responsive, fits screen but leaves sidebar */}
-            <form onSubmit={handleSubmit} className="flex-1 w-full flex flex-col items-center justify-center">
-              <div className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left: Fields */}
-                <div className="space-y-4">
-                  <div>
-                    <label className={`block font-semibold mb-1 ${labelColor}`}>Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${inputBg} ${errors.name ? 'border-red-500' : ''}`}
-                    />
-                    {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className={`block font-semibold mb-1 ${labelColor}`}>Price</label>
-                      <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${inputBg} ${errors.price ? 'border-red-500' : ''}`}
-                      />
-                      {errors.price && <div className="text-red-500 text-xs mt-1">{errors.price}</div>}
-                    </div>
-                    <div>
-                      <label className={`block font-semibold mb-1 ${labelColor}`}>Quantity</label>
-                      <input
-                        type="number"
-                        name="quantity"
-                        min="1"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${inputBg} ${errors.quantity ? 'border-red-500' : ''}`}
-                      />
-                      {errors.quantity && <div className="text-red-500 text-xs mt-1">{errors.quantity}</div>}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className={`block font-semibold mb-1 ${labelColor}`}>Category</label>
-                      <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${inputBg} ${errors.category ? 'border-red-500' : ''}`}
-                      >
-                        <option value="">Select Category</option>
-                        <option value="Accessories">Accessories</option>
-                        <option value="Clothing">Clothing</option>
-                        <option value="Home Decor">Home Decor</option>
-                        <option value="Art">Art</option>
-                        <option value="Other">Other</option>
-                      </select>
-                      {errors.category && <div className="text-red-500 text-xs mt-1">{errors.category}</div>}
-                    </div>
-                    <div></div>
-                  </div>
-                </div>
-                {/* Right: Image Upload */}
-                <div className="flex flex-col items-center justify-start w-full">
-                  <label className={`block font-semibold mb-1 w-full ${labelColor}`}>Product Image</label>
-                  <div className={`flex flex-col items-center justify-center border-2 border-dashed border-blue-300 rounded-xl ${isDarkMode ? 'bg-[#23232b]' : 'bg-blue-50'} w-full max-w-xs min-h-[220px] p-6 relative`}>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImage}
-                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                      style={{ width: '100%', height: '100%' }}
-                    />
-                    {preview ? (
-                      <img src={preview} alt="Preview" className="max-h-32 mb-2 rounded shadow" style={{maxWidth:'100%'}} />
-                    ) : (
-                      <>
-                        <div className="flex flex-col items-center justify-center h-full">
-                          <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#60a5fa" className="mb-2"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-4h6v4a1 1 0 01-1 1z" /></svg>
-                          <span className={`text-gray-500 text-sm mb-2 ${isDarkMode ? 'text-gray-300' : ''}`}>Drop product image here</span>
-                          <span className={`text-gray-400 text-xs mb-2 ${isDarkMode ? 'text-gray-300' : ''}`}>Or</span>
-                          <button type="button" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">Browse File</button>
-                        </div>
-                      </>
-                    )}
-                    <div className="text-xs text-gray-400 mt-2 text-center">Allowed JPEG, JPG & PNG format | Max 100 mb</div>
-                    {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-2 mt-6 w-full max-w-5xl mx-auto">
-                <button
-                  type="submit"
-                  className="addproduct-submit-btn text-white px-5 py-2 rounded-lg font-semibold shadow transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                  style={{ backgroundColor: '#073b4c' }}
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  className="addproduct-cancel-btn border border-gray-400 text-gray-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                  onClick={() => navigate('/artisan/products')}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+        {/* Banner header from AddProduct.jsx */}
+        <div className="relative w-full overflow-hidden" style={{height: '280px'}}>
+          <img src={cartBg} alt="Products Background" className="w-full h-full object-cover opacity-80 select-none pointer-events-none" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-wider drop-shadow-lg">ADD NEW PRODUCT</h1>
+            <p className="text-base md:text-lg text-white font-mono drop-shadow-lg text-center px-4">Create and showcase your handcrafted masterpieces to the world.</p>
           </div>
+        </div>
+
+        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold addproduct-title">Add New Product</h2>
+          </div>
+
+          {/* Admin Approval Info Card */}
+          <div className={`mb-8 p-4 rounded-lg border-l-4 ${
+            isDarkMode 
+              ? 'bg-[#23232b] border-blue-500 text-blue-200' 
+              : 'bg-blue-50 border-blue-500 text-blue-800'
+          }`}>
+            <div className="flex items-start">
+              <div className="flex-shrink-0 mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium">Product Approval Required</h3>
+                <div className="mt-1 text-sm opacity-90">
+                  <p>All new products will be reviewed by our admin team before being listed in the marketplace. This process typically takes 24-48 hours.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="w-full max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left: Fields */}
+              <div className="space-y-6">
+                <div>
+                  <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Product Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
+                    ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
+                    ${errors.name ? 'border-red-500' : ''}`}
+                  />
+                  {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Price (₱)</label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleChange}
+                      className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
+                      ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
+                      ${errors.price ? 'border-red-500' : ''}`}
+                    />
+                    {errors.price && <div className="text-red-500 text-xs mt-1">{errors.price}</div>}
+                  </div>
+                  <div>
+                    <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Quantity</label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      min="1"
+                      value={formData.quantity}
+                      onChange={handleChange}
+                      className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
+                      ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
+                      ${errors.quantity ? 'border-red-500' : ''}`}
+                    />
+                    {errors.quantity && <div className="text-red-500 text-xs mt-1">{errors.quantity}</div>}
+                  </div>
+                </div>
+
+                <div>
+                  <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
+                    ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
+                    ${errors.category ? 'border-red-500' : ''}`}
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Home Decor">Home Decor</option>
+                    <option value="Art">Art</option>
+                    <option value="Pottery">Pottery</option>
+                    <option value="Jewelry">Jewelry</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  {errors.category && <div className="text-red-500 text-xs mt-1">{errors.category}</div>}
+                </div>
+              </div>
+
+              {/* Right: Image Upload with improved styling */}
+              <div>
+                <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Product Image</label>
+                <div className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center 
+                  ${isDarkMode ? 'bg-[#23232b] border-gray-600' : 'bg-gray-50 border-gray-300'} 
+                  ${errors.image ? 'border-red-500' : ''} min-h-[300px] relative`}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImage}
+                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                  />
+                  
+                  {preview ? (
+                    <div className="flex flex-col items-center">
+                      <img 
+                        src={preview} 
+                        alt="Preview" 
+                        className="max-h-60 max-w-full mb-4 rounded-md shadow-md" 
+                      />
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Click to change image</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className={`h-16 w-16 mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <p className={`font-medium text-lg mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Drop your image here</p>
+                      <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Or click to browse</p>
+                      <button 
+                        type="button" 
+                        className="px-4 py-2 bg-[#386641] text-white rounded-md hover:opacity-90 transition-colors"
+                        onClick={() => document.querySelector('input[type="file"]').click()}
+                      >
+                        Select File
+                      </button>
+                      <p className={`mt-4 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                        Supported formats: JPG, PNG, WEBP (max 10MB)
+                      </p>
+                    </div>
+                  )}
+                  {errors.image && <div className="text-red-500 text-xs mt-2 absolute bottom-2">{errors.image}</div>}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-8 gap-4">
+              <button
+                type="button"
+                onClick={() => navigate('/artisan/products')}
+                className="px-6 py-2 border-2 rounded-lg font-semibold hover:bg-gray-50 transition"
+                style={{ borderColor: '#386641', color: '#386641' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 rounded-lg font-semibold text-white shadow transition"
+                style={{ backgroundColor: '#386641' }}
+              >
+                Submit for Approval
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </ArtisanLayout>

@@ -313,13 +313,13 @@ const ArtisanDashboard = () => {
                         className={`px-3 py-1 bg-gray-700 text-white border-r border-gray-600 ${stockView === 'low' ? 'bg-red-500 font-bold' : ''}`}
                         onClick={() => setStockView('low')}
                       >
-                        Hide Low Stock
+                        Low Stock
                       </button>
                       <button
                         className={`px-3 py-1 rounded-r bg-gray-700 text-white ${stockView === 'high' ? 'bg-green-500 font-bold' : ''}`}
                         onClick={() => setStockView('high')}
                       >
-                        Hide High Stock
+                        High Stock
                       </button>
                     </div>
                   </div>

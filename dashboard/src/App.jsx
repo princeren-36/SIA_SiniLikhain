@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import AddProductPage from "./artisan/AddProductPage";
 import AddProduct from "./artisan/AddProduct";
+import ManageProducts from "./artisan/ManageProducts";
 import AboutBuyer from "./buyer/AboutBuyer";
 import AboutArtisan from "./artisan/AboutArtisan";
 import Register from "./pages/Register";
@@ -33,6 +34,7 @@ function App() {
         <Route path="/artisan/dashboard" element={<ArtisanDashboard />} />
         <Route path="/artisan/add-product" element={<AddProductPage />} />
         <Route path="/artisan/products" element={<AddProduct />} />
+        <Route path="/artisan/manage-products" element={<ManageProducts />} />
       </Routes>
     </BrowserRouter>
   );

@@ -292,7 +292,7 @@ function AddProduct() {
           </div>
         </div>
         
-        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}`}>
+        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold addproduct-title">My Products</h2>
           </div>
@@ -301,14 +301,16 @@ function AddProduct() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
             <div className="flex gap-4">
               <button
-                className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold shadow transition"
+                className="flex items-center gap-2 text-white px-6 py-2 rounded-lg font-semibold shadow transition hover:opacity-90"
+                style={{ backgroundColor: '#386641' }}
                 onClick={() => navigate('/artisan/add-product')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                 Add Product
               </button>
               <button
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold shadow transition"
+                className="flex items-center gap-2 text-white px-6 py-2 rounded-lg font-semibold shadow transition hover:opacity-90"
+                style={{ backgroundColor: '#003049' }}
                 onClick={handleImportClick}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4m4 4l4 4 4-4" /></svg>
@@ -326,8 +328,8 @@ function AddProduct() {
               <input
                 type="text"
                 placeholder="Search here"
-                className={`border rounded-lg px-4 py-2 w-100 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-800'
+                className={`border rounded-lg px-4 py-2 w-111 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                  isDarkMode ? 'bg-[#23232b] border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-800'
                 }`}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -335,7 +337,7 @@ function AddProduct() {
               <div className="relative">
                 <button 
                   className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition ${
-                    isDarkMode ? 'border-purple-500 text-purple-300 bg-gray-800 hover:bg-gray-700' : 'border-purple-400 text-purple-700 bg-white hover:bg-purple-50'
+                    isDarkMode ? 'border-purple-500 text-purple-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-purple-400 text-purple-700 bg-white hover:bg-purple-50'
                   }`} 
                   onClick={handleFilter}
                   type="button"
@@ -367,7 +369,7 @@ function AddProduct() {
               </div>
               <button 
                 className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
-                  isDarkMode ? 'border-orange-400 text-orange-300 bg-gray-800 hover:bg-gray-700' : 'border-orange-300 text-orange-600 bg-white hover:bg-orange-50'
+                  isDarkMode ? 'border-orange-400 text-orange-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-orange-300 text-orange-600 bg-white hover:bg-orange-50'
                 }`} 
                 onClick={handleExportPDF}
               >
@@ -376,7 +378,7 @@ function AddProduct() {
               </button>
               <button 
                 className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
-                  isDarkMode ? 'border-green-400 text-green-300 bg-gray-800 hover:bg-gray-700' : 'border-green-300 text-green-600 bg-white hover:bg-green-50'
+                  isDarkMode ? 'border-green-400 text-green-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-green-300 text-green-600 bg-white hover:bg-green-50'
                 }`} 
                 onClick={handleExportCSV}
               >
@@ -396,7 +398,7 @@ function AddProduct() {
           </div>
           
           {/* Product Table */}
-          <div className={`rounded-lg shadow-sm border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-4`}>
+          <div className={`rounded-lg shadow-sm border ${isDarkMode ? 'bg-[#23232b] border-gray-700' : 'bg-white border-gray-200'} p-4`}>
             <div className={`overflow-x-auto w-full`}>
               {filteredProducts.length === 0 ? (
                 <div className={`col-span-full text-center text-lg my-8 py-8 rounded-lg border ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
@@ -406,9 +408,9 @@ function AddProduct() {
                   <p>You have no products yet. Click "Add Product" to get started!</p>
                 </div>
               ) : (
-                <table id="products-table" className={`min-w-full ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                <table id="products-table" className={`min-w-full ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
                   <thead>
-                    <tr className={isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}>
+                    <tr className={isDarkMode ? 'bg-[#2a2a33]' : 'bg-gray-50'}>
                       <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Image</th>
                       <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Name</th>
                       <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Category</th>
@@ -418,7 +420,7 @@ function AddProduct() {
                   </thead>
                   <tbody>
                     {filteredProducts.map((p) => (
-                      <tr key={p._id} className={`${isDarkMode ? 'hover:bg-gray-700 border-gray-700' : 'hover:bg-gray-50 border-gray-100'} border-b last:border-b-0`}>
+                      <tr key={p._id} className={`${isDarkMode ? 'hover:bg-[#2a2a33] border-gray-700' : 'hover:bg-gray-50 border-gray-100'} border-b last:border-b-0`}>
                         <td className="py-4 px-6">
                           {p.image ? (
                             <img
