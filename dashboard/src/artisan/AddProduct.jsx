@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import cartBg from '../images/2.jpg';
 import ArtisanLayout from "./ArtisanLayout";
-import { API_BASE } from "../utils/api";
 
 function AddProduct() {
   // Sidebar state
@@ -39,7 +38,7 @@ function AddProduct() {
     if (!user || user.role !== "artisan") {
       navigate("/");
     } else {
-      axios.get(`${API_BASE}/products`).then((res) => {
+      axios.get("http://localhost:5000/products").then((res) => {
         const artisanProducts = res.data.filter(p => p.artisan === user.username);
         setProducts(artisanProducts);
       }).catch(err => {
@@ -116,13 +115,13 @@ function AddProduct() {
 
     try {
       if (editId) {
-        const res = await axios.put(`${API_BASE}/products/${editId}`, data);
+        const res = await axios.put(`http://localhost:5000/products/${editId}`, data);
         setProducts((prev) =>
           prev.map((p) => (p._id === editId ? res.data : p))
         );
         alert("Product updated successfully!");
       } else {
-        const res = await axios.post(`${API_BASE}/products`, data);
+        const res = await axios.post("http://localhost:5000/products", data);
         setProducts((prev) => [...prev, res.data]);
         alert("The piece is in place. Await the gatekeeper's glance before it takes its place.");
       }
@@ -146,7 +145,7 @@ function AddProduct() {
       quantity: product.quantity || 1,
       category: product.category || "",
     });
-    setPreview(product.image ? `${API_BASE}${product.image}` : null);
+    setPreview(product.image ? `http://localhost:5000${product.image}` : null);
     setOpenForm(true);
     setSelectedProduct(null);
     setErrors({});
@@ -155,7 +154,7 @@ function AddProduct() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`${API_BASE}/products/${id}`);
+        await axios.delete(`http://localhost:5000/products/${id}`);
         setProducts((prev) => prev.filter((p) => p._id !== id));
         if (editId === id) {
           setEditId(null);
@@ -327,7 +326,7 @@ function AddProduct() {
               <input
                 type="text"
                 placeholder="Search here"
-                className={`border rounded-lg px-4 py-2 w-111 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                className={`border rounded-lg px-4 py-2 w-100 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
                   isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-800'
                 }`}
                 value={search}
@@ -362,123 +361,49 @@ function AddProduct() {
                           <option key={cat} value={cat}>{cat}</option>
                         ))}
                       </select>
-                      {errors.category && <div className="text-red-500 text-xs mt-1">{errors.category}</div>}
                     </div>
-                    <div className="mb-3 w-full">
-                      <label className="block font-semibold mb-1">Image</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImage}
-                        className="w-full border rounded px-3 py-2"
-                      />
-                      {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
-                      {preview && (
-                        <img src={preview} alt="Preview" className="mt-2 max-w-full h-auto rounded" style={{maxHeight:'120px'}} />
-                      )}
-                    </div>
-                    <div className="flex flex-col sm:flex-row flex-wrap justify-end gap-2 -mt-2 w-full">
-                      <button
-                        type="submit"
-                        className="addproduct-submit-btn text-white px-5 py-2 rounded-lg font-semibold shadow transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                        style={{ backgroundColor: '#073b4c' }}
-                      >
-                        {editId ? "Update" : "Submit"}
-                      </button>
-                      <button
-                        type="button"
-                        className="addproduct-cancel-btn border border-gray-400 text-gray-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                        onClick={handleCloseForm}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
+                  </div>
+                )}
               </div>
-            )}
-
-            {/* Product Grid */}
-            <div className="addproduct-grid-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8 justify-items-center">
-              {products.length === 0 ? (
-                <div className="col-span-full text-center text-lg mt-8">You have no products yet. Click "Add Product" to get started!</div>
-              ) :
-                products.map((p) => (
-                  <div key={p._id} className="w-[320px] flex flex-col items-center shadow-none rounded-none relative cursor-pointer" style={{ boxShadow: 'none', background: 'white' }} onClick={() => setSelectedProduct(p)}>
-                    {/* Image card, visually separated */}
-                    <div className="w-full flex justify-center pt-8 pb-4 min-h-[180px]" style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-                      <img
-                        src={`http://localhost:5000${p.image}`}
-                        alt={p.name}
-                        className="object-contain h-36 w-36"
-                        style={{ background: 'white', border: 'none' }}
-                      />
-                    </div>
-                    {/* Product info card with borders */}
-                    <div className="w-full border-t border-b border-l border-r border-[#bfa181]" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                      <div className="text-center py-4 px-2 border-b border-[#bfa181]">
-                        <span className="font-mono text-lg font-semibold tracking-wider text-black uppercase letter-spacing-wider">{p.name}</span>
-                      </div>
-                      <div className="flex flex-row border-b border-[#bfa181] relative">
-                        <div className="flex items-center justify-center border-r border-[#bfa181] py-3 w-1/2">
-                          <span className="font-mono text-base text-black">₱{Number(p.price).toFixed(2)}</span>
-                        </div>
-                        <div className="w-1/2 relative flex items-center justify-center">
-                          <span className="font-mono text-base text-black">Qty: {p.quantity}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              }
+              <button 
+                className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
+                  isDarkMode ? 'border-orange-400 text-orange-300 bg-gray-800 hover:bg-gray-700' : 'border-orange-300 text-orange-600 bg-white hover:bg-orange-50'
+                }`} 
+                onClick={handleExportPDF}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19V6m0 0l-7 7m7-7l7 7" /></svg>
+                PDF
+              </button>
+              <button 
+                className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
+                  isDarkMode ? 'border-green-400 text-green-300 bg-gray-800 hover:bg-gray-700' : 'border-green-300 text-green-600 bg-white hover:bg-green-50'
+                }`} 
+                onClick={handleExportCSV}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4h16v16H4V4zm4 4h8m-8 4h8m-8 4h8" /></svg>
+                CSV
+              </button>
+              <button 
+                className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
+                  isDarkMode ? 'border-blue-400 text-blue-300 bg-gray-800 hover:bg-gray-700' : 'border-blue-300 text-blue-600 bg-white hover:bg-blue-50'
+                }`} 
+                onClick={handlePrint}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 9v6m6-6v6m6-6v6" /></svg>
+                Print
+              </button>
             </div>
-
-            {/* Product Details Modal */}
-            {selectedProduct && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                {/* Blurry overlay */}
-                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0"></div>
-                <div className="bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-md border-t-4 border-blue-800 animate-fadeIn relative flex flex-col items-center z-10" style={{minHeight: 'unset', maxHeight: '90vh'}}>
-                  <button className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl" onClick={() => setSelectedProduct(null)}>&times;</button>
-                  <img
-                    src={`http://localhost:5000${selectedProduct.image}`}
-                    alt={selectedProduct.name}
-                    className="w-40 h-40 object-contain rounded-xl mb-4"
-                    style={{flexShrink:0}}
-                  />
-                  <div className="flex flex-col items-center w-full">
-                    <div className="text-xl font-bold mb-1 truncate w-full text-center">{selectedProduct.name}</div>
-                    <div className="text-black font-semibold mb-2 text-lg">₱{selectedProduct.price}</div>
-                    <div className="text-gray-600 mb-2 text-base">Quantity: {selectedProduct.quantity}</div>
-                    <div className="flex items-center gap-2 mb-4 justify-center">
-                      <span className="text-yellow-500 text-lg">★</span>
-                      <span className="font-semibold">{getAverageRating(selectedProduct.ratings)}</span>
-                      <span className="text-gray-500 text-sm">({selectedProduct.ratings ? selectedProduct.ratings.length : 0})</span>
-                    </div>
-                    <div className="flex justify-center gap-2 mt-2 w-full">
-                      <button
-                        className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                        style={{ backgroundColor: '#073b4c', color: '#fff', borderColor: '#073b4c' }}
-                        onClick={() => handleEdit(selectedProduct)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                        style={{ backgroundColor: '#c1121f', color: '#fff', borderColor: '#c1121f' }}
-                        onClick={() => handleDelete(selectedProduct._id)}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="border px-4 py-2 rounded-lg font-semibold transition flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0"
-                        style={{ backgroundColor: '#000', color: '#fff', borderColor: '#000' }}
-                        onClick={() => setSelectedProduct(null)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
+          </div>
+          
+          {/* Product Table */}
+          <div className={`rounded-lg shadow-sm border ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-4`}>
+            <div className={`overflow-x-auto w-full`}>
+              {filteredProducts.length === 0 ? (
+                <div className={`col-span-full text-center text-lg my-8 py-8 rounded-lg border ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-12 w-12 mx-auto mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <p>You have no products yet. Click "Add Product" to get started!</p>
                 </div>
               ) : (
                 <table id="products-table" className={`min-w-full ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
