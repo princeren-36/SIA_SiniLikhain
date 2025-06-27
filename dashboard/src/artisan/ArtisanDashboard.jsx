@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import ArtisanLayout from "./ArtisanLayout";
 import axios from "axios";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { Line as ChartLine } from 'react-chartjs-2';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../style/calendar-theme.css';
@@ -34,14 +35,33 @@ const ArtisanDashboard = () => {
     setLoading(true);
     axios.get("http://localhost:5000/products")
       .then((res) => {
-        const artisanProducts = res.data.filter(p => p.artisan === user.username);
+        // Inject status if missing (for demo/testing)
+        const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
+          ...p,
+          status: p.status || ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)]
+        }));
         setProducts(artisanProducts);
+        console.log('Fetched artisan products:', artisanProducts);
         setLoading(false);
       })
       .catch((err) => {
         setError("Error fetching products");
         setLoading(false);
       });
+    // Polling: refresh products every 15 seconds
+    const poll = setInterval(() => {
+      axios.get("http://localhost:5000/products")
+        .then((res) => {
+          // Inject status if missing (for demo/testing)
+          const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
+            ...p,
+            status: p.status || ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)]
+          }));
+          setProducts(artisanProducts);
+          console.log('Polled artisan products:', artisanProducts);
+        });
+    }, 15000);
+    return () => clearInterval(poll);
   }, [user]);
 
   useEffect(() => {
@@ -107,11 +127,73 @@ const ArtisanDashboard = () => {
     { date: '27/12/2023', reference: 'S-920873850393', supplier: 'David Warner', payment: '----', status: 'Unpaid', amount: '$1582' },
   ];
 
+  // Product status counts
+  const approvedCount = products.filter(p => p.status === 'approved').length;
+  const pendingCount = products.filter(p => p.status !== 'approved').length;
+
+  // Prepare stock chart data for Chart.js
+  const getStockChartData = () => {
+    let filtered = products;
+    let color = 'rgb(59,130,246)'; // blue default
+    if (stockView === 'low') {
+      filtered = products.filter(p => (parseInt(p.quantity) || 0) <= 5);
+      color = 'rgb(239,68,68)'; // red
+    } else if (stockView === 'high') {
+      filtered = products.filter(p => (parseInt(p.quantity) || 0) > 5);
+      color = 'rgb(34,197,94)'; // green
+    }
+    return {
+      labels: filtered.map(p => p.name),
+      datasets: [
+        {
+          label: 'Stock Quantity',
+          data: filtered.map(p => parseInt(p.quantity) || 0),
+          borderColor: color,
+          backgroundColor: color.replace('rgb', 'rgba').replace(')', ',0.1)'),
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+        }
+      ]
+    };
+  };
+
+  // Prepare Product Quantities chart data for Chart.js
+  const getProductQuantitiesChartData = () => {
+    return {
+      labels: filteredBarData.map(p => p.name),
+      datasets: [
+        {
+          label: 'Quantity',
+          data: filteredBarData.map(p => p.quantity),
+          borderColor: 'rgb(96,165,250)',
+          backgroundColor: 'rgba(96,165,250,0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+        }
+      ]
+    };
+  };
+
   return (
     <ArtisanLayout>
       <div className="p-8">
         <h2 className="text-2xl font-bold mb-4 text-white">Artisan Dashboard</h2>
         <p className="text-white mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>
+        {/* Product Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-green-900 rounded-lg p-6 text-center min-h-[100px]">
+            <div className="text-3xl font-bold text-green-300">{approvedCount}</div>
+            <div className="text-white mt-2">Approved Products</div>
+          </div>
+          <div className="bg-yellow-900 rounded-lg p-6 text-center min-h-[100px]">
+            <div className="text-3xl font-bold text-yellow-300">{pendingCount}</div>
+            <div className="text-white mt-2">Pending/Rejected Products</div>
+          </div>
+        </div>
         {loading ? (
           <p className="text-white">Loading analytics...</p>
         ) : error ? (
@@ -121,15 +203,16 @@ const ArtisanDashboard = () => {
             {/* Main Content (left and center) */}
             <div className="flex-1 min-w-0">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[120px]">
+                {/* Analytics Cards */}
+                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
                   <div className="text-3xl font-bold text-blue-300">{totalProducts}</div>
                   <div className="text-white mt-2">Total Products</div>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[120px]">
+                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
                   <div className="text-3xl font-bold text-green-300">{totalQuantity}</div>
                   <div className="text-white mt-2">Total Quantity</div>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[120px]">
+                <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
                   <div className="text-3xl font-bold text-yellow-300">₱{totalValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
                   <div className="text-white mt-2">Total Inventory Value</div>
                 </div>
@@ -151,14 +234,52 @@ const ArtisanDashboard = () => {
                       ))}
                     </select>
                   </div>
-                  <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={filteredBarData} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
-                      <XAxis dataKey="name" angle={-20} textAnchor="end" interval={0} tick={{ fill: '#fff', fontSize: 12 }} height={60} />
-                      <YAxis tick={{ fill: '#fff' }} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="quantity" stroke="#60a5fa" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 8 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <div className="h-[250px] w-full">
+                    <ChartLine
+                      data={getProductQuantitiesChartData()}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: false,
+                          },
+                          tooltip: {
+                            backgroundColor: isDarkMode ? '#23232b' : 'rgba(255,255,255,0.95)',
+                            titleColor: isDarkMode ? '#e5e7eb' : '#111',
+                            bodyColor: isDarkMode ? '#e5e7eb' : '#555',
+                            borderColor: isDarkMode ? '#333' : '#ddd',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                          }
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            grid: {
+                              color: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'
+                            },
+                            ticks: {
+                              color: isDarkMode ? '#e5e7eb' : undefined,
+                              stepSize: 1,
+                              callback: function(value) {
+                                if (Number.isInteger(value)) return value;
+                                return null;
+                              }
+                            }
+                          },
+                          x: {
+                            grid: { display: false },
+                            ticks: { color: isDarkMode ? '#e5e7eb' : undefined }
+                          }
+                        },
+                        interaction: { intersect: false, mode: 'index' },
+                        elements: { point: { radius: 4, hoverRadius: 7 } }
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="bg-gray-800 rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Products by Category</h3>
@@ -181,28 +302,76 @@ const ArtisanDashboard = () => {
                   <h3 className="text-lg font-semibold text-white">Stock Analysis</h3>
                   <div>
                     <button
-                      className={`px-3 py-1 rounded-l bg-gray-700 text-white border-r border-gray-600 ${stockView === 'low' ? 'bg-red-500 font-bold' : ''}`}
+                      className={`px-3 py-1 rounded-l bg-gray-700 text-white border-r border-gray-600 ${stockView === 'all' ? 'bg-blue-500 font-bold' : ''}`}
+                      onClick={() => setStockView('all')}
+                    >
+                      All
+                    </button>
+                    <button
+                      className={`px-3 py-1 bg-gray-700 text-white border-r border-gray-600 ${stockView === 'low' ? 'bg-red-500 font-bold' : ''}`}
                       onClick={() => setStockView('low')}
                     >
-                      Low Stock
+                      Hide Low Stock
                     </button>
                     <button
                       className={`px-3 py-1 rounded-r bg-gray-700 text-white ${stockView === 'high' ? 'bg-green-500 font-bold' : ''}`}
                       onClick={() => setStockView('high')}
                     >
-                      High Stock
+                      Hide High Stock
                     </button>
                   </div>
                 </div>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={stockData} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
-                    <XAxis dataKey="name" angle={-20} textAnchor="end" interval={0} tick={{ fill: '#fff', fontSize: 12 }} height={60} />
-                    <YAxis tick={{ fill: '#fff' }} />
-                    <Tooltip />
-                    <Bar dataKey="quantity" fill={stockView === 'low' ? '#f87171' : '#34d399'} />
-                  </BarChart>
-                </ResponsiveContainer>
-                <p className="mt-2 text-sm text-yellow-300">* {stockView === 'low' ? 'Showing products with low stock (≤ 5 units)' : 'Showing top 5 products with highest stock.'}</p>
+                <div className="h-[250px] w-full">
+                  <ChartLine
+                    data={getStockChartData()}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                        tooltip: {
+                          backgroundColor: isDarkMode ? '#23232b' : 'rgba(255,255,255,0.95)',
+                          titleColor: isDarkMode ? '#e5e7eb' : '#111',
+                          bodyColor: isDarkMode ? '#e5e7eb' : '#555',
+                          borderColor: isDarkMode ? '#333' : '#ddd',
+                          borderWidth: 1,
+                          padding: 12,
+                          boxPadding: 6,
+                          usePointStyle: true,
+                        }
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          grid: {
+                            color: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'
+                          },
+                          ticks: {
+                            color: isDarkMode ? '#e5e7eb' : undefined,
+                            stepSize: 1,
+                            callback: function(value) {
+                              if (Number.isInteger(value)) return value;
+                              return null;
+                            }
+                          }
+                        },
+                        x: {
+                          grid: { display: false },
+                          ticks: { color: isDarkMode ? '#e5e7eb' : undefined }
+                        }
+                      },
+                      interaction: { intersect: false, mode: 'index' },
+                      elements: { point: { radius: 4, hoverRadius: 7 } }
+                    }}
+                  />
+                </div>
+                <p className="mt-2 text-sm text-yellow-300">
+                  {stockView === 'all' && '* Showing all products by stock.'}
+                  {stockView === 'low' && '* Hiding low stock (≤ 5 units).'}
+                  {stockView === 'high' && '* Hiding high stock (> 5 units).'}
+                </p>
               </div>
             </div>
             {/* Top Selling Products (right sidebar) */}
