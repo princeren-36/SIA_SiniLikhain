@@ -1,0 +1,41 @@
+.react-calendar-dark {
+  background: #23272f;
+  color: #fff;
+  border-radius: 8px;
+}
+.react-calendar-dark abbr {
+  color: #fff;
+}
+.react-calendar-dark .react-calendar__tile--active {
+  background: #2563eb;
+  color: #fff;
+}
+.react-calendar-dark .react-calendar__tile--now {
+  background: #374151;
+  color: #fff;
+}
+.react-calendar-dark .react-calendar__tile {
+  background: transparent;
+  color: #fff;
+}
+
+.react-calendar-light {
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+}
+.react-calendar-light abbr {
+  color: #222;
+}
+.react-calendar-light .react-calendar__tile--active {
+  background: #2563eb;
+  color: #fff;
+}
+.react-calendar-light .react-calendar__tile--now {
+  background: #e0e7ef;
+  color: #222;
+}
+.react-calendar-light .react-calendar__tile {
+  background: transparent;
+  color: #222;
+}

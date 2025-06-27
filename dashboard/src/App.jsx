@@ -12,8 +12,9 @@ import Artisan from "./artisan/Artisan";
 import Cart from "./buyer/Cart";
 import RegisterArtisan from "./pages/RegisterArtisan";
 import RegisterBuyer from "./pages/RegisterBuyer";
-import ArtisanProfile from "./artisan/ArtisanProfile";
-
+import ArtisanDashboard from "./artisan/ArtisanDashboard";
+import ProductList from "./artisan/ProductList";
+import ManageProducts from "./artisan/ManageProducts";
 function App() {
   return (
     <BrowserRouter>
@@ -31,7 +32,10 @@ function App() {
         <Route path="/Artisan" element={<Artisan />} />
         <Route path="/registerartisan" element={<RegisterArtisan />} />
         <Route path="/registerbuyer" element={<RegisterBuyer />} />
-        <Route path="/artisanprofile" element={<ArtisanProfile />} />
+        <Route path="/artisan/dashboard" element={<ArtisanDashboard />} />
+        <Route path="/artisan/products" element={<ProductList />} />
+        <Route path="/artisan/add-product" element={<AddProduct />} />
+        <Route path="/artisan/manage-products" element={<ManageProducts />} />
       </Routes>
     </BrowserRouter>
   );

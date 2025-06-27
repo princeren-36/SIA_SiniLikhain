@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaBell, FaEnvelope, FaGlobe, FaPlus } from "react-icons/fa";
-import SidebarArtisan from "./SidebarArtisan";
+import { FaBell, FaEnvelope, FaGlobe, FaPlus, FaBars } from "react-icons/fa";
 
-function NavbarArtisan({ showLinks = true }) {
+function NavbarArtisan({ showLinks = true, toggleSidebar }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [hovered, setHovered] = useState("");
@@ -85,7 +84,17 @@ function NavbarArtisan({ showLinks = true }) {
   };
 
   return (
-    <nav className="flex items-center justify-end px-6 py-2 bg-black border-b border-gray-800 shadow-sm sticky top-0 left-0 right-0 z-30" style={{position:'sticky'}}>
+    <nav className="flex items-center justify-between px-6 py-2 bg-black border-b border-gray-800 shadow-sm sticky top-0 left-0 right-0 z-30" style={{position:'sticky'}}>
+      {/* Sidebar toggle button */}
+      <div className="flex items-center">
+        <button 
+          onClick={() => toggleSidebar && toggleSidebar()} 
+          className="p-2 rounded-md text-white hover:bg-gray-800 transition-colors cursor-pointer"
+        >
+          <FaBars size={18} />
+        </button>
+      </div>
+      
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-end mr-2">
           <span className="font-semibold text-white text-sm">{user?.username || "User Name"}</span>

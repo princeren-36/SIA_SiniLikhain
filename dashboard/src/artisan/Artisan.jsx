@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "./NavbarArtisan";
-import SidebarArtisan from "./SidebarArtisan";
 import logo from "../images/homepage.jpg";
 import React, { useState } from "react";
+import ArtisanSidebar from "./ArtisanSidebar";
 
 // Baybayin for: si, ni, li, khai, n
 const baybayin = [
@@ -65,47 +65,59 @@ function SiniLikhainBaybayin() {
 }
 
 function Artisan() {
+  // Sidebar state
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [view, setView] = useState("home"); // Set default to 'home'
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleSidebar = () => {
+    console.log("Toggling sidebar, current state:", sidebarOpen);
+    setSidebarOpen(prev => !prev);
+  };
+  
+  const handleLogout = () => {
+    window.location.href = "/";
+  };
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-black">
-      <SidebarArtisan />
-      <Navbar />
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <img
-          src={logo}
-          alt="SiniLikhain artisan background"
-          className="w-full h-full object-cover pointer-events-none"
-        />
-      </div>
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 py-20">
-        <SiniLikhainBaybayin />
-        <span className="text-white text-base md:text-lg tracking-widest mb-4 font-[source-code-pro,monospace] opacity-90">
-          Welcome, Artisan!
-        </span>
-        <h1 className="text-2xl md:text-4xl font-bold font-[source-code-pro,monospace] text-white mb-8 leading-tight tracking-wide">
-          In simplicity, the seed of creation;
-          <br />
-          in humble tools, the birth of brilliance.
-        </h1>
-        <div className="flex gap-4 flex-wrap justify-center">
-          <a
-            href="/aboutartisan"
-            className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black hover:!bg-black hover:!text-white transition-colors duration-200 group"
-            style={{ transition: "color 0.2s, background 0.2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "")}
-          >
-            VIEW MORE
-          </a>
-          <a
-            href="/artisanprofile"
-            className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-white text-black hover:opacity-90 transition-opacity duration-200"
-          >
-            MY INVENTORY
-          </a>
+    <div className="min-h-screen flex bg-black">
+      {/* Sidebar */}
+      <ArtisanSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+
+      <div className="flex-1 flex flex-col relative z-10">
+        <Navbar toggleSidebar={toggleSidebar} />
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src={logo}
+            alt="SiniLikhain artisan background"
+            className="w-full h-full object-cover pointer-events-none"
+          />
         </div>
-      </main>
+        <main className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-4 py-20">
+          <SiniLikhainBaybayin />
+          <span className="text-white text-base md:text-lg tracking-widest mb-4 font-[source-code-pro,monospace] opacity-90">
+            Welcome, Artisan!
+          </span>
+          <h1 className="text-2xl md:text-4xl font-bold font-[source-code-pro,monospace] text-white mb-8 leading-tight tracking-wide">
+            In simplicity, the seed of creation;
+            <br />
+            in humble tools, the birth of brilliance.
+          </h1>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <a
+              href="/aboutartisan"
+              className="inline-block px-8 py-3 border border-white text-white font-[source-code-pro,monospace] text-base tracking-widest rounded bg-transparent hover:bg-white hover:text-black hover:!bg-black hover:!text-white transition-colors duration-200 group"
+              style={{ transition: "color 0.2s, background 0.2s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "")}
+            >
+              VIEW MORE
+            </a>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
