@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import NavbarArtisan from "./NavbarArtisan";
 import cartBg from '../images/2.jpg';
 import ArtisanLayout from "./ArtisanLayout";
+import { API_BASE } from "../utils/api";
 
 function AddProduct() {
   // Sidebar state
@@ -39,7 +40,7 @@ function AddProduct() {
     if (!user || user.role !== "artisan") {
       navigate("/");
     } else {
-      axios.get("http://localhost:5000/products").then((res) => {
+      axios.get(`${API_BASE}/products`).then((res) => {
         const artisanProducts = res.data.filter(p => p.artisan === user.username);
         setProducts(artisanProducts);
       }).catch(err => {
@@ -116,13 +117,13 @@ function AddProduct() {
 
     try {
       if (editId) {
-        const res = await axios.put(`http://localhost:5000/products/${editId}`, data);
+        const res = await axios.put(`${API_BASE}/products/${editId}`, data);
         setProducts((prev) =>
           prev.map((p) => (p._id === editId ? res.data : p))
         );
         alert("Product updated successfully!");
       } else {
-        const res = await axios.post("http://localhost:5000/products", data);
+        const res = await axios.post(`${API_BASE}/products`, data);
         setProducts((prev) => [...prev, res.data]);
         alert("The piece is in place. Await the gatekeeper's glance before it takes its place.");
       }
@@ -146,7 +147,7 @@ function AddProduct() {
       quantity: product.quantity || 1,
       category: product.category || "",
     });
-    setPreview(product.image ? `http://localhost:5000${product.image}` : null);
+    setPreview(product.image ? `${API_BASE}${product.image}` : null);
     setOpenForm(true);
     setSelectedProduct(null);
     setErrors({});
@@ -155,7 +156,7 @@ function AddProduct() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`http://localhost:5000/products/${id}`);
+        await axios.delete(`${API_BASE}/products/${id}`);
         setProducts((prev) => prev.filter((p) => p._id !== id));
         if (editId === id) {
           setEditId(null);
@@ -323,7 +324,7 @@ function AddProduct() {
                     {/* Image card, visually separated */}
                     <div className="w-full flex justify-center pt-8 pb-4 min-h-[180px]" style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
                       <img
-                        src={`http://localhost:5000${p.image}`}
+                        src={`${API_BASE}${p.image}`}
                         alt={p.name}
                         className="object-contain h-36 w-36"
                         style={{ background: 'white', border: 'none' }}
@@ -356,7 +357,7 @@ function AddProduct() {
                 <div className="bg-white rounded-2xl shadow-lg px-6 py-4 w-full max-w-md border-t-4 border-blue-800 animate-fadeIn relative flex flex-col items-center z-10" style={{minHeight: 'unset', maxHeight: '90vh'}}>
                   <button className="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl" onClick={() => setSelectedProduct(null)}>&times;</button>
                   <img
-                    src={`http://localhost:5000${selectedProduct.image}`}
+                    src={`${API_BASE}${selectedProduct.image}`}
                     alt={selectedProduct.name}
                     className="w-40 h-40 object-contain rounded-xl mb-4"
                     style={{flexShrink:0}}

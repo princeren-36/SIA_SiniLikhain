@@ -11,6 +11,7 @@ import {
 import AdminDashboard from './AdminDashboard';
 import AdminSidebar from './AdminSidebar';
 import { Snackbar, Alert } from '@mui/material';
+import { API_BASE } from '../utils/api';
 
 ChartJS.register(
   CategoryScale,
@@ -95,8 +96,8 @@ function Admin() {
     };
   };
   useEffect(() => {
-    axios.get("http://localhost:5000/users/all").then(res => setUsers(res.data));
-    axios.get("http://localhost:5000/products?admin=true").then(res => setProducts(res.data));
+    axios.get(`${API_BASE}/users/all`).then(res => setUsers(res.data));
+    axios.get(`${API_BASE}/products?admin=true`).then(res => setProducts(res.data));
   }, []);
 
   useEffect(() => {
@@ -110,12 +111,12 @@ function Admin() {
   }, [users, products]);
 
   const handleApprove = async (id) => {
-    await axios.patch(`http://localhost:5000/products/${id}/approve`);
+    await axios.patch(`${API_BASE}/products/${id}/approve`);
     setProducts(products => products.map(p => p._id === id ? { ...p, approved: true } : p));
   };
 
   const handleReject = async (id) => {
-    await axios.patch(`http://localhost:5000/products/${id}/reject`);
+    await axios.patch(`${API_BASE}/products/${id}/reject`);
     setProducts(products => products.map(p => p._id === id ? { ...p, approved: false } : p));
   };
 
@@ -166,14 +167,14 @@ function Admin() {
       alert(Object.values(currentErrors).join('\n'));
       return;
     }
-    const res = await axios.put(`http://localhost:5000/users/${id}`, editUserData);
+    const res = await axios.put(`${API_BASE}/users/${id}`, editUserData);
     setUsers(users.map(u => u._id === id ? res.data : u));
     setEditUserId(null);
   };
 
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Do you want to delete this user?')) return;
-    await axios.delete(`http://localhost:5000/users/${id}`);
+    await axios.delete(`${API_BASE}/users/${id}`);
     setUsers(users.filter(u => u._id !== id));
   };
   const navItems = [
@@ -458,7 +459,7 @@ function Admin() {
                             <button 
                               onClick={async () => {
                                 if(window.confirm('Do you want to delete this product?')) {
-                                  await axios.delete(`http://localhost:5000/products/${p._id}`);
+                                  await axios.delete(`${API_BASE}/products/${p._id}`);
                                   setProducts(products.filter(prod => prod._id !== p._id));
                                 }
                               }} 

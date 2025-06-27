@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import loginImg from '../images/login.jpg';
+import { API_BASE } from '../utils/api';
 
 const logo = '/circular-logo.png';
 
@@ -94,7 +95,7 @@ function Login() {
     sessionStorage.removeItem("user");
 
     try {
-      const response = await axios.post("http://localhost:5000/users/login", credentials);
+      const response = await axios.post(`${API_BASE}/users/login`, credentials);
       const user = response.data.user;
       if (rememberMe) {
         localStorage.setItem("user", JSON.stringify(user));

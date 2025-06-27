@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
       value: Number
     }
   ],
-  // Add status field for product approval workflow
+
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }
 });
 

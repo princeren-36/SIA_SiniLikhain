@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import NavbarBuyer from "./NavbarBuyer";
 import axios from 'axios';
 import cartBg from '../images/2.jpg';
+import { API_BASE } from "../utils/api";
 
 function Buyer() {
   const [products, setProducts] = useState([]);
@@ -15,7 +16,7 @@ function Buyer() {
   const [addedProductId, setAddedProductId] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/products").then(res => {
+    axios.get(`${API_BASE}/products`).then(res => {
       setProducts(res.data.filter(p => p.quantity > 0));
       const cats = Array.from(new Set(res.data.map(p => p.category).filter(Boolean)));
       setCategories(cats);
@@ -117,7 +118,7 @@ function Buyer() {
                     onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleOpenProduct(product); }}
                   >
                     <img
-                      src={`http://localhost:5000${product.image}`}
+                      src={`${API_BASE}${product.image}`}
                       alt={product.name}
                       className="object-contain h-36 w-36"
                       style={{ background: 'white', border: 'none' }}
@@ -165,7 +166,7 @@ function Buyer() {
               ) : (
                 cart.map(item => (
                   <div key={item._id} className="flex items-center gap-2 py-1">
-                    <img src={`http://localhost:5000${item.image}`} alt={item.name} className="w-9 h-9 object-contain bg-white" />
+                    <img src={`${API_BASE}${item.image}`} alt={item.name} className="w-9 h-9 object-contain bg-white" />
                     <div className="flex-1 min-w-0">
                       <div className="font-mono text-xs font-semibold tracking-wider text-black uppercase truncate">{item.name}</div>
                       <div className="font-mono text-[11px] text-black">{item.quantity} × ₱{Number(item.price).toFixed(2)}</div>
@@ -218,7 +219,7 @@ function Buyer() {
               &times;
             </button>
             <img
-              src={`http://localhost:5000${selectedProduct.image}`}
+              src={`${API_BASE}${selectedProduct.image}`}
               alt={selectedProduct.name}
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
@@ -255,11 +256,11 @@ function Buyer() {
                     className={`text-xl ${star <= userRating ? 'text-yellow-400' : 'text-gray-300'} focus:outline-none`}
                     onClick={async () => {
                       if (!user) return;
-                      await axios.post(`http://localhost:5000/products/${selectedProduct._id}/rate`, {
+                      await axios.post(`${API_BASE}/products/${selectedProduct._id}/rate`, {
                         user,
                         value: star
                       });
-                      const { data } = await axios.get(`http://localhost:5000/products`);
+                      const { data } = await axios.get(`${API_BASE}/products`);
                       const updated = data.find(p => p._id === selectedProduct._id);
                       setSelectedProduct(updated);
                       setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
