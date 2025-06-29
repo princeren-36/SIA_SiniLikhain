@@ -40,4 +40,77 @@ router.delete("/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+// New endpoints for profile management
+
+// Get user profile details
+router.get("/profile/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Format response with only necessary data
+    const profile = {
+      id: user._id,
+      name: user.username,
+      email: user.email,
+      role: user.role,
+      bio: user.bio,
+      location: user.location,
+      joined: user.joined,
+      avatar: user.avatar,
+      statistics: user.statistics || {
+        totalProducts: 0,
+        averageRating: 0,
+        salesCompleted: 0
+      }
+    };
+    
+    res.json(profile);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Error fetching user profile" });
+  }
+});
+
+// Update user profile
+router.put("/profile/:id", async (req, res) => {
+  try {
+    const { name, email, bio, location, avatar } = req.body;
+    
+    // Find user and update allowed profile fields
+    const updated = await User.findByIdAndUpdate(
+      req.params.id,
+      { 
+        username: name, 
+        email, 
+        bio, 
+        location,
+        avatar
+      },
+      { new: true }
+    );
+    
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    res.json({
+      id: updated._id,
+      name: updated.username,
+      email: updated.email,
+      bio: updated.bio,
+      location: updated.location,
+      joined: updated.joined,
+      avatar: updated.avatar,
+      role: updated.role,
+      statistics: updated.statistics
+    });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Error updating user profile" });
+  }
+});
+
 module.exports = router;

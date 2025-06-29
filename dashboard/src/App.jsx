@@ -1,5 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import AddProductPage from "./artisan/AddProductPage";
@@ -15,9 +17,11 @@ import Cart from "./buyer/Cart";
 import RegisterArtisan from "./pages/RegisterArtisan";
 import RegisterBuyer from "./pages/RegisterBuyer";
 import ArtisanDashboard from "./artisan/ArtisanDashboard";
+import ArtisanProfile from "./artisan/ArtisanProfile";
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
@@ -35,6 +39,7 @@ function App() {
         <Route path="/artisan/add-product" element={<AddProductPage />} />
         <Route path="/artisan/products" element={<AddProduct />} />
         <Route path="/artisan/manage-products" element={<ManageProducts />} />
+        <Route path="/artisan/profile" element={<ArtisanProfile />} />
       </Routes>
     </BrowserRouter>
   );

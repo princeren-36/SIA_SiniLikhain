@@ -7,6 +7,8 @@ import { RiProductHuntLine, RiProductHuntFill } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { BsFillGearFill, BsGear } from "react-icons/bs";
+import { FaUserCircle } from "react-icons/fa";
+import { FaRegIdBadge, FaUsersCog } from "react-icons/fa";
 
 
 
@@ -20,6 +22,7 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const [expandedMenus, setExpandedMenus] = useState(getInitialExpandedMenus);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // Toggle submenu visibility
   const toggleSubmenu = (menu) => {
@@ -185,6 +188,43 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
             )}
           </li>
 
+          {/* User Profile Dropdown */}
+          <li className="px-4 py-2">
+            <div
+              className={`flex items-center justify-between cursor-pointer rounded-md p-2 hover-item ${
+                isActive("/artisan/profile") || isActive("/artisan/users") ? "active-item" : ""
+              }`}
+              onClick={() => toggleSubmenu("userProfile")}
+            >
+              <div className="flex items-center">
+                <FaUserCircle className="text-2xl" />
+                {isOpen && <span className="ml-3">User Profile</span>}
+              </div>
+              {isOpen && (
+                <span>
+                  {expandedMenus.userProfile ? <FaCaretUp /> : <FaCaretDown />}
+                </span>
+              )}
+            </div>
+            {/* User Profile submenu */}
+            {isOpen && expandedMenus.userProfile && (
+              <ul className="pl-4 mt-2">
+                <li>
+                  <Link
+                    to="/artisan/profile"
+                    className={`flex items-center p-2 pl-6 rounded-md hover-item ${
+                      isActive("/artisan/profile") ? "active-item" : ""
+                    }`}
+                  >
+                    <FaRegIdBadge className="mr-2" />
+                    <span>Profile</span>
+                  </Link>
+                  {/* Remove the ArtisanProfile component to prevent double rendering */}
+                </li>
+              </ul>
+            )}
+          </li>
+
           {/* About */}
           <li className="px-4 py-2">
             <Link
@@ -207,12 +247,36 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
       <div className="mt-auto px-4 py-2">
         <div
           className="flex items-center cursor-pointer rounded-md p-2 hover-item"
-          onClick={handleLogout}
+          onClick={() => setShowLogoutDialog(true)}
         >
           <FiLogOut className="text-xl" />
           {isOpen && <span className="ml-3">Logout</span>}
         </div>
       </div>
+      {/* Logout confirmation dialog with blur effect on sidebar */}
+      {showLogoutDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 backdrop-blur-sm bg-black/40 dark:bg-gray-900/60 pointer-events-none"></div>
+          <div className="relative z-10 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-2xl p-6 min-w-[300px] pointer-events-auto">
+            <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Confirm Logout</h2>
+            <p className="mb-6 text-gray-800 dark:text-gray-200">Are you sure you want to log out?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs border border-gray-300 dark:border-gray-600"
+                onClick={() => setShowLogoutDialog(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs border border-red-600"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );
