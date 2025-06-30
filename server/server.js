@@ -20,8 +20,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
+const orderRoutes = require("./routes/orders");
 
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
 
 app.listen(PORT, HOST, () => console.log(`Server running at http://${HOST}:${PORT}`));

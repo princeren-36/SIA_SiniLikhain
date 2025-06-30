@@ -69,23 +69,15 @@ function Cart() {
       setLoginPromptOpen(true);
       return;
     }
-    try {
-      const itemsToPurchase = cart.filter(item => item.quantity > 0);
-      if (itemsToPurchase.length === 0) {
-        alert("Your cart is empty. Add items before purchasing.");
-        return;
-      }
-      await axios.post(`${API_BASE}/products/buy`, { cart: itemsToPurchase });
-      setCart([]);
-      localStorage.removeItem("cart");
-      setSnackbarOpen(true);
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        alert(`Purchase failed: ${error.response.data.message}`);
-      } else {
-        alert("Purchase failed. Please try again.");
-      }
+    
+    const itemsToPurchase = cart.filter(item => item.quantity > 0);
+    if (itemsToPurchase.length === 0) {
+      alert("Your cart is empty. Add items before purchasing.");
+      return;
     }
+    
+    // Navigate to checkout page
+    navigate('/buyer/Checkout');
   };
 
   return (

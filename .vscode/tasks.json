@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start SiniLikhain App",
+			"type": "shell",
+			"command": "cd server && npm start & cd dashboard && npm run dev",
+			"problemMatcher": [],
+			"group": "start",
+			"isBackground": true
+		}
+	]
+}

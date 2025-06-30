@@ -8,7 +8,8 @@ import { FiLogOut } from "react-icons/fi";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { BsFillGearFill, BsGear } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
-import { FaRegIdBadge, FaUsersCog } from "react-icons/fa";
+import { FaRegIdBadge, FaUsersCog, FaShoppingBag } from "react-icons/fa";
+import { MdOutlineShoppingBag, MdShoppingBag } from "react-icons/md";
 
 
 
@@ -186,6 +187,25 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
                 </li>
               </ul>
             )}
+          </li>
+
+          {/* Orders */}
+          <li className="px-4 py-2">
+            <Link
+              to="/artisan/orders"
+              className={`flex items-center justify-between rounded-md p-2 hover-item ${
+                isActive("/artisan/orders") ? "active-item" : ""
+              }`}
+            >
+              <div className="flex items-center">
+                {isActive("/artisan/orders") ? (
+                  <MdShoppingBag className="text-xl" />
+                ) : (
+                  <MdOutlineShoppingBag className="text-xl" />
+                )}
+                {isOpen && <span className="ml-3">My Orders</span>}
+              </div>
+            </Link>
           </li>
 
           {/* User Profile Dropdown */}

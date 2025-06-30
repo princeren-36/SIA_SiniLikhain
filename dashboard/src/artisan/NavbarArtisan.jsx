@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaBell, FaEnvelope, FaGlobe, FaPlus, FaBars, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
+import { FaRegIdBadge } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 
 function NavbarArtisan({ showLinks = true, toggleSidebar }) {
@@ -130,7 +131,7 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
               className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-800 text-xs"
               onClick={() => { setDropdownOpen(false); navigate('/artisan/profile'); }}
             >
-              <FaUserCircle className="text-purple-600 text-sm" /> profile
+              <FaRegIdBadge className="text-purple-600 text-sm" /> profile
             </button>
             <button
               className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-800 text-xs"

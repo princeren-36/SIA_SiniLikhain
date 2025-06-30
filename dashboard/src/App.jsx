@@ -14,10 +14,12 @@ import Admin from "./admin/Admin";
 import Buyer from "./buyer/Buyer";
 import Artisan from "./artisan/Artisan";
 import Cart from "./buyer/Cart";
+import Checkout from "./buyer/Checkout";
 import RegisterArtisan from "./pages/RegisterArtisan";
 import RegisterBuyer from "./pages/RegisterBuyer";
 import ArtisanDashboard from "./artisan/ArtisanDashboard";
 import ArtisanProfile from "./artisan/ArtisanProfile";
+import ArtisanOrders from "./artisan/ArtisanOrders";
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +34,7 @@ function App() {
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Buyer" element={<Buyer />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/buyer/Checkout" element={<Checkout />} />
         <Route path="/Artisan" element={<Artisan />} />
         <Route path="/registerartisan" element={<RegisterArtisan />} />
         <Route path="/registerbuyer" element={<RegisterBuyer />} />
@@ -40,6 +43,7 @@ function App() {
         <Route path="/artisan/products" element={<AddProduct />} />
         <Route path="/artisan/manage-products" element={<ManageProducts />} />
         <Route path="/artisan/profile" element={<ArtisanProfile />} />
+        <Route path="/artisan/orders" element={<ArtisanOrders />} />
       </Routes>
     </BrowserRouter>
   );
