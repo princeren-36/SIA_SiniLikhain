@@ -14,6 +14,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
+  // If ?approved=true, only return approved products
+  if (req.query.approved === "true") {
+    const products = await Product.find({ approved: true });
+    return res.json(products);
+  }
   // Always return all products, regardless of status (for testing/demo)
   const products = await Product.find();
   res.json(products);
@@ -23,18 +28,26 @@ router.post("/", upload.single("image"), async (req, res) => {
   const { name, price, artisan, quantity, category } = req.body;
   const image = req.file ? `/uploads/${req.file.filename}` : "";
 
-  const newProduct = new Product({ name, price, image, artisan, quantity, category, status: "pending" });
+  const newProduct = new Product({ name, price, image, artisan, quantity, category, status: "pending", approved: false });
   await newProduct.save();
   res.json(newProduct);
 });
 
 router.patch("/:id/approve", async (req, res) => {
-  const product = await Product.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    { status: "approved", approved: true },
+    { new: true }
+  );
   res.json(product);
 });
 
 router.patch("/:id/reject", async (req, res) => {
-  const product = await Product.findByIdAndUpdate(req.params.id, { status: "rejected" }, { new: true });
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    { status: "pending", approved: false },
+    { new: true }
+  );
   res.json(product);
 });
 

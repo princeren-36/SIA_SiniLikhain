@@ -15,7 +15,7 @@ const ArtisanDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [stockView, setStockView] = useState('low'); // 'low' or 'high'
+  const [stockView, setStockView] = useState('all'); // 'all', 'low' or 'high'
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
@@ -110,11 +110,13 @@ const ArtisanDashboard = () => {
   const stockData = useMemo(() => {
     if (stockView === 'low') {
       return products.filter(p => (parseInt(p.quantity) || 0) <= 5);
-    } else {
+    } else if (stockView === 'high') {
       return products
         .slice()
         .sort((a, b) => (parseInt(b.quantity) || 0) - (parseInt(a.quantity) || 0))
         .slice(0, 5);
+    } else {
+      return products;
     }
   }, [products, stockView]);
 
@@ -181,7 +183,7 @@ const ArtisanDashboard = () => {
 
   return (
     <ArtisanLayout>
-      <div className="flex flex-col w-full">
+      <div className={`flex flex-col w-full min-h-screen ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
         <div className="p-8">
           <h2 className="text-2xl font-bold mb-4 text-white">Artisan Dashboard</h2>
           <p className="text-white mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>

@@ -16,7 +16,7 @@ function Buyer() {
   const [addedProductId, setAddedProductId] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_BASE}/products`).then(res => {
+    axios.get(`${API_BASE}/products?approved=true`).then(res => {
       setProducts(res.data.filter(p => p.quantity > 0));
       const cats = Array.from(new Set(res.data.map(p => p.category).filter(Boolean)));
       setCategories(cats);
@@ -260,7 +260,7 @@ function Buyer() {
                         user,
                         value: star
                       });
-                      const { data } = await axios.get(`${API_BASE}/products`);
+                      const { data } = await axios.get(`${API_BASE}/products?approved=true`);
                       const updated = data.find(p => p._id === selectedProduct._id);
                       setSelectedProduct(updated);
                       setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));

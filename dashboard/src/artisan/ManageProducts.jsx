@@ -497,7 +497,9 @@ const ManageProducts = () => {
                           
                           {/* Actions cell */}
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {editingId === product._id ? (
+                            {product.status === 'pending' ? (
+                              <span className="text-yellow-700 font-semibold">Pending Approval</span>
+                            ) : editingId === product._id ? (
                               <div className="flex space-x-2">
                                 <button 
                                   onClick={() => handleSaveEdit(product._id)}

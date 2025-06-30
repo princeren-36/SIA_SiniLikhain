@@ -13,8 +13,8 @@ const productSchema = new mongoose.Schema({
       value: Number
     }
   ],
-
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }
+  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+  approved: { type: Boolean, default: false } // Added for frontend compatibility
 });
 
 module.exports = mongoose.model("Product", productSchema);
