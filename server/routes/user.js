@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/User");
+const deleteFile = require('../uploads/deleteFile');
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
@@ -110,6 +111,25 @@ router.put("/profile/:id", async (req, res) => {
   } catch (err) {
     console.error("Error updating profile:", err);
     res.status(500).json({ message: "Error updating user profile" });
+  }
+});
+
+// Delete user profile avatar
+router.delete('/profile/:id/avatar', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.avatar) {
+      deleteFile(user.avatar);
+    }
+    user.avatar = null;
+    await user.save();
+    res.json({ message: 'Profile image deleted', avatar: null });
+  } catch (err) {
+    console.error('Error deleting profile image:', err);
+    res.status(500).json({ message: 'Error deleting profile image' });
   }
 });
 

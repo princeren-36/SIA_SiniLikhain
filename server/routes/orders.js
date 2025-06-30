@@ -140,4 +140,22 @@ router.patch("/:id/payment", async (req, res) => {
   }
 });
 
+// Get orders with optional artisanId and status filters
+router.get("/", async (req, res) => {
+  try {
+    const { artisanId, status } = req.query;
+    let filter = {};
+    if (artisanId) {
+      filter["items.artisanId"] = artisanId;
+    }
+    if (status) {
+      filter["status"] = status;
+    }
+    const orders = await Order.find(filter).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch orders", error: error.message });
+  }
+});
+
 module.exports = router;

@@ -72,17 +72,50 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
     const activeKey = navLinks.find(l => location.pathname === l.to)?.to || (location.pathname === "/login" ? "logout" : "");
     if (activeKey) updateUnderline(activeKey); else clearUnderline();
   }, [location.pathname]);
+  
+  // State to track profile updates
+  const [profileUpdated, setProfileUpdated] = React.useState(0);
+  
+  // Listen for profile updates from ArtisanProfile component
+  React.useEffect(() => {
+    const handleProfileUpdate = () => {
+      // Force a refresh of the user data from storage
+      const updatedUser = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+      if (updatedUser) {
+        // Update the local user state to trigger UI refresh
+        setProfileUpdated(prev => prev + 1);
+      }
+    };
+    
+    // Listen for custom profile update event
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
+  }, []);
+
+  // Helper to get full avatar/profile image URL
+  const getFullProfileImageUrl = (img) => {
+    if (!img) return null;
+    if (img.startsWith('http')) return img;
+    // Remove leading slash if present
+    const cleanPath = img.replace(/^\\|\//, '');
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${cleanPath}`;
+  };
 
   const getProfileImage = () => {
-    if (user?.profileImage && user.profileImage.trim() !== "") {
-      return user.profileImage;
+    // Re-get user data on each render to ensure it's fresh
+    const currentUser = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+    if (currentUser?.profileImage && currentUser.profileImage.trim() !== "") {
+      return getFullProfileImageUrl(currentUser.profileImage);
     }
-    // Try to use a gender-neutral or generated avatar based on username
-    if (user?.username) {
-      // Use a free avatar API (e.g., DiceBear)
-      return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.username)}`;
+    if (currentUser?.avatar && currentUser.avatar.trim() !== "") {
+      return getFullProfileImageUrl(currentUser.avatar);
     }
-    // Fallback
+    if (currentUser?.username) {
+      return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(currentUser.username)}`;
+    }
     return "https://api.dicebear.com/7.x/initials/svg?seed=User";
   };
 
@@ -112,7 +145,16 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
       </div>
       <div className="flex items-center gap-3 relative">
         <div className="flex flex-col items-end mr-2">
-          <span className="font-semibold text-white text-sm">{user?.username || "User Name"}</span>
+          {/* Use latest user data from storage */}
+          <span className="font-semibold text-white text-sm">
+            {(() => {
+              // Force rerender when profileUpdated changes
+              const currentUser = profileUpdated !== undefined ? 
+                JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}") : 
+                user;
+              return currentUser?.username || "User Name";
+            })()}
+          </span>
           <span className="text-xs text-gray-300">{user?.role === 'admin' ? 'Admin User' : 'Artisan'}</span>
         </div>
         <div className="w-10 h-10 rounded-full bg-gray-700 border-2 border-black shadow overflow-hidden">
@@ -120,6 +162,7 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
             src={getProfileImage()}
             alt="profile"
             className="w-full h-full object-cover"
+            key={`profile-img-${profileUpdated}`} /* Force re-render of image when profile updates */
           />
         </div>
         <button className="ml-1" onClick={() => setDropdownOpen((prev) => !prev)}>

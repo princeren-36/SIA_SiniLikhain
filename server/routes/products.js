@@ -19,6 +19,11 @@ router.get("/", async (req, res) => {
     const products = await Product.find({ approved: true });
     return res.json(products);
   }
+  // Filter by artisan if provided
+  if (req.query.artisan) {
+    const products = await Product.find({ artisan: req.query.artisan });
+    return res.json(products);
+  }
   // Always return all products, regardless of status (for testing/demo)
   const products = await Product.find();
   res.json(products);
@@ -93,6 +98,21 @@ router.post("/:id/rate", async (req, res) => {
   await product.save();
 
   res.json(product);
+});
+
+// General file upload endpoint for profile images and other assets
+router.post("/upload", upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  
+  // Return the URL to the uploaded file
+  const fileUrl = `/uploads/${req.file.filename}`;
+  
+  res.json({
+    message: "File uploaded successfully",
+    url: fileUrl
+  });
 });
 
 module.exports = router;

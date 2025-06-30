@@ -1,10 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar } from "react-icons/fa";
-import { MdEmail, MdDescription } from "react-icons/md";
+import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
 import ArtisanLayout from "./ArtisanLayout";
 import axios from "axios";
+
+// Create an axios instance with the correct base URL
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 import { toast } from "react-toastify";
 import cartBg from '../images/2.jpg';
+
+// Function to fetch statistics for an artisan
+const fetchArtisanStatistics = async (artisanId) => {
+  try {
+    // Fetch products count created by this artisan
+    const productsResponse = await api.get(`/products?artisan=${artisanId}`);
+    const totalProducts = productsResponse.data?.length || 0;
+    
+    // Calculate average rating
+    let totalRating = 0;
+    let ratedProductsCount = 0;
+    productsResponse.data?.forEach(product => {
+      if (product.rating && product.rating > 0) {
+        totalRating += product.rating;
+        ratedProductsCount++;
+      }
+    });
+    const averageRating = ratedProductsCount > 0 ? (totalRating / ratedProductsCount).toFixed(1) : 0;
+    
+    // Fetch completed sales
+    const ordersResponse = await api.get(`/orders?artisanId=${artisanId}&status=completed`);
+    const salesCompleted = ordersResponse.data?.length || 0;
+    
+    return {
+      totalProducts,
+      averageRating,
+      salesCompleted
+    };
+  } catch (error) {
+    console.error("Error fetching artisan statistics:", error);
+    return {
+      totalProducts: 0,
+      averageRating: 0,
+      salesCompleted: 0
+    };
+  }
+};
 
 const ArtisanProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,33 +70,53 @@ const ArtisanProfile = () => {
       salesCompleted: 0
     }
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
   
   const [userId, setUserId] = useState(null);
+  const avatarFileInputRef = useRef(null);
   
   // Get user ID from localStorage or sessionStorage
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const user = localStorage.getItem("user") || sessionStorage.getItem("user");
-        if (!user) return;
+        // Get user data from storage
+        const userStorage = localStorage.getItem("user") || sessionStorage.getItem("user");
+        if (!userStorage) {
+          console.warn("No user found in storage");
+          setIsLoading(false);
+          return;
+        }
         
-        const userData = JSON.parse(user);
+        const userData = JSON.parse(userStorage);
         if (userData && userData._id) {
           setUserId(userData._id);
+          
+          // Pre-populate profile data from local storage while waiting for API response
+          setProfileData(prevData => ({
+            ...prevData,
+            name: userData.username || prevData.name,
+            email: userData.email || prevData.email,
+            bio: userData.bio || prevData.bio,
+            location: userData.location || prevData.location,
+            avatar: userData.avatar || prevData.avatar,
+          }));
         } else {
+          console.warn("User found but missing _id field", userData);
           // Fallback for development/testing
           setIsLoading(false);
           setProfileData({
             name: userData?.username || "Artisan Name",
             email: userData?.email || "artisan@email.com",
-            bio: "This is your artisan profile. Update your information to let buyers know more about you and your craft!",
-            avatar: null,
-            location: "Philippines",
+            bio: userData?.bio || "This is your artisan profile. Update your information to let buyers know more about you and your craft!",
+            avatar: userData?.avatar || null,
+            location: userData?.location || "Philippines",
             joined: "2024-01-01",
             statistics: {
-              totalProducts: 24,
-              averageRating: 4.8,
-              salesCompleted: 152
+              totalProducts: userData?.statistics?.totalProducts || 24,
+              averageRating: userData?.statistics?.averageRating || 4.8,
+              salesCompleted: userData?.statistics?.salesCompleted || 152
             }
           });
         }
@@ -71,39 +137,135 @@ const ArtisanProfile = () => {
       
       setIsLoading(true);
       try {
-        const response = await axios.get(`/api/users/profile/${userId}`);
-        const formattedDate = new Date(response.data.joined).toISOString().split('T')[0];
-        
-        setProfileData({
-          name: response.data.name,
-          email: response.data.email,
-          bio: response.data.bio || "This is your artisan profile. Update your information to let buyers know more about you and your craft!",
-          avatar: response.data.avatar,
-          location: response.data.location || "Philippines",
-          joined: formattedDate,
-          statistics: {
-            totalProducts: response.data.statistics?.totalProducts || 0,
-            averageRating: response.data.statistics?.averageRating || 0,
-            salesCompleted: response.data.statistics?.salesCompleted || 0
-          }
+        // Try to fetch user data from server
+        const response = await api.get(`/users/profile/${userId}`).catch(error => {
+          console.warn("API not available, using fallback data");
+          throw error; // Re-throw to be caught by outer catch
         });
+        
+        // Fetch real-time statistics (even if profile API fails)
+        let stats = {
+          totalProducts: 0,
+          averageRating: 0,
+          salesCompleted: 0
+        };
+        
+        try {
+          stats = await fetchArtisanStatistics(userId);
+        } catch (statsError) {
+          console.warn("Could not fetch statistics, using fallback data", statsError);
+        }
+        
+        if (response && response.data) {
+          // Format the date
+          const dateStr = response.data.joined;
+          let formattedDate;
+          try {
+            formattedDate = new Date(dateStr).toISOString().split('T')[0];
+          } catch (dateError) {
+            console.warn("Invalid date format from API", dateStr);
+            formattedDate = "N/A";
+          }
+          
+          // Update profile data from API response with real-time statistics
+          setProfileData({
+            name: response.data.name,
+            email: response.data.email,
+            bio: response.data.bio || "This is your artisan profile. Update your information to let buyers know more about you and your craft!",
+            avatar: response.data.avatar,
+            location: response.data.location || "Philippines",
+            joined: formattedDate,
+            statistics: stats
+          });
+          
+          // Update the user's statistics in local storage as well
+          try {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (userStr) {
+              const user = JSON.parse(userStr);
+              user.statistics = stats;
+              const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+              storage.setItem("user", JSON.stringify(user));
+            }
+          } catch (storageError) {
+            console.error("Failed to update statistics in storage:", storageError);
+          }
+        }
       } catch (error) {
-        console.error("Failed to fetch profile data:", error);
-        toast.error("Failed to load profile data");
+        console.error("Failed to fetch profile data from API:", error);
+        toast.info("Using locally stored profile data");
+        
+        // Try to fetch real-time statistics even if profile API fails
+        let stats = {
+          totalProducts: 0,
+          averageRating: 0,
+          salesCompleted: 0
+        };
+        
+        try {
+          stats = await fetchArtisanStatistics(userId);
+        } catch (statsError) {
+          console.warn("Could not fetch statistics, using fallback data", statsError);
+        }
         
         // Fallback to local storage data
-        const user = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
-        setProfileData(prev => ({
-          ...prev,
-          name: user.username || prev.name || "Artisan Name",
-          email: user.email || prev.email || "artisan@email.com",
-        }));
+        try {
+          const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+          if (userStr) {
+            const user = JSON.parse(userStr);
+            
+            // Update the user's statistics in local storage
+            if (stats.totalProducts > 0 || stats.averageRating > 0 || stats.salesCompleted > 0) {
+              user.statistics = stats;
+              const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+              storage.setItem("user", JSON.stringify(user));
+            }
+            
+            setProfileData(prev => ({
+              ...prev,
+              name: user.username || prev.name || "Artisan Name",
+              email: user.email || prev.email || "artisan@email.com",
+              bio: user.bio || prev.bio || "This is your artisan profile. Update your information to let buyers know more about you and your craft!",
+              location: user.location || prev.location || "Philippines",
+              avatar: user.avatar || prev.avatar || null,
+              joined: user.joined ? new Date(user.joined).toISOString().split('T')[0] : "2024-01-01",
+              statistics: stats.totalProducts > 0 || stats.averageRating > 0 || stats.salesCompleted > 0 
+                ? stats 
+                : {
+                    totalProducts: user.statistics?.totalProducts || prev.statistics?.totalProducts || 0,
+                    averageRating: user.statistics?.averageRating || prev.statistics?.averageRating || 0,
+                    salesCompleted: user.statistics?.salesCompleted || prev.statistics?.salesCompleted || 0
+                  }
+            }));
+          }
+        } catch (storageError) {
+          console.error("Failed to parse user from storage:", storageError);
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchProfileData();
+  }, [userId]);
+
+  // Fetch statistics from the server
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      if (!userId) return;
+      
+      try {
+        const statistics = await fetchArtisanStatistics(userId);
+        setProfileData(prevData => ({
+          ...prevData,
+          statistics
+        }));
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+      }
+    };
+
+    fetchStatistics();
   }, [userId]);
 
   const handleEdit = () => {
@@ -117,44 +279,263 @@ const ArtisanProfile = () => {
     }
     
     setIsSaving(true);
+    
     try {
-      const response = await axios.put(`/api/users/profile/${userId}`, {
+      // Handle image upload if there's a new image
+      let avatarUrl = profileData.avatar;
+      
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('file', imageFile);
+        
+        try {
+          // Upload the image
+          const uploadResponse = await axios.post(
+            `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/products/upload`, 
+            formData, 
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+          );
+          
+          if (uploadResponse.data && uploadResponse.data.url) {
+            avatarUrl = uploadResponse.data.url;
+          } else {
+            toast.warning("Could not upload profile image. Profile will be updated without the new image.");
+          }
+        } catch (uploadError) {
+          console.error("Failed to upload profile image:", uploadError);
+          toast.warning("Could not upload profile image. Profile will be updated without the new image.");
+        }
+      }
+      
+      // Always update local storage first for immediate feedback
+      const updateLocalStorage = () => {
+        try {
+          const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+          if (!userStr) return false;
+          
+          const user = JSON.parse(userStr);
+          // Update profile fields
+          user.bio = profileData.bio;
+          user.location = profileData.location;
+          user.username = profileData.name;
+          
+          // Only update avatar if we have a new image
+          if (avatarUrl) {
+            user.avatar = avatarUrl;
+            user.profileImage = avatarUrl;
+          }
+          
+          // Store back in the same storage
+          const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+          storage.setItem("user", JSON.stringify(user));
+          
+          // Dispatch event to notify NavbarArtisan
+          window.dispatchEvent(new Event('profileUpdated'));
+          
+          return true;
+        } catch (storageError) {
+          console.error("Failed to update local storage:", storageError);
+          return false;
+        }
+      };
+      
+      // Update local storage right away for immediate feedback
+      const localUpdateSuccess = updateLocalStorage();
+      
+      // Prepare data to send to the server
+      const updateData = {
         name: profileData.name,
         email: profileData.email,
         bio: profileData.bio,
         location: profileData.location,
-        avatar: profileData.avatar
-      });
+        avatar: avatarUrl
+      };
       
-      // Update local storage with new user data to keep it in sync
-      const user = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
-      if (user) {
-        user.username = response.data.name;
-        user.email = response.data.email;
+      // Try to make API call
+      const response = await api.put(`/users/profile/${userId}`, updateData)
+        .catch(error => {
+          console.warn("API not available, using local storage only");
+          throw error; // Re-throw to be caught by outer catch
+        });
+      
+      if (response && response.data) {
+        // Server update successful
+        toast.success("Profile updated successfully");
         
-        if (localStorage.getItem("user")) {
-          localStorage.setItem("user", JSON.stringify(user));
-        } else if (sessionStorage.getItem("user")) {
-          sessionStorage.setItem("user", JSON.stringify(user));
+        // Clear image states
+        setImageFile(null);
+        setImagePreview(null);
+        
+        // Update profileData with the new avatar URL
+        setProfileData(prev => ({
+          ...prev,
+          avatar: avatarUrl
+        }));
+        
+        // Dispatch event again to ensure UI is updated
+        window.dispatchEvent(new Event('profileUpdated'));
+      } else {
+        // Response empty but no error
+        if (localUpdateSuccess) {
+          toast.success("Profile updated locally");
+        } else {
+          toast.warning("Unable to save profile changes");
         }
       }
       
-      toast.success("Profile updated successfully");
       setIsEditing(false);
     } catch (error) {
-      console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile");
+      console.error("Failed to update profile on server:", error);
+      
+      // Check if we had at least updated locally
+      const localUpdateSuccess = updateLocalStorage();
+      
+      // Already updated locally, so just inform the user
+      if (localUpdateSuccess) {
+        toast.info("Profile saved locally only. Server update will happen when connection is restored.");
+        setIsEditing(false);
+      } else {
+        toast.error("Failed to update profile. Please try again.");
+      }
     } finally {
       setIsSaving(false);
     }
   };
 
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image file is too large. Maximum size is 5MB.");
+      return;
+    }
+
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Invalid file type. Please upload a JPEG, PNG, GIF or WebP image.");
+      return;
+    }
+
+    setImageFile(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Basic validation
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      toast.error("Avatar image size should be less than 2MB");
+      return;
+    }
+    
+    const formData = new FormData();
+    formData.append("avatar", file);
+    
+    try {
+      setIsSaving(true);
+      // Upload the file to the server
+      const response = await api.post(`/users/${userId}/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      if (response.data && response.data.avatar) {
+        // Update the avatar in the profile data
+        setProfileData(prev => ({
+          ...prev,
+          avatar: response.data.avatar
+        }));
+        
+        // Update local storage
+        try {
+          const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+          if (userStr) {
+            const user = JSON.parse(userStr);
+            user.avatar = response.data.avatar;
+            const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+            storage.setItem("user", JSON.stringify(user));
+          }
+        } catch (e) {
+          console.error("Failed to update avatar in storage:", e);
+        }
+        
+        toast.success("Avatar updated successfully");
+      } else {
+        toast.error("Failed to update avatar. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      toast.error("Error uploading avatar. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Delete profile image
+  const handleDeleteAvatar = async () => {
+    if (!userId || !profileData.avatar) return;
+    setIsSaving(true);
+    try {
+      await api.delete(`/users/profile/${userId}/avatar`);
+      setProfileData(prev => ({ ...prev, avatar: null }));
+      setImageFile(null);
+      setImagePreview(null);
+      // Update local storage
+      try {
+        const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          user.avatar = null;
+          user.profileImage = null;
+          const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+          storage.setItem("user", JSON.stringify(user));
+        }
+      } catch (e) {
+        console.error("Failed to update avatar in storage:", e);
+      }
+      toast.success("Profile image deleted");
+      window.dispatchEvent(new Event('profileUpdated'));
+    } catch (err) {
+      toast.error("Failed to delete profile image");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handle input changes for profile editing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfileData({
-      ...profileData,
+    setProfileData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
+  };
+
+  // Helper to get full avatar URL
+  const getAvatarUrl = (avatar) => {
+    if (!avatar) return null;
+    if (avatar.startsWith('http')) return avatar;
+    // Remove leading slash if present
+    const cleanPath = avatar.replace(/^\\|\//, '');
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${cleanPath}`;
   };
 
   return (
@@ -177,13 +558,56 @@ const ArtisanProfile = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">My Profile</h2>
             {!isEditing ? (
-              <button 
-                onClick={handleEdit}
-                disabled={isLoading}
-                className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-purple-50 border-purple-400 text-purple-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <FaEdit /> <span>Edit Profile</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={async () => {
+                    setIsLoading(true);
+                    toast.info("Refreshing statistics...");
+                    try {
+                      if (userId) {
+                        const stats = await fetchArtisanStatistics(userId);
+                        setProfileData(prev => ({
+                          ...prev,
+                          statistics: stats
+                        }));
+                        toast.success("Statistics updated!");
+                        
+                        // Update local storage
+                        try {
+                          const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+                          if (userStr) {
+                            const user = JSON.parse(userStr);
+                            user.statistics = stats;
+                            const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+                            storage.setItem("user", JSON.stringify(user));
+                          }
+                        } catch (e) {
+                          console.error("Failed to update statistics in storage:", e);
+                        }
+                      }
+                    } catch (error) {
+                      console.error("Failed to refresh statistics:", error);
+                      toast.error("Couldn't update statistics");
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                  disabled={isLoading}
+                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-blue-50 border-blue-400 text-blue-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Refresh Stats</span>
+                </button>
+                <button 
+                  onClick={handleEdit}
+                  disabled={isLoading}
+                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-purple-50 border-purple-400 text-purple-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <FaEdit /> <span>Edit Profile</span>
+                </button>
+              </div>
             ) : (
               <div className="flex items-center gap-2">
                 <button 
@@ -220,19 +644,48 @@ const ArtisanProfile = () => {
                       {/* Avatar Container with fixed size and no scroll */}
                       <div className="relative w-28 h-28 overflow-hidden">
                         {/* Avatar or Icon */}
-                        {profileData.avatar ? (
+                        {imagePreview ? (
                           <img 
-                            src={profileData.avatar} 
+                            src={imagePreview} 
+                            alt="Profile Preview" 
+                            className="w-28 h-28 rounded-full object-cover border-2 border-white"
+                            loading="eager"
+                          />
+                        ) : profileData.avatar ? (
+                          <img 
+                            src={getAvatarUrl(profileData.avatar)} 
                             alt="Profile" 
-                            className="w-28 h-28 rounded-full object-cover border-2 border-white select-none pointer-events-none" 
+                            className="w-28 h-28 rounded-full object-cover border-2 border-white"
                             loading="eager"
                           />
                         ) : (
-                          <FaUserCircle className={`w-28 h-28 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'} bg-white rounded-full select-none pointer-events-none`} />
+                          <FaUserCircle className={`w-28 h-28 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'} bg-white rounded-full`} />
+                        )}
+                        {/* Delete avatar button */}
+                        {isEditing && profileData.avatar && !imagePreview && (
+                          <button
+                            type="button"
+                            onClick={handleDeleteAvatar}
+                            className="absolute bottom-0 right-0 bg-red-600 text-white rounded-full p-1 shadow hover:bg-red-700 transition"
+                            title="Delete profile image"
+                            disabled={isSaving}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
                         )}
                         {isEditing && (
-                          <div className="absolute bottom-0 right-0 bg-purple-500 text-white p-2 rounded-full cursor-pointer">
-                            <FaEdit />
+                          <div 
+                            className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full cursor-pointer transition-opacity opacity-0 hover:opacity-100"
+                            onClick={handleImageClick}
+                          >
+                            <MdCloudUpload className="text-white text-3xl" />
+                            <input 
+                              type="file" 
+                              ref={fileInputRef} 
+                              onChange={handleImageChange} 
+                              accept="image/*"
+                              className="hidden" 
+                            />
                           </div>
                         )}
                       </div>
@@ -348,7 +801,16 @@ const ArtisanProfile = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Total Products</p>
-                      <h3 className="text-2xl font-semibold">{profileData.statistics.totalProducts}</h3>
+                      <h3 className="text-2xl font-semibold">
+                        {isLoading ? (
+                          <span className="inline-block w-12 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
+                        ) : (
+                          (profileData.statistics && typeof profileData.statistics.totalProducts === 'number') ? profileData.statistics.totalProducts : 0
+                        )}
+                      </h3>
+                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Products you've created
+                      </div>
                     </div>
                     <div className={`p-3 rounded-full ${isDarkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
                       <FaShoppingBag className={`text-2xl ${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
@@ -361,7 +823,31 @@ const ArtisanProfile = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Average Rating</p>
-                      <h3 className="text-2xl font-semibold">{profileData.statistics.averageRating}/5</h3>
+                      <h3 className="text-2xl font-semibold">
+                        {isLoading ? (
+                          <span className="inline-block w-16 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
+                        ) : (
+                          <>
+                            {(profileData.statistics && typeof profileData.statistics.averageRating === 'number') ? profileData.statistics.averageRating : 0}
+                            <span className="text-lg">/5</span>
+                            <div className="flex mt-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <FaStar 
+                                  key={star} 
+                                  className={`text-sm mr-0.5 ${
+                                    star <= Math.round((profileData.statistics && typeof profileData.statistics.averageRating === 'number') ? profileData.statistics.averageRating : 0) 
+                                      ? 'text-yellow-500' 
+                                      : 'text-gray-300 dark:text-gray-600'
+                                  }`} 
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </h3>
+                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Based on customer reviews
+                      </div>
                     </div>
                     <div className={`p-3 rounded-full ${isDarkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'}`}>
                       <FaStar className="text-2xl text-yellow-500" />
@@ -374,10 +860,19 @@ const ArtisanProfile = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Sales Completed</p>
-                      <h3 className="text-2xl font-semibold">{profileData.statistics.salesCompleted}</h3>
+                      <h3 className="text-2xl font-semibold">
+                        {isLoading ? (
+                          <span className="inline-block w-12 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
+                        ) : (
+                          (profileData.statistics && typeof profileData.statistics.salesCompleted === 'number') ? profileData.statistics.salesCompleted : 0
+                        )}
+                      </h3>
+                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Successfully delivered orders
+                      </div>
                     </div>
                     <div className={`p-3 rounded-full ${isDarkMode ? 'bg-green-900/30' : 'bg-green-100'}`}>
-                      <FaSave className={`text-2xl ${isDarkMode ? 'text-green-300' : 'text-green-600'}`} />
+                      <FaShoppingBag className={`text-2xl ${isDarkMode ? 'text-green-300' : 'text-green-600'}`} />
                     </div>
                   </div>
                 </div>
