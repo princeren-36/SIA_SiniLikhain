@@ -180,7 +180,7 @@ function Checkout() {
       setOrderPlaced(true);
       
       setTimeout(() => {
-        navigate('/buyer/Buyer'); // Redirect to main page after successful order
+        navigate('/Buyer'); // Redirect to main page after successful order
       }, 3000);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
@@ -196,7 +196,7 @@ function Checkout() {
   return (
     <>
       <NavbarBuyer />
-      <div className="p-4 min-h-screen bg-white buyer-container">
+      <div className="p-4 min-h-screen bg-white buyer-container overflow-x-hidden">
         {/* Image section with message */}
         <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-8 rounded-2xl overflow-hidden shadow-lg" style={{height: '320px', maxHeight: '400px', marginTop: '-1rem'}}>
           <img src={checkoutBg} alt="Checkout Background" className="w-full h-full object-cover opacity-80" style={{height: '100%'}} />

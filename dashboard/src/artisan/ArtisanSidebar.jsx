@@ -127,7 +127,7 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
           {/* Inventory */}
           <li className="px-4 py-2">              <div
               className={`flex items-center justify-between cursor-pointer rounded-md p-2 hover-item ${
-                isActive("/artisan/inventory") ? "active-item" : ""
+                isActive("/artisan/inventory") || isActive("/artisan/orders") ? "active-item" : ""
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -135,7 +135,7 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
               }}
             >
               <div className="flex items-center">
-                {isActive("/artisan/inventory") ? (
+                {isActive("/artisan/inventory") || isActive("/artisan/orders") ? (
                   <MdInventory2 className="text-xl" />
                 ) : (
                   <MdInventory className="text-xl" />
@@ -185,27 +185,19 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
                     <span>Manage Products</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/artisan/orders"
+                    className={`flex items-center p-2 pl-6 rounded-md hover-item ${
+                      isActive("/artisan/orders") ? "active-item" : ""
+                    }`}
+                  >
+                    <MdShoppingBag className="mr-2" />
+                    <span>My Orders</span>
+                  </Link>
+                </li>
               </ul>
             )}
-          </li>
-
-          {/* Orders */}
-          <li className="px-4 py-2">
-            <Link
-              to="/artisan/orders"
-              className={`flex items-center justify-between rounded-md p-2 hover-item ${
-                isActive("/artisan/orders") ? "active-item" : ""
-              }`}
-            >
-              <div className="flex items-center">
-                {isActive("/artisan/orders") ? (
-                  <MdShoppingBag className="text-xl" />
-                ) : (
-                  <MdOutlineShoppingBag className="text-xl" />
-                )}
-                {isOpen && <span className="ml-3">My Orders</span>}
-              </div>
-            </Link>
           </li>
 
           {/* User Profile Dropdown */}

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ArtisanLayout from "./ArtisanLayout";
 import logo from "../images/homepage.jpg";
 
@@ -61,6 +62,11 @@ function SiniLikhainBaybayin() {
 }
 
 function Artisan() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/artisan/dashboard", { replace: true });
+  }, [navigate]);
+
   return (
     <ArtisanLayout>
       <div className="absolute inset-0 z-0 pointer-events-none">
