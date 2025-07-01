@@ -81,17 +81,29 @@ function Cart() {
   };
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <NavbarBuyer />
-      <div className="p-4 min-h-screen bg-white buyer-container overflow-x-hidden">
-        {/* Image section with message */}
-        <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-8 rounded-2xl overflow-hidden shadow-lg" style={{height: '320px', maxHeight: '400px', marginTop: '-1rem'}}>
-          <img src={cartBg} alt="Shopping Cart Background" className="w-full h-full object-cover opacity-80" style={{height: '100%'}} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-wider drop-shadow-lg">SHOPPING CART</h1>
-            <p className="text-base md:text-lg text-white font-mono drop-shadow-lg text-center px-4">Crafting is the activity or skill of making items from wood and includes cabinet making.</p>
-          </div>
+      {/* Full-width hero section with Buyer.jsx design at the topmost, no space below */}
+      <div
+        className="relative h-[50vh] min-h-[300px] w-screen left-1/2 right-1/2 -translate-x-1/2 overflow-hidden flex items-center justify-center mb-0"
+        style={{
+          backgroundImage: `url(${cartBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        <div className="relative z-10 text-center px-4 w-full">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white font-mono tracking-wider drop-shadow-2xl" style={{textShadow: '2px 2px 8px #000'}}>
+            Shopping Cart
+          </h1>
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto font-light drop-shadow-2xl" style={{textShadow: '1px 1px 6px #000'}}>
+            Crafted with intention, each piece tells a story—handmade goods that honor tradition, design, and soul.
+          </p>
         </div>
+      </div>
+      <div className="p-4 min-h-screen bg-[#f8f9fa] buyer-container mt-0">
         <h2 className="text-3xl font-bold mb-6 text-center text-[#1b2a41]">My Cart</h2>
         {cart.length === 0 ? (
           <div className="text-center text-gray-500 text-lg">Your cart is empty.</div>
@@ -100,7 +112,7 @@ function Cart() {
             <div className="w-full max-w-5xl flex flex-col items-center">
               <table className="w-full max-w-5xl border-separate border-spacing-0" style={{tableLayout: 'fixed'}}>
                 <thead>
-                  <tr className="bg-[#b38664] text-white">
+                  <tr className="bg-[#5e503f] text-white">
                     <th className="py-4 px-2 font-bold text-lg text-left rounded-tl-lg">&nbsp;</th>
                     <th className="py-4 px-2 font-bold text-lg text-left">Product</th>
                     <th className="py-4 px-2 font-bold text-lg text-left">Price</th>
@@ -155,7 +167,10 @@ function Cart() {
                 </div>
                 <div className="flex justify-center mt-8">
                   <button
-                    className="px-10 py-3 border-2 border-[#b38664] text-[#1b2a41] font-mono font-bold text-lg tracking-widest bg-white hover:bg-[#f5eee6] transition rounded-none"
+                    className="px-10 py-3 border-2 border-[#b38664] text-[#1b2a41] font-mono font-bold text-lg tracking-widest bg-white transition rounded-none"
+                    style={{ backgroundColor: '#5e503f', borderColor: '#5e503f', color: '#fff' }}
+                    onMouseOver={e => { e.currentTarget.style.backgroundColor = '#eae0d5'; e.currentTarget.style.color = '#5e503f'; }}
+                    onMouseOut={e => { e.currentTarget.style.backgroundColor = '#5e503f'; e.currentTarget.style.color = '#fff'; }}
                     onClick={handleBuy}
                   >
                     PROCEED TO CHECKOUT
@@ -187,7 +202,7 @@ function Cart() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -68,21 +68,21 @@ function About() {
       <Navbar />
       
       {/* Hero section with parallax effect */}
-      <div className="relative h-[50vh] overflow-hidden flex items-center justify-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: `url(${cartBg})`,
-            transform: 'translateZ(0)',
-          }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-        </div>
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white font-mono tracking-wider">
+      <div
+        className="relative h-[50vh] min-h-[300px] overflow-hidden flex items-center justify-center"
+        style={{
+          backgroundImage: `url(${cartBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        <div className="relative z-10 text-center px-4 w-full">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white font-mono tracking-wider drop-shadow-2xl" style={{textShadow: '2px 2px 8px #000'}}>
             About SiniLikhain
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto font-light">
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto font-light drop-shadow-2xl" style={{textShadow: '1px 1px 6px #000'}}>
             Connecting Tradition with Modern Appreciation
           </p>
           <div className="mt-8">
@@ -90,7 +90,8 @@ function About() {
               onClick={() => {
                 document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
               }}
-              className="px-6 py-3 bg-[#5e503f] text-white rounded-full hover:bg-[#4d3f2f] transition-all duration-300 flex items-center gap-2 mx-auto"
+              style={{ backgroundColor: '#5e503f' }}
+              className="px-6 py-3 text-white rounded-full hover:bg-[#4d3f2f] transition-all duration-300 flex items-center gap-2 mx-auto shadow-2xl border-2 border-white focus:outline-none focus:ring-2 focus:ring-white"
             >
               <span>Our Story</span>
               <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

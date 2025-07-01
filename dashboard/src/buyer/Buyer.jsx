@@ -62,18 +62,30 @@ function Buyer() {
   }, [snackbarOpen]);
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <NavbarBuyer />
-      <div className="p-4 min-h-screen" style={{ background: 'white', overflow: 'hidden' }}>
-        {/* Image section with message */}
-        <div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 mb-8 rounded-2xl overflow-hidden shadow-lg" style={{height: '320px', maxHeight: '400px', marginTop: '-1rem'}}>
-          <img src={cartBg} alt="Shopping Cart Background" className="w-full h-full object-cover opacity-80" style={{height: '100%'}} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-wider drop-shadow-lg">OUR PRODUCTS</h1>
-            <p className="text-base md:text-lg text-white font-mono drop-shadow-lg text-center px-4">Crafted with intention, each piece tells a story—handmade goods that honor tradition, design, and soul.</p>
-          </div>
+      {/* Full-width hero section with AboutBuyer.jsx design */}
+      <div
+        className="relative h-[50vh] min-h-[300px] w-screen left-1/2 right-1/2 -translate-x-1/2 overflow-hidden flex items-center justify-center mb-0"
+        style={{
+          backgroundImage: `url(${cartBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        <div className="relative z-10 text-center px-4 w-full">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-white font-mono tracking-wider drop-shadow-2xl" style={{textShadow: '2px 2px 8px #000'}}>
+            Our Products
+          </h1>
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto font-light drop-shadow-2xl" style={{textShadow: '1px 1px 6px #000'}}>
+            Crafted with intention, each piece tells a story—handmade goods that honor tradition, design, and soul.
+          </p>
         </div>
-        <div className="h-18" />
+      </div>
+      <div className="p-4 min-h-screen" style={{ background: '#f8f9fa', marginTop: 0 }}>
+        <div id="main-content" className="h-18" />
         <div className="flex w-full items-start gap-8">
           {/* Product grid on the left */}
           <div className="flex-1">
@@ -88,7 +100,7 @@ function Buyer() {
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   {/* Search icon SVG */}
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
                 </span>
               </div>
               <span className="font-mono text-base text-black">Category:</span>
@@ -110,7 +122,7 @@ function Buyer() {
                   {/* Image card, visually separated, now clickable for modal */}
                   <div
                     className="w-full flex justify-center pt-8 pb-4 min-h-[180px] cursor-pointer"
-                    style={{ background: 'white', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                    style={{ background: 'white', border: '3px solid #5e503f' }}
                     onClick={() => handleOpenProduct(product)}
                     tabIndex={0}
                     role="button"
@@ -283,7 +295,7 @@ function Buyer() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

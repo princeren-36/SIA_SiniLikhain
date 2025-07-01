@@ -380,7 +380,10 @@ function Checkout() {
                     <button 
                       type="submit" 
                       disabled={isLoading}
-                      className="w-full px-8 py-3 border-2 border-[#b38664] text-white font-mono font-bold text-lg tracking-widest bg-[#b38664] hover:bg-[#a37553] transition rounded-none disabled:bg-gray-400 disabled:border-gray-400"
+                      style={{ backgroundColor: '#5e503f', borderColor: '#5e503f' }}
+                      className="w-full px-8 py-3 border-2 text-white font-mono font-bold text-lg tracking-widest transition rounded-none disabled:bg-gray-400 disabled:border-gray-400"
+                      onMouseOver={e => { e.currentTarget.style.backgroundColor = '#eae0d5'; e.currentTarget.style.color = '#5e503f'; }}
+                      onMouseOut={e => { e.currentTarget.style.backgroundColor = '#5e503f'; e.currentTarget.style.color = '#fff'; }}
                     >
                       {isLoading ? "Processing..." : "PLACE ORDER"}
                     </button>

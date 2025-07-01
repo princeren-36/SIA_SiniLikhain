@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar } from "react-icons/fa";
+import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar, FaTrash } from "react-icons/fa";
 import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
 import NavbarBuyer from "./NavbarBuyer";
 import axios from "axios";
-import { toast } from "react-toastify";
 import cartBg from '../images/2.jpg';
 import { API_BASE } from "../utils/api";
 
@@ -63,6 +62,8 @@ const BuyerProfile = () => {
     avatar: null,
     location: "",
     joined: "",
+    imageRemoved: false,
+    imageChanged: false,
     statistics: {
       completedOrders: 0,
       totalSpent: 0,
@@ -164,7 +165,7 @@ const BuyerProfile = () => {
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch profile data from API:", error);
-        toast.info("Using locally stored profile data");
+        // Removed alert for using locally stored profile data
         setIsLoading(false);
       }
     };
@@ -184,6 +185,17 @@ const BuyerProfile = () => {
     setIsEditing(true);
   };
   
+  // Helper to get the correct avatar URL
+const getAvatarUrl = (avatar) => {
+  if (!avatar) return null;
+  if (avatar.startsWith('http://') || avatar.startsWith('https://') || avatar.startsWith('data:')) {
+    return avatar;
+  }
+  // Remove any leading 'uploads/' or '/uploads/'
+  const clean = avatar.replace(/^[/]*uploads[/]*/i, '');
+  return `${API_BASE}/uploads/${clean}`;
+};
+
   const handleSaveClick = async () => {
     setIsSaving(true);
     
@@ -195,9 +207,16 @@ const BuyerProfile = () => {
       formData.append("bio", profileData.bio);
       formData.append("location", profileData.location);
       
-      // Only append image if a new one is selected
+      // Handle avatar changes
       if (imageFile) {
         formData.append("avatar", imageFile);
+        console.log("Adding new avatar to form data");
+      }
+      
+      // Check if image was removed
+      if (profileData.imageRemoved) {
+        formData.append("removeAvatar", "true");
+        console.log("Marking avatar for removal");
       }
       
       // Make API call to update profile
@@ -210,60 +229,41 @@ const BuyerProfile = () => {
       if (response && response.data) {
         console.log("Profile update response:", response.data);
         
-        // Get updated data from response
+        // Always use the new avatar from the response
         const updatedAvatar = response.data.avatar || null;
-        const updatedUsername = response.data.username || profileData.name;
-        const updatedEmail = response.data.email || profileData.email;
-        const updatedBio = response.data.bio || profileData.bio;
-        const updatedLocation = response.data.location || profileData.location;
-        
-        // Update profile data state with server response
-        setProfileData(prevData => ({
-          ...prevData,
+        setProfileData(prev => ({
+          ...prev,
           avatar: updatedAvatar,
-          name: updatedUsername,
-          email: updatedEmail,
-          bio: updatedBio,
-          location: updatedLocation
+          name: response.data.username || prev.name,
+          email: response.data.email || prev.email,
+          bio: response.data.bio || prev.bio,
+          location: response.data.location || prev.location,
+          imageRemoved: false,
+          imageChanged: false
         }));
-        
-        // Reset image preview and file
         setImagePreview(null);
         setImageFile(null);
-        
-        // Update local storage with new data
         try {
           const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
           if (userStr) {
             const user = JSON.parse(userStr);
-            
-            // Update user data in storage
-            user.username = updatedUsername;
-            user.email = updatedEmail;
-            user.bio = updatedBio;
-            user.location = updatedLocation;
-            
-            // Update avatar if provided in response
-            if (updatedAvatar) {
-              user.avatar = updatedAvatar;
-            }
-            
+            user.username = response.data.username || user.username;
+            user.email = response.data.email || user.email;
+            user.bio = response.data.bio || user.bio;
+            user.location = response.data.location || user.location;
+            user.avatar = updatedAvatar;
             const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
             storage.setItem("user", JSON.stringify(user));
-            
-            // Debug: Log updated user data
-            console.log("Updated storage with user data:", user);
           }
         } catch (storageError) {
           console.error("Failed to update profile in storage:", storageError);
         }
-        
-        toast.success("Profile updated successfully!");
+        alert("Profile updated successfully!");
         setIsEditing(false);
       }
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile. Please try again.");
+      alert("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -281,6 +281,9 @@ const BuyerProfile = () => {
           email: user.email || prevData.email,
           bio: user.bio || prevData.bio,
           location: user.location || prevData.location,
+          avatar: user.avatar || prevData.avatar,
+          imageRemoved: false,
+          imageChanged: false
         }));
       } catch (e) {
         console.error("Error resetting profile data:", e);
@@ -300,16 +303,16 @@ const BuyerProfile = () => {
       const file = e.target.files[0];
       
       // Validate file type
-      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
       if (!validTypes.includes(file.type)) {
-        toast.error('Please upload a valid image file (JPEG, PNG, or GIF)');
+        alert('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
         return;
       }
       
       // Validate file size (max 5MB)
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
-        toast.error('Image size should be less than 5MB');
+        alert('Image size should be less than 5MB');
         return;
       }
       
@@ -322,12 +325,36 @@ const BuyerProfile = () => {
       };
       reader.readAsDataURL(file);
       
-      toast.info('Image selected. Click Save to upload.');
+      // Don't show alert, give visual feedback instead
+      setProfileData(prevData => ({
+        ...prevData,
+        imageChanged: true
+      }));
     }
   };
   
   const triggerFileInput = () => {
     fileInputRef.current.click();
+  };
+  
+  const removeProfilePicture = () => {
+    if (window.confirm('Are you sure you want to remove your profile picture?')) {
+      setImagePreview(null);
+      setImageFile(null);
+      setProfileData(prevData => ({
+        ...prevData,
+        avatar: null,
+        imageRemoved: true
+      }));
+      
+      if (isEditing) {
+        // If in edit mode, just mark for removal when saved
+        console.log("Profile picture marked for removal on save");
+      } else {
+        // If not in edit mode, enter edit mode and mark for removal
+        setIsEditing(true);
+      }
+    }
   };
   
   // Format statistics for display
@@ -338,242 +365,315 @@ const BuyerProfile = () => {
   };
   
   return (
-    <>
+    <div className="page" style={{ height: '100vh' }}>
       <NavbarBuyer />
-      <div className="min-h-screen bg-[#f5f7fa]">
-        <div className="relative w-full overflow-hidden" style={{height: "200px"}}>
-          <img 
-            src={cartBg} 
-            alt="Profile banner" 
-            className="w-full h-full object-cover"
-            style={{opacity: 0.8}}
-          />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-wider drop-shadow-lg">
-              Buyer Profile
-            </h1>
-          </div>
-        </div>
-        
-        <div className="container mx-auto px-4 py-6">
-          <div className="bg-white rounded-lg shadow-md overflow-hidden max-w-4xl mx-auto">
-            {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5e503f]"></div>
-              </div>
-            ) : (
-              <>
-                {/* Header with avatar */}
-                <div className="relative bg-[#5e503f] text-white p-4 md:p-6">
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <div className="relative mb-2 sm:mb-0">
-                      {imagePreview || profileData.avatar ? (
-                        <img 
-                          src={imagePreview || (profileData.avatar.startsWith('http') 
-                            ? profileData.avatar 
-                            : `${API_BASE}${profileData.avatar}`)} 
-                          alt="User avatar" 
-                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
-                          onError={(e) => {
-                            console.log("Image failed to load:", e.target.src);
-                            e.target.onerror = null;
-                            e.target.src = "https://via.placeholder.com/150?text=Profile";
-                          }}
-                        />
-                      ) : (
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-300 flex items-center justify-center">
-                          <FaUserCircle className="text-gray-500 text-4xl sm:text-5xl" />
-                        </div>
-                      )}
-                      {isEditing && (
-                        <button 
-                          className="absolute bottom-0 right-0 bg-white text-[#5e503f] rounded-full p-1 shadow-md"
-                          onClick={triggerFileInput}
-                          aria-label="Change profile picture"
-                        >
-                          <FaEdit className="text-lg" />
-                          <input 
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="hidden"
-                          />
-                        </button>
-                      )}
-                    </div>
-                    <div className="text-center sm:text-left flex-1">
-                      <h2 className="text-xl sm:text-2xl font-bold tracking-wide">
-                        {isEditing ? (
-                          <input 
-                            type="text"
-                            name="name"
-                            value={profileData.name}
-                            onChange={handleInputChange}
-                            className="w-full sm:w-auto bg-white/20 border border-white/30 rounded px-2 py-1 text-white focus:outline-none focus:border-white"
-                            aria-label="Full Name"
-                          />
-                        ) : (
-                          profileData.name
-                        )}
-                      </h2>
-                      <p className="flex items-center justify-center sm:justify-start gap-2 mt-1 flex-wrap">
-                        <MdEmail className="flex-shrink-0" />
-                        {isEditing ? (
-                          <input 
-                            type="email"
-                            name="email"
-                            value={profileData.email}
-                            onChange={handleInputChange}
-                            className="w-full sm:w-auto bg-white/20 border border-white/30 rounded px-2 py-1 text-white focus:outline-none focus:border-white"
-                            aria-label="Email address"
-                          />
-                        ) : (
-                          <span className="break-all">{profileData.email}</span>
-                        )}
-                      </p>
-                    </div>
-                    <div className="mt-3 sm:mt-0">
-                      {isEditing ? (
-                        <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center">
-                          <button 
-                            onClick={handleSaveClick}
-                            disabled={isSaving}
-                            className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-150"
-                          >
-                            {isSaving ? (
-                              <>Saving...</>
-                            ) : (
-                              <>
-                                <FaSave />
-                                Save
-                              </>
-                            )}
-                          </button>
-                          <button 
-                            onClick={handleCancelClick}
-                            disabled={isSaving}
-                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-150"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button 
-                          onClick={handleEditClick}
-                          className="flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-150"
-                        >
-                          <FaEdit />
-                          Edit Profile
-                        </button>
-                      )}
-                    </div>
-                  </div>
+      {/* Allow vertical scroll on the page and children */}
+      <div className="min-h-screen h-screen bg-[#f8f9fa] w-full text-gray-900 flex flex-col">
+        <div className="w-full flex-1 flex flex-col py-0 md:py-0">
+          <div className="bg-white w-full px-0 flex-1 flex flex-col">
+            <div className="bg-[#5e503f] w-full py-6 flex-shrink-0">
+              <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
+                Buyer Profile
+              </h1>
+            </div>
+            <div className="flex-1 flex flex-col">
+              {isLoading ? (
+                <div className="flex justify-center items-center h-64 flex-1">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5e503f]" />
                 </div>
-                
-                {/* Details */}
-                <div className="p-4 md:p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2 text-[#5e503f] flex items-center gap-2">
-                        <MdDescription className="flex-shrink-0" />
-                        About Me
-                      </h3>
-                      {isEditing ? (
-                        <textarea
-                          name="bio"
-                          value={profileData.bio}
-                          onChange={handleInputChange}
-                          rows={4}
-                          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#5e503f] text-gray-700"
-                          placeholder="Tell us about yourself..."
-                        />
-                      ) : (
-                        <div className="bg-gray-50 p-3 rounded-md">
-                          <p className="text-gray-700 whitespace-pre-wrap break-words">{profileData.bio || "No bio information provided yet."}</p>
-                        </div>
-                      )}
-                      
-                      <div className="mt-4 space-y-2">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <FaMapMarkerAlt className="text-[#5e503f] flex-shrink-0" />
-                          <span className="font-medium text-gray-700">Location:</span>
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              name="location"
-                              value={profileData.location}
-                              onChange={handleInputChange}
-                              className="flex-grow border border-gray-300 rounded px-2 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#5e503f]"
+              ) : (
+                <>
+                  {/* User info header with controls */}
+                  <div className="p-6 md:p-8 border-b border-gray-200">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                      {/* Profile Avatar Section */}
+                      <div className="flex flex-col items-center md:items-start mr-0 md:mr-6">
+                        <div className="relative group">
+                          {imagePreview ? (
+                            <img
+                              src={imagePreview}
+                              alt="Profile Preview"
+                              className="w-32 h-32 object-cover rounded-full border-4"
+                              style={{ borderColor: '#5e503f', background: '#eae0d5' }}
+                            />
+                          ) : profileData.avatar ? (
+                            <img
+                              src={getAvatarUrl(profileData.avatar)}
+                              alt="Profile"
+                              className="w-32 h-32 object-cover rounded-full border-4"
+                              style={{ borderColor: '#5e503f', background: '#eae0d5' }}
                             />
                           ) : (
-                            <span className="text-gray-600">{profileData.location}</span>
+                            <FaUserCircle className="w-32 h-32 text-[#5e503f] border-4 rounded-full" style={{ borderColor: '#5e503f', background: '#eae0d5' }} />
+                          )}
+                          {isEditing ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={triggerFileInput}
+                                className="absolute bottom-2 right-2 p-2 rounded-full border-2 transition-colors"
+                                title="Change profile picture"
+                                style={{
+                                  borderColor: '#fff',
+                                  background: 'rgba(94,80,63,0.95)',
+                                  color: '#fff',
+                                  boxShadow: '0 2px 12px 0 rgba(94,80,63,0.25)'
+                                }}
+                                onMouseOver={e => {
+                                  e.currentTarget.style.background = '#eae0d5';
+                                  e.currentTarget.style.color = '#5e503f';
+                                }}
+                                onMouseOut={e => {
+                                  e.currentTarget.style.background = 'rgba(94,80,63,0.95)';
+                                  e.currentTarget.style.color = '#fff';
+                                }}
+                              >
+                                <MdCloudUpload className="w-6 h-6" />
+                              </button>
+                              {(profileData.avatar || imagePreview) && (
+                                <button
+                                  type="button"
+                                  onClick={removeProfilePicture}
+                                  className="absolute bottom-2 left-2 p-2 rounded-full border-2 transition-colors"
+                                  title="Remove profile picture"
+                                  style={{
+                                    borderColor: '#fff',
+                                    background: 'rgba(185,28,28,0.95)',
+                                    color: '#fff',
+                                    boxShadow: '0 2px 12px 0 rgba(185,28,28,0.25)'
+                                  }}
+                                  onMouseOver={e => {
+                                    e.currentTarget.style.background = '#fff';
+                                    e.currentTarget.style.color = '#b91c1c';
+                                  }}
+                                  onMouseOut={e => {
+                                    e.currentTarget.style.background = 'rgba(185,28,28,0.95)';
+                                    e.currentTarget.style.color = '#fff';
+                                  }}
+                                >
+                                  <FaTrash className="w-4 h-4" />
+                                </button>
+                              )}
+                            </>
+                          ) : profileData.avatar && (
+                            <button
+                              type="button"
+                              onClick={handleEditClick}
+                              className="absolute bottom-2 right-2 p-2 rounded-full border-2 transition-colors"
+                              title="Edit profile"
+                              style={{
+                                borderColor: '#fff',
+                                background: 'rgba(94,80,63,0.95)',
+                                color: '#fff',
+                                boxShadow: '0 2px 12px 0 rgba(94,80,63,0.25)'
+                              }}
+                              onMouseOver={e => {
+                                e.currentTarget.style.background = '#eae0d5';
+                                e.currentTarget.style.color = '#5e503f';
+                              }}
+                              onMouseOut={e => {
+                                e.currentTarget.style.background = 'rgba(94,80,63,0.95)';
+                                e.currentTarget.style.color = '#fff';
+                              }}
+                            >
+                              <FaEdit className="w-5 h-5" />
+                            </button>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <FaCalendarAlt className="text-[#5e503f] flex-shrink-0" />
-                          <span className="font-medium text-gray-700">Member since:</span>
-                          <span className="text-gray-600">{profileData.joined}</span>
-                        </div>
+                        <span className="mt-2 text-sm text-gray-600">Profile Photo</span>
+                        {isEditing && (profileData.avatar || imagePreview) && (
+                          <span className="mt-1 text-xs text-gray-500">Click to change or remove</span>
+                        )}
+                      </div>
+                      {/* Name and Email fields */}
+                      <div className="text-center md:text-left flex-1">
+                        <h2 className="text-2xl md:text-3xl font-bold tracking-wide text-[#5e503f]">
+                          {isEditing ? (
+                            <input 
+                              type="text"
+                              name="name"
+                              value={profileData.name}
+                              onChange={handleInputChange}
+                              className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5e503f] text-gray-900 bg-white placeholder-gray-700"
+                              aria-label="Full Name"
+                            />
+                          ) : (
+                            <span className="text-gray-900">{profileData.name}</span>
+                          )}
+                        </h2>
+                        <p className="flex items-center justify-center md:justify-start gap-2 mt-2 flex-wrap">
+                          <MdEmail className="flex-shrink-0 text-[#5e503f]" />
+                          {isEditing ? (
+                            <input 
+                              type="email"
+                              name="email"
+                              value={profileData.email}
+                              onChange={handleInputChange}
+                              className="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5e503f] text-gray-900 bg-white placeholder-gray-700"
+                              aria-label="Email address"
+                            />
+                          ) : (
+                            <span className="break-all text-gray-900">{profileData.email}</span>
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        {isEditing ? (
+                          <div className="flex flex-wrap md:flex-nowrap gap-3 justify-center">
+                            <button 
+                              onClick={handleSaveClick}
+                              disabled={isSaving}
+                              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 shadow text-base"
+                              style={{ color: '#fff', backgroundColor: '#16a34a', border: '1px solid #15803d' }}
+                            >
+                              {isSaving ? (
+                                <>
+                                  <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+                                  Saving...
+                                </>
+                              ) : (
+                                <>
+                                  <FaSave />
+                                  Save
+                                </>
+                              )}
+                            </button>
+                            <button 
+                              onClick={handleCancelClick}
+                              disabled={isSaving}
+                              className="bg-gray-700 hover:bg-gray-800 text-white px-6 py-2 rounded-md font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 shadow text-base"
+                              style={{ color: '#fff', backgroundColor: '#374151', border: '1px solid #111827' }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            onClick={handleEditClick}
+                            className="flex items-center gap-2 bg-[#5e503f] hover:bg-[#4c4238] text-white px-6 py-2 rounded-md font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2 shadow text-base"
+                            style={{ color: '#fff', backgroundColor: '#5e503f', border: '1px solid #4c4238' }}
+                          >
+                            <FaEdit />
+                            Edit Profile
+                          </button>
+                        )}
                       </div>
                     </div>
-                    
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold mb-2 text-[#5e503f]">Your Stats</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="bg-[#f5eee6] p-4 rounded-lg shadow-sm hover:shadow transition-shadow duration-300 text-center">
-                          <FaShoppingBag className="text-[#5e503f] text-2xl mx-auto mb-2" />
-                          <p className="text-gray-700 font-medium text-sm">Orders</p>
-                          <p className="text-xl font-bold text-[#5e503f]">{formattedStatistics.completedOrders}</p>
-                        </div>
-                        <div className="bg-[#f5eee6] p-4 rounded-lg shadow-sm hover:shadow transition-shadow duration-300 text-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5e503f] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <p className="text-gray-700 font-medium text-sm">Spent</p>
-                          <p className="text-xl font-bold text-[#5e503f] truncate" title={formattedStatistics.totalSpent}>
-                            {formattedStatistics.totalSpent}
-                          </p>
-                        </div>
-                        <div className="bg-[#f5eee6] p-4 rounded-lg shadow-sm hover:shadow transition-shadow duration-300 text-center">
-                          <FaStar className="text-[#5e503f] text-2xl mx-auto mb-2" />
-                          <p className="text-gray-700 font-medium text-sm">Ratings Given</p>
-                          <p className="text-xl font-bold text-[#5e503f]">{formattedStatistics.ratingsCount}</p>
+                    <input 
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </div>
+                  
+                  {/* Details */}
+                  <div className="p-6 md:p-8 flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      {/* Left column - Bio and Location Info */}
+                      <div className="md:col-span-1">
+                        <h3 className="text-xl font-semibold mb-3 text-[#5e503f] flex items-center gap-2">
+                          <MdDescription className="flex-shrink-0" />
+                          About Me
+                        </h3>
+                        {isEditing ? (
+                          <textarea
+                            name="bio"
+                            value={profileData.bio}
+                            onChange={handleInputChange}
+                            rows={5}
+                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#5e503f] text-gray-700"
+                            placeholder="Tell us about yourself..."
+                          />
+                        ) : (
+                          <div className="bg-gray-50 p-4 rounded-md">
+                            <p className="text-gray-700 whitespace-pre-wrap break-words">{profileData.bio || "No bio information provided yet."}</p>
+                          </div>
+                        )}
+                        
+                        <div className="mt-6 space-y-3">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <FaMapMarkerAlt className="text-[#5e503f] flex-shrink-0" />
+                            <span className="font-medium text-gray-700">Location:</span>
+                            {isEditing ? (
+                              <input
+                                type="text"
+                                name="location"
+                                value={profileData.location}
+                                onChange={handleInputChange}
+                                className="flex-grow border border-gray-300 rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#5e503f]"
+                              />
+                            ) : (
+                              <span className="text-gray-600">{profileData.location}</span>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <FaCalendarAlt className="text-[#5e503f] flex-shrink-0" />
+                            <span className="font-medium text-gray-700">Member since:</span>
+                            <span className="text-gray-600">{profileData.joined || 'N/A'}</span>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="mt-6 bg-[#f5eee6] p-4 rounded-lg shadow-sm">
-                        <h4 className="font-medium text-[#5e503f] mb-2">Quick Links</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                          <a href="/cart" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-1 p-2 hover:bg-white/50 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l2-9" />
+                      {/* Center + Right columns - Stats and Quick Links */}
+                      <div className="md:col-span-2">
+                        <h3 className="text-xl font-semibold mb-3 text-[#5e503f]">Account Statistics</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                            <FaShoppingBag className="text-[#5e503f] text-3xl mx-auto mb-3" />
+                            <p className="text-gray-700 font-medium">Completed Orders</p>
+                            <p className="text-2xl font-bold text-[#5e503f]">{formattedStatistics.completedOrders}</p>
+                          </div>
+                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-[#5e503f] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>View My Cart</span>
-                          </a>
-                          <a href="/orders" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-1 p-2 hover:bg-white/50 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                            <span>My Orders</span>
-                          </a>
-                          <a href="/buyer" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-1 p-2 hover:bg-white/50 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
-                            <span>Browse Products</span>
-                          </a>
+                            <p className="text-gray-700 font-medium">Total Spent</p>
+                            <p className="text-2xl font-bold text-[#5e503f] truncate" title={formattedStatistics.totalSpent}>
+                              {formattedStatistics.totalSpent}
+                            </p>
+                          </div>
+                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                            <FaStar className="text-[#5e503f] text-3xl mx-auto mb-3" />
+                            <p className="text-gray-700 font-medium">Ratings Given</p>
+                            <p className="text-2xl font-bold text-[#5e503f]">{formattedStatistics.ratingsCount}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-[#f5eee6] p-5 rounded-lg shadow">
+                          <h4 className="font-semibold text-lg text-[#5e503f] mb-3">Quick Links</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <a href="/cart" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l2-9" />
+                              </svg>
+                              <span className="font-medium">View My Cart</span>
+                            </a>
+                            <a href="/buyer/orders" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v2M7 7h10" />
+                              </svg>
+                              <span className="font-medium">My Orders</span>
+                            </a>
+                            <a href="/buyer" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H5a2 2 0 01-2-2v2m0 0h18" />
+                              </svg>
+                              <span className="font-medium">Browse Products</span>
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
