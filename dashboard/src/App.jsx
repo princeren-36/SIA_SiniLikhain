@@ -12,6 +12,7 @@ import AboutArtisan from "./artisan/AboutArtisan";
 import Register from "./pages/Register";
 import Admin from "./admin/Admin";
 import Buyer from "./buyer/Buyer";
+import BuyerProfile from "./buyer/BuyerProfile";
 import Artisan from "./artisan/Artisan";
 import Cart from "./buyer/Cart";
 import Checkout from "./buyer/Checkout";
@@ -20,6 +21,7 @@ import RegisterBuyer from "./pages/RegisterBuyer";
 import ArtisanDashboard from "./artisan/ArtisanDashboard";
 import ArtisanProfile from "./artisan/ArtisanProfile";
 import ArtisanOrders from "./artisan/ArtisanOrders";
+
 function App() {
   return (
     <BrowserRouter>
@@ -33,6 +35,7 @@ function App() {
         <Route path="/AboutArtisan" element={<AboutArtisan />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Buyer" element={<Buyer />} />
+        <Route path="/BuyerProfile" element={<BuyerProfile />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/buyer/Checkout" element={<Checkout />} />
         <Route path="/Artisan" element={<Artisan />} />

@@ -35,6 +35,7 @@ function Navbar({ showLinks = true }) {
     { to: "/home", label: "Home" },
     { to: "/buyer", label: "Products" },
     { to: "/aboutbuyer", label: "About" },
+    { to: "/buyerprofile", label: "Profile" },
     { to: "/cart", label: (
       <span className="relative">
         <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">

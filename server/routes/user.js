@@ -1,7 +1,18 @@
 const express = require("express");
 const User = require("../models/User");
 const deleteFile = require('../uploads/deleteFile');
+const multer = require("multer");
+const path = require("path");
 const router = express.Router();
+
+// Configure multer storage for avatar uploads
+const storage = multer.diskStorage({
+  destination: "./uploads",
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+const upload = multer({ storage });
 
 router.post("/register", async (req, res) => {
   const { username, email, phone, password, role } = req.body;
@@ -31,9 +42,36 @@ router.get("/all", async (req, res) => {
   res.json(users);
 });
 
-router.put("/:id", async (req, res) => {
-  const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(updated);
+router.put("/:id", upload.single("avatar"), async (req, res) => {
+  try {
+    // Handle avatar file upload
+    const userData = { ...req.body };
+    
+    // If a new avatar file is uploaded
+    if (req.file) {
+      // First check if the user already has an avatar and remove it if exists
+      const existingUser = await User.findById(req.params.id);
+      if (existingUser && existingUser.avatar && existingUser.avatar.includes('/uploads/')) {
+        try {
+          const oldAvatarPath = existingUser.avatar.replace('/uploads/', '');
+          // Delete the old avatar file (using your deleteFile utility)
+          await deleteFile(path.join('uploads', oldAvatarPath));
+          console.log(`Deleted old avatar: ${oldAvatarPath}`);
+        } catch (err) {
+          console.error("Error deleting old avatar:", err);
+        }
+      }
+      
+      // Add the new avatar path to userData
+      userData.avatar = `/uploads/${req.file.filename}`;
+    }
+    
+    const updated = await User.findByIdAndUpdate(req.params.id, userData, { new: true });
+    res.json(updated);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Error updating user profile" });
+  }
 });
 
 router.delete("/:id", async (req, res) => {

@@ -140,13 +140,16 @@ router.patch("/:id/payment", async (req, res) => {
   }
 });
 
-// Get orders with optional artisanId and status filters
+// Get orders with optional artisanId, userId, and status filters
 router.get("/", async (req, res) => {
   try {
-    const { artisanId, status } = req.query;
+    const { artisanId, userId, status } = req.query;
     let filter = {};
     if (artisanId) {
       filter["items.artisanId"] = artisanId;
+    }
+    if (userId) {
+      filter["userId"] = userId;
     }
     if (status) {
       filter["status"] = status;
@@ -154,6 +157,7 @@ router.get("/", async (req, res) => {
     const orders = await Order.find(filter).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
+    console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Failed to fetch orders", error: error.message });
   }
 });
