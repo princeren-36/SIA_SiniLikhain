@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE } from '../utils/api';
 import signupImg from '../images/signup.jpg';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 function RegisterBuyer() {
   const [userData, setUserData] = useState({
@@ -120,165 +125,303 @@ function RegisterBuyer() {
           </p>
           {/* Username */}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type="text"
               name="username"
               value={userData.username}
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm font-poppins ${errors.username ? 'border-red-500' : ''}`}
+              label="Enter Username"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="username"
+              error={!!errors.username}
+              helperText={errors.username ? errors.username : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
+                fontFamily: 'Poppins, Verdana, monospace',
+              }}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
             />
-            <label
-              htmlFor="username"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1 font-poppins ${(userData.username || usernameFocused || errors.username) ? 'top-2 text-xs' : 'top-1/2 -translate-y-1/2 text-sm'} ${errors.username ? 'text-red-500 font-bold' : 'text-black'}`}
-              style={{ zIndex: 10 }}
-            >
-              Enter Username
-            </label>
-            {errors.username && <p className="text-red-500 text-xs mt-1 font-bold font-poppins">{errors.username}</p>}
           </div>
           {/* Email */}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type="email"
               name="email"
               value={userData.email}
               onChange={handleChange}
               onFocus={() => setEmailFocused(true)}
               onBlur={() => setEmailFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm font-poppins ${errors.email ? 'border-red-500' : ''}`}
+              label="Enter Email"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="email"
+              error={!!errors.email}
+              helperText={errors.email ? errors.email : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
+                fontFamily: 'Poppins, Verdana, monospace',
+              }}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
             />
-            <label
-              htmlFor="email"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1 font-poppins ${(userData.email || emailFocused || errors.email) ? 'top-2 text-xs' : 'top-1/2 -translate-y-1/2 text-sm'} ${errors.email ? 'text-red-500 font-bold' : 'text-black'}`}
-              style={{ zIndex: 10 }}
-            >
-              Enter Email
-            </label>
-            {errors.email && <p className="text-red-500 text-xs mt-1 font-bold font-poppins">{errors.email}</p>}
           </div>
           {/* Phone */}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type="text"
               name="phone"
               value={userData.phone}
               onChange={handleChange}
               onFocus={() => setPhoneFocused(true)}
               onBlur={() => setPhoneFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm font-poppins ${errors.phone ? 'border-red-500' : ''}`}
+              label="Enter Phone Number"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="phone"
+              error={!!errors.phone}
+              helperText={errors.phone ? errors.phone : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
+                fontFamily: 'Poppins, Verdana, monospace',
+              }}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
             />
-            <label
-              htmlFor="phone"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1 font-poppins ${(userData.phone || phoneFocused || errors.phone) ? 'top-2 text-xs' : 'top-1/2 -translate-y-1/2 text-sm'} ${errors.phone ? 'text-red-500 font-bold' : 'text-black'}`}
-              style={{ zIndex: 10 }}
-            >
-              Enter Phone Number
-            </label>
-            {errors.phone && <p className="text-red-500 text-xs mt-1 font-bold font-poppins">{errors.phone}</p>}
           </div>
           {/* Password */}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type={showPassword ? "text" : "password"}
               name="password"
               value={userData.password}
               onChange={handleChange}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm font-poppins ${errors.password ? 'border-red-500' : ''}`}
+              label="Enter Password"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="password"
+              error={!!errors.password}
+              helperText={errors.password ? errors.password : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
+                fontFamily: 'Poppins, Verdana, monospace',
+              }}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                      tabIndex={-1}
+                      sx={{ color: 'black' }}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className={`absolute right-4 transition-all duration-300 text-black hover:text-gray-700 focus:outline-none
-                ${(userData.password || passwordFocused || errors.password)
-                  ? 'top-3 translate-y-0'
-                  : 'top-1/2 -translate-y-1/2'}
-              `}
-              tabIndex={-1}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              style={
-                (userData.password || passwordFocused || errors.password)
-                  ? { background: 'none', border: 'none', padding: 0, margin: 0 }
-                  : { background: 'none', border: 'none', padding: 0, margin: 0, top: '60%', transform: 'translateY(-50%)' }
-              }
-            >
-              {showPassword ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.94 17.94A10.05 10.05 0 0112 19c-5.523 0-10-7-10-7a21.77 21.77 0 015.06-5.94M22.54 12.42A21.77 21.77 0 0012 5c-1.657 0-3.22.403-4.575 1.125M3 3l18 18" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              )}
-            </button>
-            <label
-              htmlFor="password"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1 font-poppins ${(userData.password || passwordFocused || errors.password) ? 'top-2 text-xs' : 'top-1/2 -translate-y-1/2 text-sm'} ${errors.password ? 'text-red-500 font-bold' : 'text-black'}`}
-              style={{ zIndex: 10 }}
-            >
-              Enter Password
-            </label>
-            {errors.password && <p className="text-red-500 text-xs mt-1 font-bold font-poppins">{errors.password}</p>}
           </div>
           {/* Confirm Password */}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={userData.confirmPassword}
               onChange={handleChange}
               onFocus={() => setConfirmPasswordFocused(true)}
               onBlur={() => setConfirmPasswordFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm font-poppins ${errors.confirmPassword ? 'border-red-500' : ''}`}
+              label="Confirm Password"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="confirmPassword"
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword ? errors.confirmPassword : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
+                fontFamily: 'Poppins, Verdana, monospace',
+              }}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      edge="end"
+                      tabIndex={-1}
+                      sx={{ color: 'black' }}
+                    >
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
             />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className={`absolute right-4 transition-all duration-300 text-black hover:text-gray-700 focus:outline-none
-                ${(userData.confirmPassword || confirmPasswordFocused || errors.confirmPassword)
-                  ? 'top-3 translate-y-0'
-                  : 'top-1/2 -translate-y-1/2'}
-              `}
-              tabIndex={-1}
-              aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-              style={
-                (userData.confirmPassword || confirmPasswordFocused || errors.confirmPassword)
-                  ? { background: 'none', border: 'none', padding: 0, margin: 0 }
-                  : { background: 'none', border: 'none', padding: 0, margin: 0, top: '60%', transform: 'translateY(-50%)' }
-              }
-            >
-              {showConfirmPassword ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.94 17.94A10.05 10.05 0 0112 19c-5.523 0-10-7-10-7a21.77 21.77 0 015.06-5.94M22.54 12.42A21.77 21.77 0 0012 5c-1.657 0-3.22.403-4.575 1.125M3 3l18 18" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              )}
-            </button>
-            <label
-              htmlFor="confirmPassword"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1 font-poppins ${(userData.confirmPassword || confirmPasswordFocused || errors.confirmPassword) ? 'top-2 text-xs' : 'top-1/2 -translate-y-1/2 text-sm'} ${errors.confirmPassword ? 'text-red-500 font-bold' : 'text-black'}`}
-              style={{ zIndex: 10 }}
-            >
-              Confirm Password
-            </label>
-            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 font-bold font-poppins">{errors.confirmPassword}</p>}
           </div>
           <button
-            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide"
+            className="w-full bg-black text-white hover:bg-gray-900 font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide border border-black outline-none"
+            style={{ fontFamily: 'Poppins, Verdana, monospace', backgroundColor: '#000', color: '#fff' }}
             onClick={handleRegister}
           >
             Register

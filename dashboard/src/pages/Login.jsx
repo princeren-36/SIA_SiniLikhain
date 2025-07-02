@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import loginImg from '../images/login.jpg';
 import { API_BASE } from '../utils/api';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const logo = '/circular-logo.png';
 
@@ -165,94 +170,123 @@ function Login() {
             </div>
           )}
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type="text"
               name="username"
               value={credentials.username}
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm ${errors.username ? 'border-red-500' : ''}`}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400 }}
+              label="Enter Username"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="username"
-            />
-            <label
-              htmlFor="username"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-                ${(credentials.username || usernameFocused || errors.username) ? 'top-2 text-xs translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm'}
-                ${errors.username ? 'text-red-500' : 'text-black'}`}
-              style={{
+              error={!!errors.username}
+              helperText={errors.username ? errors.username : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
                 fontFamily: 'Poppins, Verdana, monospace',
-                fontWeight: 400,
-                zIndex: 10,
-                background: errors.username ? 'white' : 'transparent',
-                pointerEvents: 'none',
-                width: 'fit-content',
-                maxWidth: '90%',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
               }}
-            >
-              Enter Username
-            </label>
-            {errors.username && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace', marginTop: '0.25rem' }}>{errors.username}</p>}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+            />
           </div>
           <div className="w-full mb-2 relative">
-            <input
+            <TextField
               type={showPassword ? "text" : "password"}
               name="password"
               value={credentials.password}
               onChange={handleChange}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
-              className={`w-full px-4 py-4 text-base text-black border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black transition-all duration-300 bg-white peer shadow-sm ${errors.password ? 'border-red-500' : ''}`}
-              style={{ fontFamily: 'Poppins, Verdana, monospace', fontWeight: 400, border: 'none', boxShadow: 'none' }}
+              label="Enter Password"
+              variant="outlined"
+              fullWidth
               autoComplete="off"
               required
               id="password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className={`absolute right-4 transition-all duration-300 text-black hover:text-gray-700 focus:outline-none
-                ${(credentials.password || passwordFocused || errors.password)
-                  ? 'top-3 translate-y-0'
-                  : 'top-1/2 -translate-y-1/2'}
-              `}
-              tabIndex={-1}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              style={{ background: 'none', border: 'none', padding: 0, margin: 0 }}
-            >
-              {showPassword ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.94 17.94A10.05 10.05 0 0112 19c-5.523 0-10-7-10-7a21.77 21.77 0 015.06-5.94M22.54 12.42A21.77 21.77 0 0012 5c-1.657 0-3.22.403-4.575 1.125M3 3l18 18" /><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="white" /></svg>
-              )}
-            </button>
-            <label
-              htmlFor="password"
-              className={`absolute left-4 transition-all duration-300 pointer-events-none px-1
-                ${(credentials.password || passwordFocused || errors.password) ? 'top-2 text-xs translate-y-0' : 'top-1/2 -translate-y-1/2 text-sm'}
-                ${errors.password ? 'text-red-500' : 'text-black'}`}
-              style={{
+              error={!!errors.password}
+              helperText={errors.password ? errors.password : ''}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'black',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'black',
+                  },
+                  backgroundColor: 'white',
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: 'black',
+                },
                 fontFamily: 'Poppins, Verdana, monospace',
-                fontWeight: 400,
-                zIndex: 10,
-                background: errors.password ? 'white' : 'transparent',
-                pointerEvents: 'none',
-                width: 'fit-content',
-                maxWidth: '90%',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
               }}
-            >
-              Enter Password
-            </label>
-            {errors.password && <p className="text-red-500 text-xs mt-1 font-bold" style={{ fontFamily: 'Poppins, Verdana, monospace', marginTop: '0.25rem' }}>{errors.password}</p>}
+              InputProps={{
+                style: {
+                  color: 'black',
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      edge="end"
+                      tabIndex={-1}
+                      sx={{ color: 'black' }}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              InputLabelProps={{
+                style: {
+                  fontFamily: 'Poppins, Verdana, monospace',
+                  fontWeight: 400,
+                },
+              }}
+            />
           </div>
           <div className="w-full flex items-center mb-4">
             <input
