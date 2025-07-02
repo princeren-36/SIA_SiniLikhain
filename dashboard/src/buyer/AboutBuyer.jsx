@@ -389,6 +389,65 @@ function About() {
           }
         `}</style>
       </div>
+      
+      <footer className="bg-[#121212] text-white pt-12 pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="mb-8 md:mb-0">
+              <h3 className="text-xl font-bold mb-4 font-mono">SiniLikhain</h3>
+              <p className="text-gray-400 mb-4">
+                Connecting talented Filipino artisans with those who appreciate authentic handcrafted products.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <i className="fab fa-facebook-f" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <i className="fab fa-twitter" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <i className="fab fa-instagram" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <i className="fab fa-linkedin-in" />
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 font-mono">Shop</h3>
+              <ul className="space-y-2">
+                <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">All Products</a></li>
+                <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">New Arrivals</a></li>
+                <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">Featured</a></li>
+                <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">Best Sellers</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 font-mono">About</h3>
+              <ul className="space-y-2">
+                <li><a href="/aboutbuyer" className="text-gray-400 hover:text-white transition-colors">Our Story</a></li>
+                <li><a href="#artisans" className="text-gray-400 hover:text-white transition-colors">Artisans</a></li>
+                <li><a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors">How It Works</a></li>
+                <li><a href="#impact" className="text-gray-400 hover:text-white transition-colors">Our Impact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 font-mono">Support</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQs</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shipping & Returns</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-10 pt-6">
+            <p className="text-center text-gray-400 text-sm">
+              © {new Date().getFullYear()} SiniLikhain. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
