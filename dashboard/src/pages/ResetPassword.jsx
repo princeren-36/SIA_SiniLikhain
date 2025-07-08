@@ -13,6 +13,26 @@ function ResetPassword() {
   const email = location.state?.email || '';
 
   const handleReset = async () => {
+    if (!otp) {
+      setError('OTP is required.');
+      setMsg('');
+      return;
+    }
+    if (!/^\d{6}$/.test(otp)) {
+      setError('OTP must be a 6-digit number.');
+      setMsg('');
+      return;
+    }
+    if (!password) {
+      setError('Password is required.');
+      setMsg('');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      setMsg('');
+      return;
+    }
     try {
       await axios.post(`${API_BASE}/users/reset-password`, { email, otp, password });
       setMsg('Password has been reset! You can now log in.');

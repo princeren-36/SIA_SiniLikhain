@@ -9,7 +9,21 @@ function ForgotPassword() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Simple email validation
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleSendOtp = async () => {
+    if (!email) {
+      setError('Email is required.');
+      setMsg('');
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address.');
+      setMsg('');
+      return;
+    }
     try {
       await axios.post(`${API_BASE}/users/forgot-password`, { email });
       setMsg('OTP sent to your email!');
