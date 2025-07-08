@@ -46,20 +46,28 @@ function AboutArtisan() {
   // FAQ data for artisans
   const faqs = [
     {
-      question: "How do I get started selling on SiniLikhain?",
-      answer: "To start selling, complete your artisan profile, upload high-quality photos of your products with detailed descriptions, and set your pricing and shipping options. Once approved by our team, your products will be visible to buyers."
+      question: "How do I showcase my products effectively?",
+      answer: "Upload high-quality photos from multiple angles, write detailed descriptions highlighting materials and techniques, and include your inspiration behind each piece. Consider adding short video demonstrations of your craft process when possible."
     },
     {
-      question: "What fees does SiniLikhain charge?",
-      answer: "SiniLikhain takes a small commission on each sale to cover platform maintenance and marketing. The exact percentage can be found in your artisan dashboard. There are no listing fees or monthly charges."
+      question: "How are products approved for the marketplace?",
+      answer: "Our admin team reviews each product submission for quality, originality, and alignment with our marketplace values. Most products are reviewed within 24-48 hours. You'll receive a notification once approved."
     },
     {
-      question: "How do I receive payment for my sales?",
-      answer: "Payments are processed securely through our platform. Once an order is completed and delivered, funds will be available in your artisan dashboard. You can withdraw funds to your linked bank account at any time."
+      question: "How can I increase my visibility on SiniLikhain?",
+      answer: "Complete your artisan profile with your story and craft techniques, maintain consistent product uploads, respond promptly to customer inquiries, and participate in our featured artisan programs and seasonal promotions."
     },
     {
-      question: "Can I offer custom products to buyers?",
-      answer: "Yes! We encourage artisans to offer customization options. You can communicate directly with buyers through our messaging system to discuss custom orders and special requests."
+      question: "How do I handle shipping and deliveries?",
+      answer: "You can manage your shipping options in your dashboard settings. We recommend setting clear shipping timeframes and using our integrated tracking system to keep buyers updated on their order status."
+    },
+    {
+      question: "How do I track my sales and performance?",
+      answer: "Your dashboard provides real-time statistics including total products, average buyer ratings, and completed sales. Use these metrics to identify your most popular products and understand your business growth over time."
+    },
+    {
+      question: "Can I offer customized products to buyers?",
+      answer: "Yes! You can indicate which products can be customized in the product description. When a buyer requests customization, you'll receive a special order notification to discuss details before confirming the order."
     }
   ];
 
@@ -69,12 +77,12 @@ function AboutArtisan() {
       <div className="min-h-screen bg-[#f8f9fa] py-12 px-4 md:px-8 lg:px-16">
         {/* Hero section */}
         <div className="max-w-5xl mx-auto text-center mb-16 opacity-0 about-section translate-y-8 transition-all duration-700">
-          <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-sm font-medium mb-2">Our Platform</span>
+          <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-sm font-medium mb-2">Artisan Portal</span>
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-[#1b2a41] font-mono tracking-wide">
-            About SiniLikhain
+            Artisan Resources
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
-            A platform connecting skilled artisans with those who appreciate unique, handcrafted treasures
+          <p className="text-lg text-[#18181b] max-w-3xl mx-auto mb-8">
+            Your guide to managing and growing your Filipino craft business on SiniLikhain
           </p>
           <div className="w-24 h-1 bg-[#5e503f] mx-auto"></div>
         </div>
@@ -83,15 +91,12 @@ function AboutArtisan() {
         <div className="max-w-7xl mx-auto mb-20 opacity-0 about-section translate-y-8 transition-all duration-700">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h3 className="text-2xl font-semibold mb-4 text-[#1b2a41] font-mono">Introduction</h3>
-              <p className="text-gray-700 leading-relaxed mb-6">
-                Welcome to <span className="font-bold text-[#5e503f]">SiniLikhain</span>, an e-commerce platform dedicated to
-                showcasing the creativity and craftsmanship of talented artisans. Our mission
-                is to connect skilled creators with customers who value unique, handmade, and
-                high-quality products.
+              <h3 className="text-2xl font-semibold mb-4 text-[#1b2a41] font-mono">Your Artisan Journey</h3>
+              <p className="text-[#18181b] leading-relaxed mb-6">
+                As a <span className="font-bold text-[#5e503f]">SiniLikhain Artisan</span>, you're part of a thriving community dedicated to celebrating Filipino craftsmanship. Your dashboard provides all the tools you need to showcase your creations, manage orders, and connect with customers who value handmade products.
               </p>
-              <p className="text-gray-700 leading-relaxed mb-6">
-                For artisans like you, we provide a dedicated space to showcase your talent, connect with customers who appreciate handcrafted goods, and grow your business with our supportive community.
+              <p className="text-[#18181b] leading-relaxed mb-6">
+                Our platform is designed to highlight your unique skills and stories, bringing traditional crafting techniques and contemporary artistry to a wider audience while ensuring you receive fair compensation for your work.
               </p>
               <div className="flex items-center gap-4 p-4 bg-[#5e503f]/10 rounded-lg">
                 <div className="rounded-full bg-[#5e503f] p-3 text-white">
@@ -99,8 +104,8 @@ function AboutArtisan() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-700">
-                  As an artisan, you can manage your products, track orders, and interact directly with your customers through your dashboard.
+                <p className="text-sm text-[#18181b]">
+                  This guide will help you navigate your artisan dashboard and make the most of our platform features.
                 </p>
               </div>
             </div>
@@ -112,8 +117,8 @@ function AboutArtisan() {
                 style={{ maxHeight: "400px" }}
               />
               <div className="absolute -bottom-5 -right-5 bg-white p-4 rounded-lg shadow-lg hidden md:block">
-                <p className="text-[#5e503f] font-medium text-lg">Artisan Community</p>
-                <p className="text-gray-600">Join our growing family of creators</p>
+                <p className="text-[#5e503f] font-medium text-lg">Your Artisan Dashboard</p>
+                <p className="text-[#18181b]">Manage products, orders & more</p>
               </div>
             </div>
           </div>
@@ -122,12 +127,12 @@ function AboutArtisan() {
         {/* Our values section with cards */}
         <div className="max-w-7xl mx-auto mb-20 opacity-0 about-section translate-y-8 transition-all duration-700">
           <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-sm font-medium mb-2">Our Values</span>
+            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-sm font-medium mb-2">Key Features</span>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-3">
-              The SiniLikhain Difference
+              Your Artisan Dashboard
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Why artisans choose our platform to showcase their work
+            <p className="text-lg text-[#18181b] max-w-3xl mx-auto">
+              Powerful tools designed to showcase your craft and grow your business
             </p>
           </div>
           
@@ -136,9 +141,9 @@ function AboutArtisan() {
               <div className="bg-[#5e503f]/10 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                 <FaHandHoldingHeart className="text-[#5e503f] text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Mission</h3>
-              <p className="text-gray-600">
-                To promote sustainable practices and fair compensation while connecting talented artisans with a global audience.
+              <h3 className="text-xl font-semibold text-[#1b2a41] mb-2">Product Management</h3>
+              <p className="text-[#18181b]">
+                Easily upload, edit and organize your handcrafted products with our intuitive management system.
               </p>
             </div>
             
@@ -146,9 +151,9 @@ function AboutArtisan() {
               <div className="bg-[#5e503f]/10 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                 <FaEye className="text-[#5e503f] text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Our Vision</h3>
-              <p className="text-gray-600">
-                To become the leading marketplace for authentic handcrafted Filipino products while preserving traditional craftsmanship.
+              <h3 className="text-xl font-semibold text-[#1b2a41] mb-2">Order Tracking</h3>
+              <p className="text-[#18181b]">
+                Monitor orders from placement to delivery with real-time updates and customer communication tools.
               </p>
             </div>
             
@@ -156,9 +161,9 @@ function AboutArtisan() {
               <div className="bg-[#5e503f]/10 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                 <FaHistory className="text-[#5e503f] text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Our History</h3>
-              <p className="text-gray-600">
-                Born from a passion for Filipino culture and a desire to support artisans struggling to market their work in the digital era.
+              <h3 className="text-xl font-semibold text-[#1b2a41] mb-2">Sales Analytics</h3>
+              <p className="text-[#18181b]">
+                Track your performance with detailed insights on product views, sales trends, and customer demographics.
               </p>
             </div>
             
@@ -166,9 +171,9 @@ function AboutArtisan() {
               <div className="bg-[#5e503f]/10 w-14 h-14 rounded-full flex items-center justify-center mb-4">
                 <FaLightbulb className="text-[#5e503f] text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Background</h3>
-              <p className="text-gray-600">
-                Emerged from community engagements and art fairs to address the need for digital platforms for local artisans.
+              <h3 className="text-xl font-semibold text-[#1b2a41] mb-2">Profile Customization</h3>
+              <p className="text-[#18181b]">
+                Tell your story and showcase your craft heritage with a customizable artisan profile.
               </p>
             </div>
           </div>
@@ -181,10 +186,10 @@ function AboutArtisan() {
             <div className="relative z-10">
               <div className="text-center mb-10">
                 <h2 className="text-3xl md:text-4xl font-bold font-mono mb-4">
-                  Why Sell on SiniLikhain?
+                  Grow Your Artisan Business
                 </h2>
-                <p className="text-lg max-w-3xl mx-auto opacity-90">
-                  Join hundreds of artisans who have found success on our platform
+                <p className="text-lg max-w-3xl mx-auto opacity-90 text-[#18181b]">
+                  Strategies to increase your sales and customer engagement
                 </p>
               </div>
               
@@ -192,40 +197,47 @@ function AboutArtisan() {
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hover:bg-white/20 transition-colors duration-300">
                   <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 text-[#5e503f]">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Global Reach</h3>
-                  <p className="opacity-90">Expand your customer base beyond local markets to reach buyers nationwide.</p>
+                  <h3 className="text-xl font-semibold mb-2 text-[#18181b]">Visual Storytelling</h3>
+                  <p className="opacity-90 text-[#18181b]">Use high-quality photos and videos to highlight your crafting process and the cultural heritage behind your work.</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hover:bg-white/20 transition-colors duration-300">
                   <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 text-[#5e503f]">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Fair Pricing</h3>
-                  <p className="opacity-90">Set your own prices and receive fair compensation for your craftsmanship.</p>
+                  <h3 className="text-xl font-semibold mb-2 text-[#18181b]">Track Your Growth</h3>
+                  <p className="opacity-90 text-[#18181b]">Use your dashboard statistics to monitor sales trends and identify which products resonate with your customers.</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg hover:bg-white/20 transition-colors duration-300">
                   <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 text-[#5e503f]">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Community</h3>
-                  <p className="opacity-90">Connect with fellow artisans, share insights, and grow together.</p>
+                  <h3 className="text-xl font-semibold mb-2 text-[#18181b]">Build Relationships</h3>
+                  <p className="opacity-90 text-[#18181b]">Connect with your buyers through prompt responses, personalized service, and follow-ups on completed orders.</p>
                 </div>
               </div>
               
               <div className="mt-10 text-center">
                 <button 
-                  className="bg-white text-[#5e503f] px-8 py-3 rounded-lg font-medium hover:bg-white/90 transition-colors duration-200"
-                  onClick={() => window.location.href='/artisan/manage-products'}
+                  className="bg-white text-[#5e503f] px-8 py-3 rounded-lg font-medium hover:bg-white/90 transition-colors duration-200 mr-4"
+                  onClick={() => window.location.href='/artisan/add-product'}
                 >
-                  Manage My Products
+                  Add New Product
+                </button>
+                <button 
+                  className="bg-white/20 text-[#18181b] border border-white/50 px-8 py-3 rounded-lg font-medium hover:bg-white/30 transition-colors duration-200"
+                  onClick={() => window.location.href='/artisan/dashboard'}
+                >
+                  View Your Statistics
                 </button>
               </div>
             </div>
@@ -237,10 +249,10 @@ function AboutArtisan() {
           <div className="text-center mb-12">
             <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-sm font-medium mb-2">FAQ</span>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-3">
-              Artisan Resources
+              Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Answers to common questions for SiniLikhain artisans
+            <p className="text-lg text-[#18181b] max-w-3xl mx-auto">
+              Answers to help you succeed as a SiniLikhain artisan
             </p>
           </div>
           
@@ -251,10 +263,10 @@ function AboutArtisan() {
                 className="border border-gray-200 rounded-lg overflow-hidden"
               >
                 <button 
-                  className={`w-full text-left p-4 flex justify-between items-center focus:outline-none ${activeAccordion === index ? 'bg-[#5e503f] text-white' : 'bg-white text-gray-800 hover:bg-gray-50'}`}
+                  className={`w-full text-left p-4 flex justify-between items-center focus:outline-none ${activeAccordion === index ? 'bg-[#5e503f]' : 'bg-white'} ${activeAccordion === index ? 'text-[#18181b]' : 'text-[#18181b]'} hover:bg-gray-50`}
                   onClick={() => toggleAccordion(index)}
                 >
-                  <span className="font-medium">{faq.question}</span>
+                  <span className="font-medium text-[#18181b]">{faq.question}</span>
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     className={`h-5 w-5 transition-transform duration-300 ${activeAccordion === index ? 'transform rotate-180' : ''}`} 
@@ -268,7 +280,7 @@ function AboutArtisan() {
                 <div 
                   className={`px-4 overflow-hidden transition-all duration-300 ease-in-out ${activeAccordion === index ? 'max-h-40 py-4' : 'max-h-0'}`}
                 >
-                  <p className="text-gray-600">{faq.answer}</p>
+                  <p className="text-[#18181b]">{faq.answer}</p>
                 </div>
               </div>
             ))}

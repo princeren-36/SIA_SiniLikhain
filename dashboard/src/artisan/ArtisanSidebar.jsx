@@ -87,7 +87,12 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
               }`}
               onClick={(e) => {
                 e.stopPropagation();
-                toggleSubmenu("home");
+                if (!isOpen) {
+                  toggleSidebar();
+                  setTimeout(() => toggleSubmenu("home"), 200);
+                } else {
+                  toggleSubmenu("home");
+                }
               }}
             >
               <div className="flex items-center">
@@ -130,7 +135,12 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
               }`}
               onClick={(e) => {
                 e.stopPropagation();
-                toggleSubmenu("inventory");
+                if (!isOpen) {
+                  toggleSidebar();
+                  setTimeout(() => toggleSubmenu("inventory"), 200);
+                } else {
+                  toggleSubmenu("inventory");
+                }
               }}
             >
               <div className="flex items-center">
@@ -205,7 +215,14 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
               className={`flex items-center justify-between cursor-pointer rounded-md p-2 hover-item ${
                 isActive("/artisan/profile") || isActive("/artisan/users") ? "active-item" : ""
               }`}
-              onClick={() => toggleSubmenu("userProfile")}
+              onClick={() => {
+                if (!isOpen) {
+                  toggleSidebar();
+                  setTimeout(() => toggleSubmenu("userProfile"), 200);
+                } else {
+                  toggleSubmenu("userProfile");
+                }
+              }}
             >
               <div className="flex items-center">
                 <FaUserCircle className="text-2xl" />
