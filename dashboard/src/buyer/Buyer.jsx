@@ -86,7 +86,7 @@ function Buyer() {
       </div>
       <div className="p-4 min-h-screen" style={{ background: '#f8f9fa', marginTop: 0 }}>
         <div id="main-content" className="h-18" />
-        <div className="flex w-full items-start gap-8">
+        <div className="flex w-full items-start gap-8" style={{ minHeight: '80vh' }}>
           {/* Product grid on the left */}
           <div className="flex-1">
             <div className="flex flex-col md:flex-row items-center gap-2 mb-6 justify-center">
@@ -167,7 +167,11 @@ function Buyer() {
               ))}
             </div>
           </div>
-          <div className="max-w-xs w-full">
+          <div
+            className="max-w-xs w-full"
+            style={{ position: 'sticky', top: 32, alignSelf: 'flex-start', height: 'fit-content', background: 'white', zIndex: 10 }}
+          >
+            {/* If sticky is not working, ensure no parent has overflow-y set! */}
             <div className="flex items-center justify-between border-b border-[#bfa181] pb-2 mb-2">
               <span className="font-mono text-xl font-semibold tracking-widest text-black">CART</span>
               <span className="font-mono text-sm font-bold tracking-wider">Subtotal: ₱{cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</span>
