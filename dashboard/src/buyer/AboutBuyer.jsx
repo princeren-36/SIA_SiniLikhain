@@ -469,7 +469,7 @@ function About() {
           
           {/* Collaboration section - inserted before copyright */}
           <div className="mt-10 mb-8">
-            <h3 className="text-center text-lg font-semibold mb-4 font-mono">In Collaboration With</h3>
+            <h3 className="text-center text-lg font-semibold mb-4 font-mono">Our Business Partners</h3>
             <div className="flex flex-wrap justify-center items-center gap-8">
               {/* Example Collaborator 1 */}
               <div className="flex flex-col items-center">
