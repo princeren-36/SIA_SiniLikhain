@@ -36,3 +36,35 @@ body, * {
     background-color: #f9f9f9;
   }
 }
+.noto-sans-tagalog-regular {
+  font-family: "Noto Sans Tagalog", "Arial Unicode MS", "Cambria Math", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  /* Ensure text rendering is optimized for special characters */
+  text-rendering: optimizeLegibility;
+}
+
+/* Add fallback handling for Baybayin text */
+.noto-sans-tagalog-regular:not(:lang(tgl)) {
+  position: relative;
+}
+
+/* Use the data-text attribute as fallback when font doesn't display correctly */
+.noto-sans-tagalog-regular:not(:lang(tgl))::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  /* Only show this when the Baybayin font fails to load */
+  font-family: 'Source Code Pro', system-ui, sans-serif;
+}
+
+/* Detect if Baybayin characters failed to render */
+@supports not (font-family: "Noto Sans Tagalog") {
+  .noto-sans-tagalog-regular:not(:lang(tgl))::after {
+    display: block;
+  }
+}
