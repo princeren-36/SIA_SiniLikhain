@@ -1,27 +1,44 @@
 const express = require("express");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const mongoose = require('mongoose');
 const router = express.Router();
 
 // Create a new order
 router.post("/", async (req, res) => {
   try {
-    const { userId, items, shippingInfo, totalAmount } = req.body;
-    
-    // Validate items are in stock
+    let { userId, items, shippingInfo, totalAmount } = req.body;
+    // Prevent userId (buyer) from being the same as artisanId for any item
+    // If so, set userId to a dummy value or reject the order
+    // (Best: reject the order and inform the frontend)
+    let artisanIds = [];
     for (const item of items) {
-      const product = await Product.findById(item._id);
+      const productId = item._id || item.productId;
+      const product = await Product.findById(productId);
+      if (product && product.userId) {
+        artisanIds.push(product.userId.toString());
+      }
+    }
+    // If all artisanIds are the same as userId, reject
+    if (artisanIds.length > 0 && artisanIds.every(aid => aid === userId)) {
+      return res.status(400).json({ message: "You cannot order your own products as a buyer. Please use a different account." });
+    }
+    
+    // Validate items are in stock and always set artisanId from product.userId
+    for (const item of items) {
+      // Accept both _id and productId from frontend
+      const productId = item._id || item.productId;
+      const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ message: `Product ${item.name} not found` });
+        return res.status(404).json({ message: `Product ${item.name || productId} not found` });
       }
       if (product.quantity < item.quantity) {
         return res.status(400).json({ 
           message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
         });
       }
-      
-      // Store artisanId with each item to track who receives the order
-      item.artisanId = product.userId || product.artisanId;
+      // Always set artisanId from product.userId (the artisan's _id), even if missing
+      item.artisanId = product.userId ? product.userId.toString() : null;
     }
     
     // Create the order
@@ -61,7 +78,17 @@ router.post("/", async (req, res) => {
 router.get("/user/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    let objectId = null;
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      objectId = new mongoose.Types.ObjectId(userId);
+    }
+    // Match both string and ObjectId for userId
+    const orders = await Order.find({
+      $or: [
+        { userId: userId },
+        { userId: objectId }
+      ]
+    }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch orders", error: error.message });
@@ -103,22 +130,36 @@ router.patch("/:id/status", async (req, res) => {
 router.get("/artisan/:artisanId", async (req, res) => {
   try {
     const artisanId = req.params.artisanId;
-    // Find orders where the artisanId exists in any of the order items
-    const orders = await Order.find({ "items.artisanId": artisanId }).sort({ createdAt: -1 });
-    
-    // Filter each order to only include items belonging to this artisan
+    let objectId = null;
+    if (mongoose.Types.ObjectId.isValid(artisanId)) {
+      objectId = new mongoose.Types.ObjectId(artisanId);
+    }
+    // Find all orders that have at least one item with this artisanId (as ObjectId only)
+    const orders = await Order.find({
+      "items.artisanId": objectId
+    })
+      .populate({
+        path: 'userId',
+        select: 'username email phone _id'
+      })
+      .populate('items.productId')
+      .lean();
+
+    // For each order, filter items to only those belonging to this artisan
     const filteredOrders = orders.map(order => {
-      const orderObj = order.toObject();
-      // Filter items to only those belonging to this artisan
-      orderObj.items = orderObj.items.filter(item => 
-        item.artisanId && item.artisanId.toString() === artisanId
-      );
-      return orderObj;
-    });
-    
+      const artisanItems = order.items.filter(item => {
+        return item.artisanId && item.artisanId.toString() === artisanId;
+      });
+      return {
+        ...order,
+        items: artisanItems
+      };
+    }).filter(order => order.items.length > 0); // Only include orders with at least one item for this artisan
+
     res.json(filteredOrders);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch artisan orders", error: error.message });
+  } catch (err) {
+    console.error("Artisan orders fetch error:", err);
+    res.status(500).json({ message: 'Failed to fetch artisan orders', error: err.message });
   }
 });
 

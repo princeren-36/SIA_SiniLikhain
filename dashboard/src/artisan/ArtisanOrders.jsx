@@ -22,13 +22,16 @@ const paymentColors = {
 
 const ArtisanOrders = () => {
   const [orders, setOrders] = useState([]);
+  // Removed selectedOrder state, no longer needed
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
   const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
 
   useEffect(() => {
     if (!user || !user._id) return;
 
+    // Fetch all orders for this artisan
     const fetchOrders = async () => {
       try {
         const response = await axios.get(`${API_BASE}/orders/artisan/${user._id}`);
@@ -36,6 +39,8 @@ const ArtisanOrders = () => {
       } catch (error) {
         console.error("Error fetching orders:", error);
         toast.error("Failed to load orders. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -79,6 +84,9 @@ const ArtisanOrders = () => {
         <div className="w-full p-6 md:p-8" style={{ backgroundColor: '#18181b', color: '#fff' }}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold font-mono tracking-wider">Order Management</h2>
+            <span className="text-lg font-mono font-semibold text-[#b38664]">
+              Total Orders: {orders.length}
+            </span>
           </div>
           {/* Filters */}
           <div className="mb-8 flex flex-wrap justify-center gap-2">
@@ -87,7 +95,7 @@ const ArtisanOrders = () => {
               className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "all" ? "bg-[#386641] text-white border-[#386641]" : "bg-white text-[#386641] border-[#386641] hover:bg-[#e9edc9]"}`}
             >
               ALL ORDERS
-            </button>s
+            </button>
             <button
               onClick={() => setSelectedFilter("pending")}
               className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "pending" ? "bg-[#b38664] text-white border-[#b38664]" : "bg-white text-[#b38664] border-[#b38664] hover:bg-[#f5eee6]"}`}
@@ -118,6 +126,14 @@ const ArtisanOrders = () => {
             >
               CANCELLED
             </button>
+          </div>
+          {/* Summary (optional) */}
+          <div className="flex gap-4 mb-4">
+            <span className="font-mono text-green-500">Completed: {orders.filter(o => o.status === "delivered").length}</span>
+            <span className="font-mono text-yellow-500">Pending: {orders.filter(o => o.status === "pending").length}</span>
+            <span className="font-mono text-blue-500">Processing: {orders.filter(o => o.status === "processing").length}</span>
+            <span className="font-mono text-indigo-500">Shipped: {orders.filter(o => o.status === "shipped").length}</span>
+            <span className="font-mono text-red-500">Cancelled: {orders.filter(o => o.status === "cancelled").length}</span>
           </div>
           {/* Table/Order List Section */}
           <div className="rounded-lg shadow-sm border border-gray-700 p-4" style={{ backgroundColor: '#23232b', color: '#fff' }}>
@@ -157,8 +173,12 @@ const ArtisanOrders = () => {
                         </span>
                       </div>
                       <div className="flex items-center">
-                        <span className="text-lg font-semibold text-[#1b2a41] mr-2">
-                          ₱{order.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}
+                        {/* Show the number of items in this order */}
+                        <span className="text-lg font-mono font-semibold text-[#f59e42] bg-[#23232b] px-3 py-1 rounded-full mr-3 border-2 border-[#f59e42] shadow">
+                          {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
+                        </span>
+                        <span className="text-2xl font-extrabold text-[#fff] bg-[#f59e42] px-4 py-1 rounded-full mr-2 border-2 border-[#fff] shadow-lg tracking-wider">
+                          ₱{order.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}
                         </span>
                         <svg
                           className={`h-5 w-5 text-[#b38664] transform transition-transform ${expandedOrderId === order._id ? "rotate-180" : ""}`}
@@ -189,9 +209,10 @@ const ArtisanOrders = () => {
                                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 bg-white">
                                     {item.image ? (
                                       <img
-                                        src={`${API_BASE}/${item.image}`}
+                                        src={item.image.startsWith('http') ? item.image : `${API_BASE}${item.image.startsWith('/') ? '' : '/'}${item.image}`}
                                         alt={item.name}
                                         className="h-full w-full object-cover object-center"
+                                        onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/80?text=No+Image'; }}
                                       />
                                     ) : (
                                       <div className="h-full w-full bg-gray-100 flex items-center justify-center">
@@ -227,6 +248,24 @@ const ArtisanOrders = () => {
                           
                           <div className="lg:col-span-1 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                             <div className="space-y-6">
+                              {/* Buyer info */}
+                              <div>
+                                <h3 className="text-base font-mono font-semibold mb-3 text-[#1b2a41] uppercase tracking-wider">
+                                  Buyer Information
+                                </h3>
+                                <div className="text-sm space-y-2 text-gray-500">
+                                  <p className="font-medium text-black">
+                                    {order.userId && (order.userId.username || order.userId.email || order.userId._id)}
+                                  </p>
+                                  {order.userId && order.userId.email && (
+                                    <p>Email: {order.userId.email}</p>
+                                  )}
+                                  {order.userId && order.userId.phone && (
+                                    <p>Phone: {order.userId.phone}</p>
+                                  )}
+                                </div>
+                              </div>
+                              
                               {/* Shipping info */}
                               <div>
                                 <h3 className="text-base font-mono font-semibold mb-3 text-[#1b2a41] uppercase tracking-wider">

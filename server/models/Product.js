@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema({
     }
   ],
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
-  approved: { type: Boolean, default: false } // Added for frontend compatibility
+  approved: { type: Boolean, default: false }, // Added for frontend compatibility
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 });
 
 module.exports = mongoose.model("Product", productSchema);
