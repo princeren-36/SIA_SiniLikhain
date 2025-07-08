@@ -28,18 +28,14 @@ const fetchBuyerStatistics = async (buyerId) => {
     });
     console.log("Total spent:", totalSpent);
     
-    // Fetch ratings given by the buyer
-    const ratingsCount = await axios.get(`${API_BASE}/users/${buyerId}/ratings/count`)
-      .then(res => res.data?.count || 0)
-      .catch(err => {
-        console.error("Error fetching ratings:", err);
-        return 0;
-      });
+    // Fetch ratings given by the buyer (as rater)
+    const ratingsGivenResponse = await axios.get(`${API_BASE}/ratings?buyerId=${buyerId}`);
+    const ratingsGiven = Array.isArray(ratingsGivenResponse.data) ? ratingsGivenResponse.data.length : 0;
     
     return {
       completedOrders,
       totalSpent,
-      ratingsCount
+      ratingsCount: ratingsGiven
     };
   } catch (error) {
     console.error("Error fetching buyer statistics:", error);
@@ -357,13 +353,6 @@ const getAvatarUrl = (avatar) => {
     }
   };
   
-  // Format statistics for display
-  const formattedStatistics = {
-    completedOrders: profileData.statistics.completedOrders || 0,
-    totalSpent: new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(profileData.statistics.totalSpent || 0),
-    ratingsCount: profileData.statistics.ratingsCount || 0
-  };
-  
   return (
     <div className="page" style={{ height: '100vh' }}>
       <NavbarBuyer />
@@ -523,8 +512,8 @@ const getAvatarUrl = (avatar) => {
                             <button 
                               onClick={handleSaveClick}
                               disabled={isSaving}
-                              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-offset-2 shadow text-base"
-                              style={{ color: '#fff', backgroundColor: '#16a34a', border: '1px solid #15803d' }}
+                              className="flex items-center gap-2 bg-[#5e503f] hover:bg-[#4c4238] text-white px-6 py-2 rounded-md font-medium transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2 shadow text-base"
+                              style={{ color: '#fff', backgroundColor: '#5e503f', border: '1px solid #4c4238' }}
                             >
                               {isSaving ? (
                                 <>
@@ -616,47 +605,18 @@ const getAvatarUrl = (avatar) => {
                         </div>
                       </div>
                       
-                      {/* Center + Right columns - Stats and Quick Links */}
+                      {/* Center + Right columns - Quick Links only */}
                       <div className="md:col-span-2">
-                        <h3 className="text-xl font-semibold mb-3 text-[#5e503f]">Account Statistics</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
-                            <FaShoppingBag className="text-[#5e503f] text-3xl mx-auto mb-3" />
-                            <p className="text-gray-700 font-medium">Completed Orders</p>
-                            <p className="text-2xl font-bold text-[#5e503f]">{formattedStatistics.completedOrders}</p>
-                          </div>
-                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-[#5e503f] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-gray-700 font-medium">Total Spent</p>
-                            <p className="text-2xl font-bold text-[#5e503f] truncate" title={formattedStatistics.totalSpent}>
-                              {formattedStatistics.totalSpent}
-                            </p>
-                          </div>
-                          <div className="bg-[#f5eee6] p-5 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
-                            <FaStar className="text-[#5e503f] text-3xl mx-auto mb-3" />
-                            <p className="text-gray-700 font-medium">Ratings Given</p>
-                            <p className="text-2xl font-bold text-[#5e503f]">{formattedStatistics.ratingsCount}</p>
-                          </div>
-                        </div>
-                        
                         <div className="bg-[#f5eee6] p-5 rounded-lg shadow">
                           <h4 className="font-semibold text-lg text-[#5e503f] mb-3">Quick Links</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <a href="/cart" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <a href="/cart" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md border border-[#e0d6c3] bg-white/80 shadow-sm">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l2-9" />
                               </svg>
                               <span className="font-medium">View My Cart</span>
                             </a>
-                            <a href="/buyer/orders" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v2M7 7h10" />
-                              </svg>
-                              <span className="font-medium">My Orders</span>
-                            </a>
-                            <a href="/buyer" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md">
+                            <a href="/buyer" className="text-[#5e503f] hover:text-[#bfa181] transition-colors flex items-center gap-2 p-3 hover:bg-white/60 rounded-md border border-[#e0d6c3] bg-white/80 shadow-sm">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H5a2 2 0 01-2-2v2m0 0h18" />
                               </svg>
