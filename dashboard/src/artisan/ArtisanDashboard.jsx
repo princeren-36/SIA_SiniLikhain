@@ -7,6 +7,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../style/calendar-theme.css';
 import { API_BASE } from "../utils/api";
+import { getArtisanProducts } from "../utils/artisan";
 
 const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#a78bfa", "#f472b6", "#38bdf8", "#facc15"];
 
@@ -34,15 +35,9 @@ const ArtisanDashboard = () => {
   useEffect(() => {
     if (!user || user.role !== "artisan") return;
     setLoading(true);
-    axios.get(`${API_BASE}/products`)
-      .then((res) => {
-        // Inject status if missing (for demo/testing)
-        const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
-          ...p,
-          status: p.status || ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)]
-        }));
+    getArtisanProducts(user.username)
+      .then((artisanProducts) => {
         setProducts(artisanProducts);
-        console.log('Fetched artisan products:', artisanProducts);
         setLoading(false);
       })
       .catch((err) => {
@@ -51,15 +46,9 @@ const ArtisanDashboard = () => {
       });
     // Polling: refresh products every 15 seconds
     const poll = setInterval(() => {
-      axios.get(`${API_BASE}/products`)
-        .then((res) => {
-          // Inject status if missing (for demo/testing)
-          const artisanProducts = res.data.filter(p => p.artisan === user.username).map(p => ({
-            ...p,
-            status: p.status || ["approved", "pending", "rejected"][Math.floor(Math.random() * 3)]
-          }));
+      getArtisanProducts(user.username)
+        .then((artisanProducts) => {
           setProducts(artisanProducts);
-          console.log('Polled artisan products:', artisanProducts);
         });
     }, 15000);
     return () => clearInterval(poll);

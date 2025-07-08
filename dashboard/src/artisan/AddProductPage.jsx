@@ -106,17 +106,13 @@ const AddProductPage = () => {
           </div>
         </div>
 
-        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
+        <div className="w-full p-6 md:p-8" style={{ backgroundColor: '#18181b', color: 'white' }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold addproduct-title">Add New Product</h2>
+            <h2 className="text-3xl font-bold addproduct-title" style={{ color: '#fff' }}>Add New Product</h2>
           </div>
 
           {/* Admin Approval Info Card */}
-          <div className={`mb-8 p-4 rounded-lg border-l-4 ${
-            isDarkMode 
-              ? 'bg-[#23232b] border-blue-500 text-blue-100' 
-              : 'bg-blue-50 border-blue-500 text-blue-800'
-          }`}>
+          <div className="mb-8 p-4 rounded-lg border-l-4" style={{ backgroundColor: '#23232b', borderColor: '#3b82f6', color: '#b6d4fe' }}>
             <div className="flex items-start">
               <div className="flex-shrink-0 mt-0.5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,58 +133,54 @@ const AddProductPage = () => {
               {/* Left: Fields */}
               <div className="space-y-6">
                 <div>
-                  <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Product Name</label>
+                  <label className="block font-semibold mb-1" style={{ color: '#e5e7eb' }}>Product Name</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
-                    ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
-                    ${errors.name ? 'border-red-500' : ''}`}
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    style={{ backgroundColor: '#23232b', color: '#fff', borderColor: errors.name ? '#ef4444' : '#333' }}
                   />
                   {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Price (₱)</label>
+                    <label className="block font-semibold mb-1" style={{ color: '#e5e7eb' }}>Price (₱)</label>
                     <input
                       type="number"
                       name="price"
                       value={formData.price}
                       onChange={handleChange}
-                      className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
-                      ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
-                      ${errors.price ? 'border-red-500' : ''}`}
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      style={{ backgroundColor: '#23232b', color: '#fff', borderColor: errors.price ? '#ef4444' : '#333' }}
                     />
                     {errors.price && <div className="text-red-500 text-xs mt-1">{errors.price}</div>}
                   </div>
                   <div>
-                    <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Quantity</label>
+                    <label className="block font-semibold mb-1" style={{ color: '#e5e7eb' }}>Quantity</label>
                     <input
                       type="number"
                       name="quantity"
                       min="1"
                       value={formData.quantity}
                       onChange={handleChange}
-                      className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
-                      ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
-                      ${errors.quantity ? 'border-red-500' : ''}`}
+                      className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      style={{ backgroundColor: '#23232b', color: '#fff', borderColor: errors.quantity ? '#ef4444' : '#333' }}
                     />
                     {errors.quantity && <div className="text-red-500 text-xs mt-1">{errors.quantity}</div>}
                   </div>
                 </div>
 
                 <div>
-                  <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Category</label>
+                  <label className="block font-semibold mb-1" style={{ color: '#e5e7eb' }}>Category</label>
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className={`w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
-                    ${isDarkMode ? 'bg-[#23232b] text-white border-gray-700' : 'bg-white text-black border-gray-300'} 
-                    ${errors.category ? 'border-red-500' : ''}`}
+                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    style={{ backgroundColor: '#23232b', color: '#fff', borderColor: errors.category ? '#ef4444' : '#333' }}
                   >
                     <option value="">Select Category</option>
                     <option value="Accessories">Accessories</option>
@@ -206,11 +198,8 @@ const AddProductPage = () => {
 
               {/* Right: Image Upload with improved styling */}
               <div>
-                <label className={`block font-semibold mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>Product Image</label>
-                <div className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center 
-                  ${isDarkMode ? 'bg-[#23232b] border-gray-600' : 'bg-gray-50 border-gray-300'} 
-                  ${errors.image ? 'border-red-500' : ''} min-h-[300px] relative`}
-                >
+                <label className="block font-semibold mb-1" style={{ color: '#fff' }}>Product Image</label>
+                <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center min-h-[300px] relative" style={{ backgroundColor: '#23232b', borderColor: errors.image ? '#ef4444' : '#666' }}>
                   <input
                     type="file"
                     accept="image/*"
@@ -225,23 +214,24 @@ const AddProductPage = () => {
                         alt="Preview" 
                         className="max-h-60 max-w-full mb-4 rounded-md shadow-md" 
                       />
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Click to change image</p>
+                      <p className="text-sm" style={{ color: '#e5e7eb' }}>Click to change image</p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center text-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className={`h-16 w-16 mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <p className={`font-medium text-lg mb-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>Drop your image here</p>
-                      <p className={`text-sm mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Or click to browse</p>
+                      <p className="font-medium text-lg mb-1" style={{ color: '#fff' }}>Drop your image here</p>
+                      <p className="text-sm mb-4" style={{ color: '#e5e7eb' }}>Or click to browse</p>
                       <button 
                         type="button" 
-                        className="px-4 py-2 bg-[#386641] text-white rounded-md hover:opacity-90 transition-colors"
+                        className="px-4 py-2 bg-[#386641] text-white rounded-md hover:opacity-90 transition-colors font-semibold shadow"
+                        style={{ color: '#fff', backgroundColor: '#386641' }}
                         onClick={() => document.querySelector('input[type="file"]').click()}
                       >
                         Select File
                       </button>
-                      <p className={`mt-4 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                      <p className="mt-4 text-xs" style={{ color: '#bdbdbd' }}>
                         Supported formats: JPG, PNG, WEBP (max 10MB)
                       </p>
                     </div>

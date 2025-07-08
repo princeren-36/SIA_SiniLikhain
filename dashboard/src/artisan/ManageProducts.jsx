@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ArtisanLayout from "./ArtisanLayout";
-import { RiDeleteBin6Line, RiEdit2Line } from "react-icons/ri";
-import { BiSave, BiX } from "react-icons/bi";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faSave, faBan } from '@fortawesome/free-solid-svg-icons';
 import { FaSearch, FaFilter, FaImage } from "react-icons/fa";
 import cartBg from '../images/2.jpg';
 
@@ -226,23 +226,19 @@ const ManageProducts = () => {
             </div>
           </div>
           
-          <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
+          <div className="w-full p-6 md:p-8" style={{ backgroundColor: '#18181b', color: 'white' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold">Manage Products</h2>
+              <h2 className="text-3xl font-bold" style={{ color: '#fff' }}>Manage Products</h2>
             </div>
 
             {/* Product Status Guide - curvy card with thin colored left border */}
-            <div className={`mb-6 flex items-start gap-4 rounded-2xl shadow p-4 border-l-4 ${
-              isDarkMode
-                ? 'bg-[#23232b] text-purple-100 border-purple-600'
-                : 'bg-purple-50 text-purple-800 border-purple-400'
-            }`}>
+            <div className="mb-6 flex items-start gap-4 rounded-2xl shadow p-4 border-l-4" style={{ backgroundColor: '#23232b', color: '#d6bcfa', borderColor: '#7c3aed' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
               </svg>
               <div>
-                <h3 className={`font-bold text-lg mb-1 ${isDarkMode ? 'text-purple-200' : 'text-purple-700'}`}>Product Status Guide</h3>
-                <ul className={`list-disc pl-5 ${isDarkMode ? 'text-purple-100' : 'text-purple-700'}`}>
+                <h3 className="font-bold text-lg mb-1" style={{ color: '#e9d5ff' }}>Product Status Guide</h3>
+                <ul className="list-disc pl-5" style={{ color: '#d6bcfa' }}>
                   <li>You can only edit products that have been approved by administrators.</li>
                   <li>New products have a "pending" status and will be reviewed by administrators.</li>
                   <li>Products may be rejected if they do not meet the platform guidelines.</li>
@@ -252,7 +248,7 @@ const ManageProducts = () => {
             </div>
 
             {/* Search and filter section */}
-            <div className={`mb-8 flex flex-col md:flex-row items-center gap-4 ${isDarkMode ? 'bg-[#2a2a33]' : 'bg-gray-50'} p-4 rounded-lg shadow-sm`}>
+            <div className="mb-8 flex flex-col md:flex-row items-center gap-4" style={{ backgroundColor: '#23232b', color: '#fff' }}>
               {/* Search input */}
               <div className="relative w-full md:w-1/3">
                 <input
@@ -260,11 +256,8 @@ const ManageProducts = () => {
                   placeholder="Search products..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
-                    isDarkMode 
-                      ? 'bg-[#3a3a45] border-gray-700 text-white' 
-                      : 'bg-white border-gray-200 text-gray-900'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  style={{ backgroundColor: '#23232b', color: '#fff', borderColor: '#333' }}
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
@@ -275,8 +268,8 @@ const ManageProducts = () => {
                   onClick={() => setShowFilter(!showFilter)}
                   className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition text-sm shadow ${
                     isDarkMode
-                      ? (showFilter ? 'border-purple-500 text-purple-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-purple-400 text-purple-300 bg-[#23232b] hover:bg-[#2a2a33]')
-                      : (showFilter ? 'border-purple-400 text-purple-700 bg-white hover:bg-purple-50' : 'border-purple-400 text-purple-700 bg-white hover:bg-purple-50')
+                      ? (showFilter ? 'border-[#5e503f] text-[#5e503f] bg-[#23232b] hover:bg-[#2a2a33]' : 'border-[#5e503f] text-[#ccc9dc] bg-[#23232b] hover:bg-[#2a2a33]')
+                      : (showFilter ? 'border-[#5e503f] text-[#5e503f] bg-white hover:bg-[#f3f4f6]' : 'border-[#5e503f] text-[#5e503f] bg-white hover:bg-[#f3f4f6]')
                   }`} 
                   style={{ minWidth: '120px', position: 'relative', zIndex: 30 }}
                   type="button"
@@ -287,13 +280,13 @@ const ManageProducts = () => {
                 {showFilter && (
                   <div className={`absolute left-0 mt-2 w-48 rounded-lg shadow-lg z-50 border-2 ${
                     isDarkMode
-                      ? 'bg-purple-900 border-purple-500 text-purple-200'
-                      : 'bg-purple-50 border-purple-400 text-purple-700'
+                      ? 'bg-[#23232b] border-[#5e503f] text-[#ccc9dc]'
+                      : 'bg-white border-[#5e503f] text-[#5e503f]'
                   }`} style={{top: '100%'}}>
                     <div className="p-4">
-                      <label className="block mb-2 font-semibold">Category</label>
+                      <label className="block mb-2 font-semibold" style={{ color: '#5e503f' }}>Category</label>
                       <select
-                        className={`w-full border rounded px-2 py-1 ${isDarkMode ? 'bg-purple-950 border-purple-700 text-purple-100' : 'bg-purple-100 border-purple-400 text-purple-700'}`}
+                        className={`w-full border rounded px-2 py-1 ${isDarkMode ? 'bg-[#23232b] border-[#5e503f] text-[#ccc9dc]' : 'bg-[#f3f4f6] border-[#5e503f] text-[#5e503f]'}`}
                         value={categoryFilter}
                         onChange={e => setCategoryFilter(e.target.value)}
                       >
@@ -314,20 +307,20 @@ const ManageProducts = () => {
                 <span className="block sm:inline">{error}</span>
               </div>
             ) : (
-              <div className={`overflow-x-auto ${isDarkMode ? 'bg-[#2a2a33]' : 'bg-white'} rounded-lg shadow border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className={isDarkMode ? 'bg-[#3a3a45]' : 'bg-gray-50'}>
+              <div className={`overflow-x-auto`} style={{ backgroundColor: '#23232b', color: '#fff', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)' }}>
+                <table className="min-w-full divide-y" style={{ backgroundColor: '#23232b', color: '#fff' }}>
+                  <thead style={{ backgroundColor: '#18181b' }}>
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Image</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Product</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Category</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Quantity</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Image</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Product</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Category</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Price</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Quantity</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Status</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: '#fff' }}>Actions</th>
                     </tr>
                   </thead>
-                  <tbody className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+                  <tbody className="divide-y" style={{ borderColor: '#333' }}>
                     {filteredProducts.length === 0 ? (
                       <tr>
                         <td colSpan="7" className="px-6 py-12 text-center">
@@ -340,7 +333,7 @@ const ManageProducts = () => {
                       </tr>
                     ) : (
                       filteredProducts.map(product => (
-                        <tr key={product._id} className={`${isDarkMode ? 'hover:bg-[#3a3a45]' : 'hover:bg-gray-50'} transition-colors`}>
+                        <tr key={product._id} style={{ transition: 'background 0.2s' }} className="group">
                           {/* Image cell */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             {editingId === product._id ? (
@@ -402,8 +395,8 @@ const ManageProducts = () => {
                                 className={`w-full p-1 rounded-lg border ${
                                   isDarkMode 
                                     ? 'bg-[#3a3a45] border-gray-700 text-white' 
-                                    : 'bg-white border-gray-200 text-gray-900'
-                                } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                                    : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'
+                                } focus:outline-none focus:ring-2 focus:ring-[#5e503f]`}
                                 required
                               />
                             ) : (
@@ -424,8 +417,8 @@ const ManageProducts = () => {
                                 className={`w-full p-1 rounded-lg border ${
                                   isDarkMode 
                                     ? 'bg-[#3a3a45] border-gray-700 text-white' 
-                                    : 'bg-white border-gray-200 text-gray-900'
-                                } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                                    : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'
+                                } focus:outline-none focus:ring-2 focus:ring-[#5e503f]`}
                                 required
                               >
                                 <option value="">Select category</option>
@@ -451,8 +444,8 @@ const ManageProducts = () => {
                                 className={`w-full p-1 rounded-lg border ${
                                   isDarkMode 
                                     ? 'bg-[#3a3a45] border-gray-700 text-white' 
-                                    : 'bg-white border-gray-200 text-gray-900'
-                                } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                                    : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'
+                                } focus:outline-none focus:ring-2 focus:ring-[#5e503f]`}
                                 required
                               />
                             ) : (
@@ -472,8 +465,8 @@ const ManageProducts = () => {
                                 className={`w-full p-1 rounded-lg border ${
                                   isDarkMode 
                                     ? 'bg-[#3a3a45] border-gray-700 text-white' 
-                                    : 'bg-white border-gray-200 text-gray-900'
-                                } focus:outline-none focus:ring-2 focus:ring-purple-500`}
+                                    : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'
+                                } focus:outline-none focus:ring-2 focus:ring-[#5e503f]`}
                                 required
                               />
                             ) : (
@@ -485,10 +478,10 @@ const ManageProducts = () => {
                           <td className="px-6 py-4">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                               ${product.status === 'approved' 
-                                ? 'bg-green-100 text-green-800' 
+                                ? 'bg-green-100 text-green-800 status-badge-approved' 
                                 : product.status === 'rejected'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-red-100 text-red-800 status-badge-rejected'
+                                : 'bg-yellow-100 text-yellow-800 status-badge-pending'
                               }`}
                             >
                               {product.status || 'pending'}
@@ -503,16 +496,36 @@ const ManageProducts = () => {
                               <div className="flex space-x-2">
                                 <button 
                                   onClick={() => handleSaveEdit(product._id)}
-                                  className="text-white bg-green-500 hover:bg-green-600 p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  className="p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  style={{ 
+                                    backgroundColor: '#16a34a', 
+                                    color: '#fff', 
+                                    fontWeight: 600, 
+                                    boxShadow: 'none', 
+                                    border: 'none', 
+                                    outline: 'none', 
+                                    minWidth: '80px', 
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.15)'
+                                  }}
                                 >
-                                  <BiSave className="mr-1" />
+                                  <FontAwesomeIcon icon={faSave} className="mr-1" style={{ color: '#fff' }} />
                                   Save
                                 </button>
                                 <button 
                                   onClick={handleCancelEdit}
-                                  className="text-white bg-gray-500 hover:bg-gray-600 p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  className="p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  style={{ 
+                                    backgroundColor: '#52525b', 
+                                    color: '#fff', 
+                                    fontWeight: 600, 
+                                    boxShadow: 'none', 
+                                    border: 'none', 
+                                    outline: 'none', 
+                                    minWidth: '80px', 
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.15)'
+                                  }}
                                 >
-                                  <BiX className="mr-1" />
+                                  <FontAwesomeIcon icon={faBan} className="mr-1" style={{ color: '#fff' }} />
                                   Cancel
                                 </button>
                               </div>
@@ -520,14 +533,32 @@ const ManageProducts = () => {
                               <div className="flex space-x-2">
                                 <button 
                                   onClick={() => handleDelete(product._id)}
-                                  className="text-white bg-red-500 hover:bg-red-600 p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  className="p-2 rounded-lg flex items-center font-bold shadow-lg border-2 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                  style={{
+                                    backgroundColor: '#dc2626', 
+                                    color: '#fff', 
+                                    borderColor: isDarkMode ? '#fff' : '#18181b', 
+                                    boxShadow: '0 2px 8px 0 rgba(0,0,0,0.25)', 
+                                    minWidth: '80px', 
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.15)'
+                                  }}
                                 >
+                                  <FontAwesomeIcon icon={faTrash} className="mr-1" style={{ color: '#fff' }} />
                                   Delete
                                 </button>
                                 <button 
                                   onClick={handleCancelDelete}
-                                  className="text-white bg-gray-500 hover:bg-gray-600 p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  className="p-2 rounded-lg flex items-center font-bold shadow-lg border-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                  style={{
+                                    backgroundColor: '#52525b', 
+                                    color: '#fff', 
+                                    borderColor: isDarkMode ? '#fff' : '#18181b', 
+                                    boxShadow: '0 2px 8px 0 rgba(0,0,0,0.25)', 
+                                    minWidth: '80px', 
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.15)'
+                                  }}
                                 >
+                                  <FontAwesomeIcon icon={faBan} className="mr-1" style={{ color: '#fff' }} />
                                   Cancel
                                 </button>
                               </div>
@@ -535,27 +566,21 @@ const ManageProducts = () => {
                               <div className="flex space-x-2">
                                 <button 
                                   onClick={() => handleEdit(product)}
-                                  className={`p-2 rounded-lg transition-all duration-200 flex items-center ${
-                                    isDarkMode
-                                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                      : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
-                                  }`}
+                                  className="p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  style={{ background: '#2563eb', color: '#fff', fontWeight: 600, boxShadow: 'none', border: 'none', outline: 'none', minWidth: '80px', textShadow: '0 1px 2px rgba(0,0,0,0.15)' }}
                                   title="Edit product"
                                   disabled={product.status !== 'approved'}
                                 >
-                                  <RiEdit2Line />
+                                  <FontAwesomeIcon icon={faEdit} className="mr-1" style={{ color: '#fff' }} />
                                   Edit
                                 </button>
                                 <button 
                                   onClick={() => handleDeleteConfirm(product._id)}
-                                  className={`p-2 rounded-lg transition-all duration-200 flex items-center ${
-                                    isDarkMode
-                                      ? 'bg-red-600 hover:bg-red-700 text-white'
-                                      : 'bg-red-100 hover:bg-red-200 text-red-600'
-                                  }`}
+                                  className="p-2 rounded-lg transition-all duration-200 flex items-center"
+                                  style={{ background: '#dc2626', color: '#fff', fontWeight: 600, boxShadow: 'none', border: 'none', outline: 'none', minWidth: '80px', textShadow: '0 1px 2px rgba(0,0,0,0.15)' }}
                                   title="Delete product"
                                 >
-                                  <RiDeleteBin6Line />
+                                  <FontAwesomeIcon icon={faTrash} className="mr-1" style={{ color: '#fff' }} />
                                   Delete
                                 </button>
                               </div>
@@ -579,18 +604,27 @@ const ManageProducts = () => {
       {showEditModal && (
         <>
           <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className={`bg-white dark:bg-[#23232b] rounded-lg shadow-xl p-6 w-full max-w-2xl relative`} style={{ minHeight: 'unset' }}>
+            <div
+              className="rounded-lg shadow-xl p-6 w-full max-w-2xl relative"
+              style={{
+                background: '#23232b',
+                border: '1.5px solid #444',
+                boxShadow: '0 4px 32px 0 rgba(0,0,0,0.25)',
+                minHeight: 'unset',
+                color: '#fff'
+              }}
+            >
               <button onClick={handleCancelEdit} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 dark:hover:text-white text-2xl font-bold">&times;</button>
-              <h2 className="text-xl font-bold mb-4 text-purple-700 dark:text-purple-300">Edit Product</h2>
+              <h2 className="text-xl font-bold mb-4" style={{ color: '#5e503f' }}>Edit Product</h2>
               <form onSubmit={e => { e.preventDefault(); handleSaveEdit(editingId); }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 font-semibold">Name</label>
-                    <input type="text" name="name" value={editFormData.name} onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-purple-500 ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-purple-50 border-purple-300 text-purple-700'}`} required />
+                    <input type="text" name="name" value={editFormData.name} onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-[#5e503f] ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'}`} required />
                   </div>
                   <div>
                     <label className="block mb-1 font-semibold">Category</label>
-                    <select name="category" value={editFormData.category} onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-purple-500 ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-purple-50 border-purple-300 text-purple-700'}`} required>
+                    <select name="category" value={editFormData.category} onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-[#5e503f] ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'}`} required>
                       <option value="">Select category</option>
                       {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -599,40 +633,85 @@ const ManageProducts = () => {
                   </div>
                   <div>
                     <label className="block mb-1 font-semibold">Price</label>
-                    <input type="number" name="price" value={editFormData.price} min="0" step="0.01" onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-purple-500 ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-purple-50 border-purple-300 text-purple-700'}`} required />
+                    <input type="number" name="price" value={editFormData.price} min="0" step="0.01" onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-[#5e503f] ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'}`} required />
                   </div>
                   <div>
                     <label className="block mb-1 font-semibold">Quantity</label>
-                    <input type="number" name="quantity" value={editFormData.quantity} min="1" onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-purple-500 ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-purple-50 border-purple-300 text-purple-700'}`} required />
+                    <input type="number" name="quantity" value={editFormData.quantity} min="1" onChange={handleEditChange} className={`w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-[#5e503f] ${isDarkMode ? 'bg-[#3a3a45] border-gray-700 text-white' : 'bg-[#f3f4f6] border-[#d1d5db] text-[#23232b]'}`} required />
                   </div>
                 </div>
                 <div className="mt-4 flex flex-row items-center justify-center gap-8">
                   <div className="flex-shrink-0">
-                    <label className="relative flex flex-col items-center justify-center h-48 w-48 border-2 border-dashed border-purple-400 rounded-lg cursor-pointer transition hover:border-purple-600 bg-purple-50 dark:bg-[#2a2a33]">
+                    <label className="relative flex flex-col items-center justify-center h-48 w-48 border-2 border-dashed rounded-lg cursor-pointer transition hover:border-[#5e503f] bg-[#f3f4f6] dark:bg-[#2a2a33]" style={{ borderColor: '#5e503f' }}>
                       {imagePreview ? (
                         <img src={imagePreview} alt="Preview" className="object-cover h-full w-full rounded-lg" />
                       ) : (
                         <div className="flex flex-col items-center justify-center h-full w-full">
-                          <FaImage className="text-5xl text-purple-300 mb-2" />
-                          <span className="text-purple-400 font-medium">Drop image here or click to upload</span>
+                          <FaImage className="text-5xl" style={{ color: '#5e503f' }} />
+                          <span className="font-medium" style={{ color: '#5e503f' }}>Drop image here or click to upload</span>
                         </div>
                       )}
                       <input type="file" name="image" accept="image/*" onChange={handleEditChange} className="absolute inset-0 opacity-0 cursor-pointer" />
                     </label>
                   </div>
                   <div className="flex flex-col justify-center h-48">
-                    <span className="text-lg font-semibold text-purple-700 dark:text-purple-200">Choose an Image</span>
+                    <span className="text-lg font-semibold" style={{ color: '#5e503f' }}>Choose an Image</span>
                   </div>
                 </div>
                 <div className="flex justify-end gap-2 mt-6">
-                  <button type="button" onClick={handleCancelEdit} className="px-4 py-2 rounded bg-gray-400 text-white hover:bg-gray-500">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700">Save</button>
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="px-4 py-2 rounded font-semibold shadow"
+                    style={{
+                      background: isDarkMode ? '#52525b' : '#f3f4f6',
+                      color: isDarkMode ? '#fff' : '#23232b',
+                      border: isDarkMode ? '1.5px solid #444' : '1.5px solid #d1d5db',
+                      boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded font-semibold shadow"
+                    style={{
+                      background: isDarkMode ? '#22c55e' : '#16a34a',
+                      color: '#fff',
+                      border: isDarkMode ? '1.5px solid #22c55e' : '1.5px solid #16a34a',
+                      boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)'
+                    }}
+                  >
+                    Save
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </>
       )}
+      <style jsx>{`
+        .group:hover {
+          background-color: #292933 !important;
+          color: #fff !important;
+        }
+        .group:hover td, .group:hover th, .group:hover div, .group:hover span {
+          color: #fff !important;
+        }
+        /* Ensure status badge is visible on hover */
+        .group:hover .status-badge-approved {
+          background: #5e503f !important;
+          color: #fff !important;
+        }
+        .group:hover .status-badge-rejected {
+          background: #b91c1c !important;
+          color: #fff !important;
+        }
+        .group:hover .status-badge-pending {
+          background: #a16207 !important;
+          color: #fff !important;
+        }
+      `}</style>
     </>
   );
 };

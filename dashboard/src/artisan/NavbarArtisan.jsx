@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
-import { FaRegIdBadge } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 
 function NavbarArtisan({ showLinks = true, toggleSidebar }) {
@@ -9,7 +8,6 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [hovered, setHovered] = useState("");
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0, opacity: 0 });
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navRefs = useRef({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,24 +136,25 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
       <div className="flex items-center">
         <button 
           onClick={() => toggleSidebar && toggleSidebar()} 
-          className="p-2 rounded-md text-white hover:bg-gray-800 transition-colors cursor-pointer"
+          className="p-2 rounded-md text-[#1b2a41] hover:bg-gray-200 transition-colors cursor-pointer"
         >
-          <FaBars size={18} />
+          <FaBars size={18} color="#1b2a41" />
         </button>
       </div>
       <div className="flex items-center gap-3 relative">
         <div className="flex flex-col items-end mr-2">
           {/* Use latest user data from storage */}
-          <span className="font-semibold text-white text-sm">
+          <span className="font-semibold text-[#1b2a41] text-sm">
             {(() => {
               // Force rerender when profileUpdated changes
               const currentUser = profileUpdated !== undefined ? 
                 JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}") : 
                 user;
-              return currentUser?.username || "User Name";
+              // Prefer name, fallback to username
+              return currentUser?.name || currentUser?.username || "User Name";
             })()}
           </span>
-          <span className="text-xs text-gray-300">{user?.role === 'admin' ? 'Admin User' : 'Artisan'}</span>
+          <span className="text-xs text-gray-500">{user?.role === 'admin' ? 'Admin User' : 'Artisan'}</span>
         </div>
         <div className="w-10 h-10 rounded-full bg-gray-700 border-2 border-black shadow overflow-hidden">
           <img
@@ -165,25 +164,6 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
             key={`profile-img-${profileUpdated}`} /* Force re-render of image when profile updates */
           />
         </div>
-        <button className="ml-1" onClick={() => setDropdownOpen((prev) => !prev)}>
-          <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-        </button>
-        {dropdownOpen && (
-          <div className="absolute right-0 top-14 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[150px] z-50">
-            <button
-              className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-800 text-xs"
-              onClick={() => { setDropdownOpen(false); navigate('/artisan/profile'); }}
-            >
-              <FaRegIdBadge className="text-purple-600 text-sm" /> profile
-            </button>
-            <button
-              className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-800 text-xs"
-              onClick={() => { setDropdownOpen(false); setOpenDialog(true); }}
-            >
-              <FiLogOut className="text-red-500 text-sm" /> log out
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Logout confirmation dialog */}

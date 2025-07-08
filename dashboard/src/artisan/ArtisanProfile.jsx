@@ -3,6 +3,7 @@ import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShopping
 import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
 import ArtisanLayout from "./ArtisanLayout";
 import axios from "axios";
+import { getArtisanProducts, getAverageBuyerRating } from "../utils/artisan";
 
 // Create an axios instance with the correct base URL
 const api = axios.create({
@@ -16,24 +17,16 @@ import { toast } from "react-toastify";
 import cartBg from '../images/2.jpg';
 
 // Function to fetch statistics for an artisan
-const fetchArtisanStatistics = async (artisanId) => {
+const fetchArtisanStatistics = async (artisanId, artisanUsername) => {
   try {
-    // Fetch products count created by this artisan
-    const productsResponse = await api.get(`/products?artisan=${artisanId}`);
-    const totalProducts = productsResponse.data?.length || 0;
+    // Fetch products created by this artisan (by username for consistency)
+    const products = await getArtisanProducts(artisanUsername);
+    const totalProducts = products.length;
     
-    // Calculate average rating
-    let totalRating = 0;
-    let ratedProductsCount = 0;
-    productsResponse.data?.forEach(product => {
-      if (product.rating && product.rating > 0) {
-        totalRating += product.rating;
-        ratedProductsCount++;
-      }
-    });
-    const averageRating = ratedProductsCount > 0 ? (totalRating / ratedProductsCount).toFixed(1) : 0;
+    // Calculate average buyer rating (across all product ratings)
+    const averageRating = getAverageBuyerRating(products);
     
-    // Fetch completed sales
+    // Fetch completed sales (still by artisanId)
     const ordersResponse = await api.get(`/orders?artisanId=${artisanId}&status=completed`);
     const salesCompleted = ordersResponse.data?.length || 0;
     
@@ -75,25 +68,22 @@ const ArtisanProfile = () => {
   const fileInputRef = useRef(null);
   
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
   const avatarFileInputRef = useRef(null);
   
-  // Get user ID from localStorage or sessionStorage
+  // Get user ID and username from localStorage or sessionStorage
   useEffect(() => {
     const loadUserData = () => {
       try {
-        // Get user data from storage
         const userStorage = localStorage.getItem("user") || sessionStorage.getItem("user");
         if (!userStorage) {
-          console.warn("No user found in storage");
           setIsLoading(false);
           return;
         }
-        
         const userData = JSON.parse(userStorage);
         if (userData && userData._id) {
           setUserId(userData._id);
-          
-          // Pre-populate profile data from local storage while waiting for API response
+          setUsername(userData.username);
           setProfileData(prevData => ({
             ...prevData,
             name: userData.username || prevData.name,
@@ -103,8 +93,6 @@ const ArtisanProfile = () => {
             avatar: userData.avatar || prevData.avatar,
           }));
         } else {
-          console.warn("User found but missing _id field", userData);
-          // Fallback for development/testing
           setIsLoading(false);
           setProfileData({
             name: userData?.username || "Artisan Name",
@@ -121,7 +109,6 @@ const ArtisanProfile = () => {
           });
         }
       } catch (e) {
-        console.error("Error loading user data:", e);
         setIsLoading(false);
       }
     };
@@ -130,17 +117,16 @@ const ArtisanProfile = () => {
     loadUserData();
   }, []);
 
-  // Fetch profile data from API when userId is available
+  // Fetch profile data from API when userId and username are available
   useEffect(() => {
     const fetchProfileData = async () => {
-      if (!userId) return;
+      if (!userId || !username) return;
       
       setIsLoading(true);
       try {
         // Try to fetch user data from server
         const response = await api.get(`/users/profile/${userId}`).catch(error => {
-          console.warn("API not available, using fallback data");
-          throw error; // Re-throw to be caught by outer catch
+          throw error;
         });
         
         // Fetch real-time statistics (even if profile API fails)
@@ -151,7 +137,7 @@ const ArtisanProfile = () => {
         };
         
         try {
-          stats = await fetchArtisanStatistics(userId);
+          stats = await fetchArtisanStatistics(userId, username);
         } catch (statsError) {
           console.warn("Could not fetch statistics, using fallback data", statsError);
         }
@@ -203,7 +189,7 @@ const ArtisanProfile = () => {
         };
         
         try {
-          stats = await fetchArtisanStatistics(userId);
+          stats = await fetchArtisanStatistics(userId, username);
         } catch (statsError) {
           console.warn("Could not fetch statistics, using fallback data", statsError);
         }
@@ -247,15 +233,15 @@ const ArtisanProfile = () => {
     };
 
     fetchProfileData();
-  }, [userId]);
+  }, [userId, username]);
 
   // Fetch statistics from the server
   useEffect(() => {
     const fetchStatistics = async () => {
-      if (!userId) return;
+      if (!userId || !username) return;
       
       try {
-        const statistics = await fetchArtisanStatistics(userId);
+        const statistics = await fetchArtisanStatistics(userId, username);
         setProfileData(prevData => ({
           ...prevData,
           statistics
@@ -266,7 +252,7 @@ const ArtisanProfile = () => {
     };
 
     fetchStatistics();
-  }, [userId]);
+  }, [userId, username]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -540,7 +526,7 @@ const ArtisanProfile = () => {
 
   return (
     <ArtisanLayout>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full min-h-screen bg-[#18181b]">
         <div className="relative w-full overflow-hidden" style={{height: '200px'}}>
           <img 
             src={cartBg}
@@ -554,9 +540,9 @@ const ArtisanProfile = () => {
           </div>
         </div>
         
-        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
+        <div className="w-full p-6 md:p-8 bg-[#18181b] text-white">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">My Profile</h2>
+            <h2 className="text-2xl font-bold text-white">My Profile</h2>
             {!isEditing ? (
               <div className="flex items-center gap-2">
                 <button 
@@ -565,7 +551,7 @@ const ArtisanProfile = () => {
                     toast.info("Refreshing statistics...");
                     try {
                       if (userId) {
-                        const stats = await fetchArtisanStatistics(userId);
+                        const stats = await fetchArtisanStatistics(userId, username);
                         setProfileData(prev => ({
                           ...prev,
                           statistics: stats
@@ -593,7 +579,7 @@ const ArtisanProfile = () => {
                     }
                   }}
                   disabled={isLoading}
-                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-blue-50 border-blue-400 text-blue-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-[#5e503f]/10 border-[#5e503f] text-[#5e503f] ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -603,7 +589,7 @@ const ArtisanProfile = () => {
                 <button 
                   onClick={handleEdit}
                   disabled={isLoading}
-                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-purple-50 border-purple-400 text-purple-700 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition bg-white hover:bg-[#5e503f]/10 border-[#5e503f] text-[#5e503f] ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <FaEdit /> <span>Edit Profile</span>
                 </button>
@@ -627,7 +613,6 @@ const ArtisanProfile = () => {
               </div>
             )}
           </div>
-          
           {isLoading ? (
             <div className="flex justify-center items-center py-16">
               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
@@ -635,9 +620,9 @@ const ArtisanProfile = () => {
           ) : (
             <>
               {/* Profile Card */}
-              <div className={`rounded-xl shadow-md overflow-hidden mb-6 border ${isDarkMode ? 'bg-[#23232b] border-gray-700' : 'bg-white border-gray-200'}`}>
+              <div className="rounded-xl shadow-md overflow-hidden mb-6 border bg-[#18181b] border-gray-700">
                 {/* Profile Content */}
-                <div className="p-6">
+                <div className="p-6" style={{ backgroundColor: '#18181b' }}>
                   <div className="flex flex-col md:flex-row md:space-x-8">
                     {/* Avatar */}
                     <div className="mb-6 md:mb-0 flex flex-col items-center">
@@ -659,7 +644,7 @@ const ArtisanProfile = () => {
                             loading="eager"
                           />
                         ) : (
-                          <FaUserCircle className={`w-28 h-28 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'} bg-white rounded-full`} />
+                          <FaUserCircle className="w-28 h-28 text-[#5e503f] bg-white rounded-full" />
                         )}
                         {/* Delete avatar button */}
                         {isEditing && profileData.avatar && !imagePreview && (
@@ -689,8 +674,8 @@ const ArtisanProfile = () => {
                           </div>
                         )}
                       </div>
-                      <span className={`text-center mt-4 font-medium text-xl ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{profileData.name}</span>
-                      <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Artisan</span>
+                      <span className="text-center mt-4 font-medium text-xl text-white">{profileData.name}</span>
+                      <span className="text-sm text-white">Artisan</span>
                     </div>
                     
                     {/* Info Fields */}
@@ -698,94 +683,86 @@ const ArtisanProfile = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Name */}
                         <div className="space-y-2">
-                          <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Full Name</label>
+                          <label className="block text-sm font-medium text-white">Full Name</label>
                           {isEditing ? (
                             <input
                               type="text"
                               name="name"
                               value={profileData.name}
                               onChange={handleInputChange}
-                              className={`w-full px-3 py-2 border rounded-md ${
-                                isDarkMode ? 'bg-[#23232b] border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
-                              }`}
+                              className={`w-full px-3 py-2 border rounded-md bg-[#18181b] border-gray-600 text-white`}
                             />
                           ) : (
                             <div className="flex items-center space-x-2">
-                              <FaUserCircle className={`${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-                              <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{profileData.name}</span>
+                              <FaUserCircle className="text-[#5e503f]" />
+                              <span className="text-white">{profileData.name}</span>
                             </div>
                           )}
                         </div>
                         
                         {/* Email */}
                         <div className="space-y-2">
-                          <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Email</label>
+                          <label className="block text-sm font-medium text-white">Email</label>
                           {isEditing ? (
                             <input
                               type="email"
                               name="email"
                               value={profileData.email}
                               onChange={handleInputChange}
-                              className={`w-full px-3 py-2 border rounded-md ${
-                                isDarkMode ? 'bg-[#23232b] border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
-                              }`}
+                              className={`w-full px-3 py-2 border rounded-md bg-[#18181b] border-gray-600 text-white`}
                             />
                           ) : (
                             <div className="flex items-center space-x-2">
-                              <MdEmail className={`${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-                              <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{profileData.email}</span>
+                              <MdEmail className="text-[#5e503f]" />
+                              <span className="text-white">{profileData.email}</span>
                             </div>
                           )}
                         </div>
                         
                         {/* Location */}
                         <div className="space-y-2">
-                          <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Location</label>
+                          <label className="block text-sm font-medium text-white">Location</label>
                           {isEditing ? (
                             <input
                               type="text"
                               name="location"
                               value={profileData.location}
                               onChange={handleInputChange}
-                              className={`w-full px-3 py-2 border rounded-md ${
-                                isDarkMode ? 'bg-[#23232b] border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
-                              }`}
+                              className={`w-full px-3 py-2 border rounded-md bg-[#18181b] border-gray-600 text-white`}
                             />
                           ) : (
                             <div className="flex items-center space-x-2">
-                              <FaMapMarkerAlt className={`${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-                              <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{profileData.location}</span>
+                              <FaMapMarkerAlt className="text-[#5e503f]" />
+                              <span className="text-white">{profileData.location}</span>
                             </div>
                           )}
                         </div>
                         
                         {/* Join Date */}
                         <div className="space-y-2">
-                          <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Joined</label>
+                          <label className="block text-sm font-medium text-white">Joined</label>
                           <div className="flex items-center space-x-2">
-                            <FaCalendarAlt className={`${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
-                            <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{profileData.joined}</span>
+                            <FaCalendarAlt className="text-[#5e503f]" />
+                            <span className="text-white">{profileData.joined}</span>
                           </div>
                         </div>
                       </div>
                       
                       {/* Bio */}
                       <div className="mt-6 space-y-2">
-                        <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>About Me</label>
+                        <label className="block text-sm font-medium text-white">About Me</label>
                         {isEditing ? (
                           <textarea
                             name="bio"
                             value={profileData.bio}
                             onChange={handleInputChange}
                             rows={4}
-                            className={`w-full px-3 py-2 border rounded-md ${
-                              isDarkMode ? 'bg-[#23232b] border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
-                            }`}
+                            className={`w-full px-3 py-2 border rounded-md bg-[#18181b] border-gray-600 text-white`}
                           />
                         ) : (
                           <div className="flex items-start space-x-2">
-                            <MdDescription className={`${isDarkMode ? 'text-purple-300' : 'text-purple-600'} mt-1`} />
-                            <p className={`${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{profileData.bio}</p>
+                            <MdDescription className="text-[#5e503f] mt-1" />
+                            <p className="text-white">{profileData.bio}</p>
                           </div>
                         )}
                       </div>
@@ -797,33 +774,33 @@ const ArtisanProfile = () => {
               {/* Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {/* Products Card */}
-                <div className={`rounded-xl shadow-md p-4 border ${isDarkMode ? 'bg-[#23232b] border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}>
+                <div className="rounded-xl shadow-md p-4 border bg-[#18181b] border-gray-700 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Total Products</p>
-                      <h3 className="text-2xl font-semibold">
+                      <p className="text-sm text-white">Total Products</p>
+                      <h3 className="text-2xl font-semibold text-white">
                         {isLoading ? (
                           <span className="inline-block w-12 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
                         ) : (
                           (profileData.statistics && typeof profileData.statistics.totalProducts === 'number') ? profileData.statistics.totalProducts : 0
                         )}
                       </h3>
-                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div className="text-xs mt-1 text-white">
                         Products you've created
                       </div>
                     </div>
-                    <div className={`p-3 rounded-full ${isDarkMode ? 'bg-purple-900/30' : 'bg-purple-100'}`}>
-                      <FaShoppingBag className={`text-2xl ${isDarkMode ? 'text-purple-300' : 'text-purple-600'}`} />
+                    <div className="p-3 rounded-full bg-white flex items-center justify-center shadow" style={{ minWidth: '48px', minHeight: '48px' }}>
+                      <FaShoppingBag className="text-2xl text-[#5e503f]" style={{ filter: 'drop-shadow(0 0 2px #5e503f)' }} />
                     </div>
                   </div>
                 </div>
                 
                 {/* Rating Card */}
-                <div className={`rounded-xl shadow-md p-4 border ${isDarkMode ? 'bg-[#23232b] border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}>
+                <div className="rounded-xl shadow-md p-4 border bg-[#18181b] border-gray-700 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Average Rating</p>
-                      <h3 className="text-2xl font-semibold">
+                      <p className="text-sm text-white">Average Rating</p>
+                      <h3 className="text-2xl font-semibold text-white">
                         {isLoading ? (
                           <span className="inline-block w-16 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
                         ) : (
@@ -837,7 +814,7 @@ const ArtisanProfile = () => {
                                   className={`text-sm mr-0.5 ${
                                     star <= Math.round((profileData.statistics && typeof profileData.statistics.averageRating === 'number') ? profileData.statistics.averageRating : 0) 
                                       ? 'text-yellow-500' 
-                                      : 'text-gray-300 dark:text-gray-600'
+                                      : 'text-[#5e503f]'
                                   }`} 
                                 />
                               ))}
@@ -845,34 +822,34 @@ const ArtisanProfile = () => {
                           </>
                         )}
                       </h3>
-                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div className="text-xs mt-1 text-white">
                         Based on customer reviews
                       </div>
                     </div>
-                    <div className={`p-3 rounded-full ${isDarkMode ? 'bg-yellow-900/30' : 'bg-yellow-100'}`}>
-                      <FaStar className="text-2xl text-yellow-500" />
+                    <div className="p-3 rounded-full bg-white flex items-center justify-center shadow" style={{ minWidth: '48px', minHeight: '48px' }}>
+                      <FaStar className="text-2xl text-yellow-500" style={{ filter: 'drop-shadow(0 0 2px #eab308)' }} />
                     </div>
                   </div>
                 </div>
                 
                 {/* Sales Card */}
-                <div className={`rounded-xl shadow-md p-4 border ${isDarkMode ? 'bg-[#23232b] border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'}`}>
+                <div className="rounded-xl shadow-md p-4 border bg-[#18181b] border-gray-700 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>Sales Completed</p>
-                      <h3 className="text-2xl font-semibold">
+                      <p className="text-sm text-white">Sales Completed</p>
+                      <h3 className="text-2xl font-semibold text-white">
                         {isLoading ? (
                           <span className="inline-block w-12 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
                         ) : (
                           (profileData.statistics && typeof profileData.statistics.salesCompleted === 'number') ? profileData.statistics.salesCompleted : 0
                         )}
                       </h3>
-                      <div className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div className="text-xs mt-1 text-white">
                         Successfully delivered orders
                       </div>
                     </div>
-                    <div className={`p-3 rounded-full ${isDarkMode ? 'bg-green-900/30' : 'bg-green-100'}`}>
-                      <FaShoppingBag className={`text-2xl ${isDarkMode ? 'text-green-300' : 'text-green-600'}`} />
+                    <div className="p-3 rounded-full bg-white flex items-center justify-center shadow" style={{ minWidth: '48px', minHeight: '48px' }}>
+                      <FaShoppingBag className="text-2xl text-[#5e503f]" style={{ filter: 'drop-shadow(0 0 2px #5e503f)' }} />
                     </div>
                   </div>
                 </div>

@@ -39,7 +39,8 @@ function AddProduct() {
       navigate("/");
     } else {
       axios.get("http://localhost:5000/products").then((res) => {
-        const artisanProducts = res.data.filter(p => p.artisan === user.username);
+        // Only show products that are approved and belong to this artisan
+        const artisanProducts = res.data.filter(p => p.artisan === user.username && p.approved === true);
         setProducts(artisanProducts);
       }).catch(err => {
         console.error("Error fetching products:", err);
@@ -292,9 +293,9 @@ function AddProduct() {
           </div>
         </div>
         
-        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
+        <div className={`w-full p-6 md:p-8`} style={{ backgroundColor: '#18181b', color: 'white' }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold addproduct-title">My Products</h2>
+            <h2 className="text-3xl font-bold addproduct-title" style={{ color: '#fff' }}>My Products</h2>
           </div>
 
           {/* Top controls: Add/Import, Search, Filter/Export */}
@@ -306,7 +307,7 @@ function AddProduct() {
                 onClick={() => navigate('/artisan/add-product')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-                Add Product
+                <span style={{ color: '#fff' }}>Add Product</span>
               </button>
               <button
                 className="flex items-center gap-2 text-white px-6 py-2 rounded-lg font-semibold shadow transition hover:opacity-90"
@@ -314,7 +315,7 @@ function AddProduct() {
                 onClick={handleImportClick}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4m4 4l4 4 4-4" /></svg>
-                Import Product
+                <span style={{ color: '#fff' }}>Import Product</span>
                 <input
                   type="file"
                   accept=".csv"
@@ -328,16 +329,15 @@ function AddProduct() {
               <input
                 type="text"
                 placeholder="Search here"
-                className={`border rounded-lg px-4 py-2 w-111 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  isDarkMode ? 'bg-[#23232b] border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-800'
-                }`}
+                className="border rounded-lg px-4 py-2 w-111 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                style={{ backgroundColor: '#23232b', color: '#fff', borderColor: '#333', '::placeholder': { color: '#aaa' } }}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
               <div className="relative">
                 <button 
                   className={`flex items-center gap-2 border-2 px-4 py-2 rounded-lg font-semibold transition ${
-                    isDarkMode ? 'border-purple-500 text-purple-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-purple-400 text-purple-700 bg-white hover:bg-purple-50'
+                    isDarkMode ? 'border-[#3E2723] text-[#D7CCC8] bg-[#4E342E] hover:bg-[#5D4037]' : 'border-[#3E2723] text-[#5D4037] bg-[#EFEBE9] hover:bg-[#BCAAA4]'
                   }`} 
                   onClick={handleFilter}
                   type="button"
@@ -348,13 +348,13 @@ function AddProduct() {
                 {showFilter && (
                   <div className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50 border-2 ${
                     isDarkMode
-                      ? 'bg-purple-900 border-purple-500 text-purple-200'
-                      : 'bg-purple-50 border-purple-400 text-purple-700'
+                      ? 'bg-[#3E2723] border-[#5D4037] text-[#D7CCC8]' // dark brown
+                      : 'bg-[#EFEBE9] border-[#8B5C2A] text-[#5D4037]' // light brown
                   }`}>
                     <div className="p-4">
                       <label className="block mb-2 font-semibold">Category</label>
                       <select
-                        className={`w-full border rounded px-2 py-1 ${isDarkMode ? 'bg-purple-950 border-purple-700 text-purple-100' : 'bg-purple-100 border-purple-400 text-purple-700'}`}
+                        className={`w-full border rounded px-2 py-1 ${isDarkMode ? 'bg-[#4E342E] border-[#6D4C41] text-[#D7CCC8]' : 'bg-[#D7CCC8] border-[#8B5C2A] text-[#5D4037]'}`}
                         value={categoryFilter}
                         onChange={e => setCategoryFilter(e.target.value)}
                       >
@@ -369,7 +369,7 @@ function AddProduct() {
               </div>
               <button 
                 className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
-                  isDarkMode ? 'border-orange-400 text-orange-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-orange-300 text-orange-600 bg-white hover:bg-orange-50'
+                  isDarkMode ? 'border-[#8B5C2A] text-[#D2B48C] bg-[#3E2723] hover:bg-[#4E342E]' : 'border-[#8B5C2A] text-[#5D4037] bg-[#D7CCC8] hover:bg-[#A1887F]'
                 }`} 
                 onClick={handleExportPDF}
               >
@@ -378,7 +378,7 @@ function AddProduct() {
               </button>
               <button 
                 className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
-                  isDarkMode ? 'border-green-400 text-green-300 bg-[#23232b] hover:bg-[#2a2a33]' : 'border-green-300 text-green-600 bg-white hover:bg-green-50'
+                  isDarkMode ? 'border-[#6D4C41] text-[#D7CCC8] bg-[#4E342E] hover:bg-[#5D4037]' : 'border-[#6D4C41] text-[#6D4C41] bg-[#EFEBE9] hover:bg-[#BCAAA4]'
                 }`} 
                 onClick={handleExportCSV}
               >
@@ -387,7 +387,7 @@ function AddProduct() {
               </button>
               <button 
                 className={`border-2 px-3 py-2 rounded-lg transition flex items-center ${
-                  isDarkMode ? 'border-blue-400 text-blue-300 bg-gray-800 hover:bg-gray-700' : 'border-blue-300 text-blue-600 bg-white hover:bg-blue-50'
+                  isDarkMode ? 'border-[#4E342E] text-[#BCAAA4] bg-[#5D4037] hover:bg-[#6D4C41]' : 'border-[#4E342E] text-[#4E342E] bg-[#D7CCC8] hover:bg-[#A1887F]'
                 }`} 
                 onClick={handlePrint}
               >
@@ -398,29 +398,29 @@ function AddProduct() {
           </div>
           
           {/* Product Table */}
-          <div className={`rounded-lg shadow-sm border ${isDarkMode ? 'bg-[#23232b] border-gray-700' : 'bg-white border-gray-200'} p-4`}>
-            <div className={`overflow-x-auto w-full`}>
+          <div className="rounded-lg shadow-sm border p-4" style={{ backgroundColor: '#23232b', borderColor: '#222', color: 'white' }}>
+            <div className="overflow-x-auto w-full">
               {filteredProducts.length === 0 ? (
-                <div className={`col-span-full text-center text-lg my-8 py-8 rounded-lg border ${isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-200' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-12 w-12 mx-auto mb-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="col-span-full text-center text-lg my-8 py-8 rounded-lg border" style={{ backgroundColor: '#23232b', borderColor: '#333', color: '#ccc' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                   </svg>
                   <p>You have no products yet. Click "Add Product" to get started!</p>
                 </div>
               ) : (
-                <table id="products-table" className={`min-w-full ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
+                <table id="products-table" className="min-w-full" style={{ backgroundColor: '#23232b', color: 'white' }}>
                   <thead>
-                    <tr className={isDarkMode ? 'bg-[#2a2a33]' : 'bg-gray-50'}>
-                      <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Image</th>
-                      <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Name</th>
-                      <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Category</th>
-                      <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Price</th>
-                      <th className={`py-3 px-6 font-semibold text-left border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>Quantity</th>
+                    <tr style={{ backgroundColor: '#18181b' }}>
+                      <th className="py-3 px-6 font-semibold text-left border-b" style={{ borderColor: '#333', color: '#fff' }}>Image</th>
+                      <th className="py-3 px-6 font-semibold text-left border-b" style={{ borderColor: '#333', color: '#fff' }}>Name</th>
+                      <th className="py-3 px-6 font-semibold text-left border-b" style={{ borderColor: '#333', color: '#fff' }}>Category</th>
+                      <th className="py-3 px-6 font-semibold text-left border-b" style={{ borderColor: '#333', color: '#fff' }}>Price</th>
+                      <th className="py-3 px-6 font-semibold text-left border-b" style={{ borderColor: '#333', color: '#fff' }}>Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredProducts.map((p) => (
-                      <tr key={p._id} className={`${isDarkMode ? 'hover:bg-[#2a2a33] border-gray-700' : 'hover:bg-gray-50 border-gray-100'} border-b last:border-b-0`}>
+                      <tr key={p._id} style={{ borderBottom: '1px solid #333' }} className="hover:bg-[#18181b]">
                         <td className="py-4 px-6">
                           {p.image ? (
                             <img
@@ -432,10 +432,10 @@ function AddProduct() {
                             <span className="text-gray-400">No image</span>
                           )}
                         </td>
-                        <td className="py-4 px-6 font-semibold">{p.name}</td>
-                        <td className="py-4 px-6">{p.category}</td>
-                        <td className="py-4 px-6">₱{Number(p.price).toLocaleString()}</td>
-                        <td className="py-4 px-6">{p.quantity}</td>
+                        <td className="py-4 px-6 font-semibold" style={{ color: '#fff' }}>{p.name}</td>
+                        <td className="py-4 px-6" style={{ color: '#eee' }}>{p.category}</td>
+                        <td className="py-4 px-6" style={{ color: '#fff' }}>₱{Number(p.price).toLocaleString()}</td>
+                        <td className="py-4 px-6" style={{ color: '#fff' }}>{p.quantity}</td>
                       </tr>
                     ))}
                   </tbody>
