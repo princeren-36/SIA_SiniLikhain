@@ -3,6 +3,8 @@ const User = require("../models/User");
 const deleteFile = require('../uploads/deleteFile');
 const multer = require("multer");
 const path = require("path");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const router = express.Router();
 
 // Configure multer storage for avatar uploads
@@ -169,6 +171,59 @@ router.delete('/profile/:id/avatar', async (req, res) => {
     console.error('Error deleting profile image:', err);
     res.status(500).json({ message: 'Error deleting profile image' });
   }
+});
+
+// Send OTP for password reset
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: 'No user with that email.' });
+
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.resetPasswordToken = otp;
+  user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  await user.save();
+
+  // Send OTP email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'sinilikhain.noreply@gmail.com', // your sender email
+      pass: 'hhvk flet iozz gqvm'            // your app password
+    }
+  });
+
+  try {
+    await transporter.sendMail({
+      from: '"SiniLikhain" <sinilikhain.noreply@gmail.com>', // sender (your Gmail)
+      to: email, // recipient (the user's input)
+      subject: 'Your OTP Code',
+      text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`
+    });
+    res.json({ message: 'OTP sent to email.' });
+  } catch (err) {
+    console.error('Email send error:', err);
+    res.status(500).json({ message: 'Failed to send OTP', error: err.toString() });
+  }
+});
+
+// Verify OTP and reset password
+router.post('/reset-password', async (req, res) => {
+  const { email, otp, password } = req.body;
+  const user = await User.findOne({
+    email,
+    resetPasswordToken: otp,
+    resetPasswordExpires: { $gt: Date.now() }
+  });
+  if (!user) return res.status(400).json({ message: 'Invalid or expired OTP.' });
+
+  user.password = password; // Hash in production!
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.json({ message: 'Password has been reset.' });
 });
 
 module.exports = router;

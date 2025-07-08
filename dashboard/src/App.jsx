@@ -21,6 +21,8 @@ import RegisterBuyer from "./pages/RegisterBuyer";
 import ArtisanDashboard from "./artisan/ArtisanDashboard";
 import ArtisanProfile from "./artisan/ArtisanProfile";
 import ArtisanOrders from "./artisan/ArtisanOrders";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
         <Route path="/artisan/manage-products" element={<ManageProducts />} />
         <Route path="/artisan/profile" element={<ArtisanProfile />} />
         <Route path="/artisan/orders" element={<ArtisanOrders />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );
