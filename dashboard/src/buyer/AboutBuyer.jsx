@@ -9,17 +9,17 @@ import sigma from "../images/7.jpg";
 import craft from "../images/8.jpg";
 import { FaHandHoldingHeart, FaEye, FaHistory, FaLightbulb, FaInfoCircle } from 'react-icons/fa';
 
+
 function About() {
   const [activeAccordion, setActiveAccordion] = useState(null);
 
-  // Add collaborator status state
   const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
   const [nbsOnline, setNbsOnline] = useState(null);
-  const [blanktapes, setCollaborators] = useState(null);
+  const [blanktapes, setblanktapes] = useState(null);
+  const [pnb, setPnb] = useState(null);
+  const [jollibee, setJollibee] = useState(null);
 
-  // Check collaborator status on mount
   useEffect(() => {
-    // Helper to check if a site is up (using fetch with mode: 'no-cors')
     const checkStatus = async (url, setter) => {
       try {
         await fetch(url, { mode: 'no-cors' });
@@ -30,8 +30,9 @@ function About() {
     };
     checkStatus('http://192.168.9.69:5173/', setKahitSaanOnline);
     checkStatus('http://192.168.9.19:5173/', setNbsOnline);
-    checkStatus('http://192.168.9.83:5173/', setCollaborators);
-
+    checkStatus('http://192.168.9.83:5173/', setblanktapes);
+    checkStatus('http://192.168.9.23:5173/', setPnb);
+    checkStatus('http://192.168.9.37:5173/', setJollibee);
   }, []);
 
   // Animation function for scroll reveal
@@ -540,16 +541,72 @@ function About() {
                 <p className="text-gray-400 text-sm">Blank Tapes</p>
                 <span
                   className={`mt-1 text-xs font-semibold ${
-                    nbsOnline === null
+                    blanktapes === null
                       ? 'text-gray-400'
-                      : nbsOnline
+                      : blanktapes
                       ? 'text-green-400'
                       : 'text-red-400'
                   }`}
                 >
-                  {nbsOnline === null
+                  {blanktapes === null
                     ? 'Checking...'
-                    : nbsOnline
+                    : blanktapes
+                    ? 'Online'
+                    : 'Offline'}
+                </span>
+              </div>
+              {/* Example Collaborator 4 */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src="../src/images/pnb.png" 
+                      alt="National Book Store Logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </a>
+                </div>
+                <p className="text-gray-400 text-sm">PNB</p>
+                <span
+                  className={`mt-1 text-xs font-semibold ${
+                    pnb === null
+                      ? 'text-gray-400'
+                      : pnb
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {pnb === null
+                    ? 'Checking...'
+                    : pnb
+                    ? 'Online'
+                    : 'Offline'}
+                </span>
+              </div>
+              {/* Example Collaborator 5 */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src="../src/images/jabee.png" 
+                      alt="National Book Store Logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </a>
+                </div>
+                <p className="text-gray-400 text-sm">Jollibee</p>
+                <span
+                  className={`mt-1 text-xs font-semibold ${
+                    jollibee === null
+                      ? 'text-gray-400'
+                      : jollibee
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {jollibee === null
+                    ? 'Checking...'
+                    : jollibee
                     ? 'Online'
                     : 'Offline'}
                 </span>
