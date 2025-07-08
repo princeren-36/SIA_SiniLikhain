@@ -293,7 +293,7 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
             <div className="flex justify-end gap-3">
               <button 
                 onClick={() => setShowLogoutDialog(false)} 
-                className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" 
+                className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer text-black" 
                 style={{ fontFamily: 'Source Code Pro, monospace' }}
               >
                 Cancel
