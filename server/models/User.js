@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, enum: ["admin", "artisan", "buyer"], required: true },
@@ -14,7 +14,9 @@ const userSchema = new mongoose.Schema({
     totalProducts: { type: Number, default: 0 },
     averageRating: { type: Number, default: 0 },
     salesCompleted: { type: Number, default: 0 }
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 });
 
 module.exports = mongoose.model("User", userSchema);

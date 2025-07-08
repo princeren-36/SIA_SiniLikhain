@@ -307,6 +307,12 @@ function Login() {
           >
             Login
           </button>
+          <p
+            className="text-right text-sm text-blue-600 underline cursor-pointer mb-2"
+            onClick={() => navigate("/forgot-password")}
+          >
+            Forgot password?
+          </p>
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
             Don't have an account?{' '}
             <span
