@@ -13,6 +13,7 @@ function About() {
   // Add collaborator status state
   const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
   const [nbsOnline, setNbsOnline] = useState(null);
+  const [blanktapes, setCollaborators] = useState(null);
 
   // Check collaborator status on mount
   useEffect(() => {
@@ -27,6 +28,8 @@ function About() {
     };
     checkStatus('http://192.168.9.69:5173/', setKahitSaanOnline);
     checkStatus('http://192.168.9.19:5173/', setNbsOnline);
+    checkStatus('http://192.168.9.83:5173/', setCollaborators);
+
   }, []);
 
   // Animation function for scroll reveal
@@ -505,6 +508,34 @@ function About() {
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">National Book Store</p>
+                <span
+                  className={`mt-1 text-xs font-semibold ${
+                    nbsOnline === null
+                      ? 'text-gray-400'
+                      : nbsOnline
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {nbsOnline === null
+                    ? 'Checking...'
+                    : nbsOnline
+                    ? 'Online'
+                    : 'Offline'}
+                </span>
+              </div>
+              {/* Example Collaborator 3 */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src="http://192.168.9.83:5173/src/img/logowhite.png" 
+                      alt="National Book Store Logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </a>
+                </div>
+                <p className="text-gray-400 text-sm">Blank Tapes</p>
                 <span
                   className={`mt-1 text-xs font-semibold ${
                     nbsOnline === null
