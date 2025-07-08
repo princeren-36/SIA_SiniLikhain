@@ -10,6 +10,8 @@ import image6 from "../images/Vicente.jpg";
 import React, { useState, useEffect } from "react";
 import { FaHandHoldingHeart, FaShoppingBag, FaPalette, FaUserFriends, FaArrowRight, FaArrowDown, FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
+
+
 // Baybayin for: si, ni, li, khai, n
 const baybayin = [
   "ᜐᜒ", // si
@@ -31,6 +33,7 @@ function SiniLikhainBaybayin() {
   };
 
   return (
+    
     <h2
       className="mb-2 text-4xl md:text-6xl font-extrabold tracking-widest text-white flex justify-center gap-4 select-none"
       style={{ letterSpacing: "0.05em" }}
@@ -57,10 +60,11 @@ function SiniLikhainBaybayin() {
             {char}
           </span>
           <span
-            className={`block transition-all duration-300 ${
+            className={`block transition-all duration-300 noto-sans-tagalog-regular ${
               hovered[idx] ? "opacity-100 scale-100" : "opacity-0 scale-125"
             }`}
             style={{ position: "relative" }}
+            data-text={char}
           >
             {baybayin[idx]}
           </span>
