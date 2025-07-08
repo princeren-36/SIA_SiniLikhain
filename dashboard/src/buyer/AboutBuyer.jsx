@@ -7,7 +7,7 @@ import historyImg from "../images/5.jpg";
 import backgroundImg from "../images/6.jpg";
 import sigma from "../images/7.jpg";
 import craft from "../images/8.jpg";
-import { FaHandHoldingHeart, FaEye, FaHistory, FaLightbulb, FaInfoCircle } from 'react-icons/fa';
+import { FaHandHoldingHeart, FaEye, FaHistory, FaLightbulb, FaInfoCircle, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 
 function About() {
@@ -415,31 +415,31 @@ function About() {
         `}</style>
       </div>
       
-      <footer className="bg-[#121212] text-white pt-12 pb-6">
+      {/* Footer from Home.jsx */}
+      <footer className="bg-gradient-to-t from-[#181818] to-[#232526] text-white pt-14 pb-8 border-t border-[#232526] shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="mb-8 md:mb-0">
-              <h3 className="text-xl font-bold mb-4 font-mono">SiniLikhain</h3>
-              <p className="text-gray-400 mb-4">
-                Connecting talented Filipino artisans with those who appreciate authentic handcrafted products.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <i className="fab fa-facebook-f" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8 border-b border-gray-800 pb-10 mb-8 relative">
+            <div className="mb-8 md:mb-0 flex flex-col justify-between">
+              <div>
+                <h3 className="text-2xl font-extrabold mb-4 font-mono tracking-widest text-[#f8d49f]">SiniLikhain</h3>
+                <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+                  Connecting talented Filipino artisans with those who appreciate authentic handcrafted products.
+                </p>
+              </div>
+              <div className="flex space-x-4 mt-2">
+                <a href="https://www.facebook.com/audiepogi14" className="text-gray-400 hover:text-[#f8d49f] transition-colors transform hover:scale-110" aria-label="Facebook">
+                  <FaFacebook size={22} />
                 </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <i className="fab fa-twitter" />
+                <a href="https://www.facebook.com/audiepogi14" className="text-gray-400 hover:text-[#f8d49f] transition-colors transform hover:scale-110" aria-label="Twitter">
+                  <FaTwitter size={22} />
                 </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <i className="fab fa-instagram" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <i className="fab fa-linkedin-in" />
+                <a href="https://www.instagram.com/audiepogi14" className="text-gray-400 hover:text-[#f8d49f] transition-colors transform hover:scale-110" aria-label="Instagram">
+                  <FaInstagram size={22} />
                 </a>
               </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4 font-mono">Shop</h3>
+            <div className="md:border-l md:border-gray-800 md:pl-8">
+              <h3 className="text-lg font-semibold mb-4 font-mono text-[#f8d49f]">Shop</h3>
               <ul className="space-y-2">
                 <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">All Products</a></li>
                 <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">New Arrivals</a></li>
@@ -447,177 +447,94 @@ function About() {
                 <li><a href="/buyer" className="text-gray-400 hover:text-white transition-colors">Best Sellers</a></li>
               </ul>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4 font-mono">About</h3>
+            <div className="md:border-l md:border-gray-800 md:pl-8">
+              <h3 className="text-lg font-semibold mb-4 font-mono text-[#f8d49f]">About</h3>
               <ul className="space-y-2">
                 <li><a href="/aboutbuyer" className="text-gray-400 hover:text-white transition-colors">Our Story</a></li>
-                <li><a href="#artisans" className="text-gray-400 hover:text-white transition-colors">Artisans</a></li>
+                <li><a href="/artisans" className="text-gray-400 hover:text-white transition-colors">Artisans</a></li>
                 <li><a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors">How It Works</a></li>
                 <li><a href="#impact" className="text-gray-400 hover:text-white transition-colors">Our Impact</a></li>
               </ul>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4 font-mono">Support</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQs</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shipping & Returns</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-              </ul>
+            <div className="md:border-l md:border-gray-800 md:pl-8 flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-4 font-mono text-[#f8d49f]">Contact</h3>
+                <ul className="space-y-2 text-sm">
+                  <li><span className="text-gray-400">Email:</span> <a href="mailto:info@sinilikhain.com" className="hover:text-white transition-colors">info@sinilikhain.com</a></li>
+                  <li><span className="text-gray-400">Phone:</span> <a href="tel:+639123456789" className="hover:text-white transition-colors">+63 928 809 6727</a></li>
+                </ul>
+              </div>
             </div>
           </div>
-          
-          {/* Collaboration section - inserted before copyright */}
+          {/* Our Business Partners Section */}
           <div className="mt-10 mb-8">
-            <h3 className="text-center text-lg font-semibold mb-4 font-mono">Our Business Partners</h3>
+            <h3 className="text-center text-lg font-semibold mb-4 font-mono text-[#f8d49f]">Our Business Partners</h3>
             <div className="flex flex-wrap justify-center items-center gap-8">
-              {/* Example Collaborator 1 */}
+              {/* Partner 1: Kahit Saan */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
                   <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer">
-                    <img 
-                      src="../src/images/LogoWhite.webp" 
-                      alt="Kahit Saan Logo"
-                      className="w-12 h-12 object-contain"
-                    />
+                    <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">Kahit Saan</p>
-                <span
-                  className={`mt-1 text-xs font-semibold ${
-                    kahitSaanOnline === null
-                      ? 'text-gray-400'
-                      : kahitSaanOnline
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
-                  {kahitSaanOnline === null
-                    ? 'Checking...'
-                    : kahitSaanOnline
-                    ? 'Online'
-                    : 'Offline'}
+                <span className={`mt-1 text-xs font-semibold ${kahitSaanOnline === null ? 'text-gray-400' : kahitSaanOnline ? 'text-green-400' : 'text-red-400'}`}>
+                  {kahitSaanOnline === null ? 'Checking...' : kahitSaanOnline ? 'Online' : 'Offline'}
                 </span>
               </div>
-              {/* Example Collaborator 2 */}
+              {/* Partner 2: National Book Store */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
                   <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer">
-                    <img 
-                      src="../src/images/nbs.svg" 
-                      alt="National Book Store Logo"
-                      className="w-12 h-12 object-contain"
-                    />
+                    <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">National Book Store</p>
-                <span
-                  className={`mt-1 text-xs font-semibold ${
-                    nbsOnline === null
-                      ? 'text-gray-400'
-                      : nbsOnline
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
-                  {nbsOnline === null
-                    ? 'Checking...'
-                    : nbsOnline
-                    ? 'Online'
-                    : 'Offline'}
+                <span className={`mt-1 text-xs font-semibold ${nbsOnline === null ? 'text-gray-400' : nbsOnline ? 'text-green-400' : 'text-red-400'}`}>
+                  {nbsOnline === null ? 'Checking...' : nbsOnline ? 'Online' : 'Offline'}
                 </span>
               </div>
-              {/* Example Collaborator 3 */}
+              {/* Partner 3: Blank Tapes */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
                   <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer">
-                    <img 
-                      src="http://192.168.9.83:5173/src/img/logowhite.png" 
-                      alt="National Book Store Logo"
-                      className="w-12 h-12 object-contain"
-                    />
+                    <img src="http://192.168.9.83:5173/src/img/logowhite.png" alt="Blank Tapes Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">Blank Tapes</p>
-                <span
-                  className={`mt-1 text-xs font-semibold ${
-                    blanktapes === null
-                      ? 'text-gray-400'
-                      : blanktapes
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
-                  {blanktapes === null
-                    ? 'Checking...'
-                    : blanktapes
-                    ? 'Online'
-                    : 'Offline'}
+                <span className={`mt-1 text-xs font-semibold ${blanktapes === null ? 'text-gray-400' : blanktapes ? 'text-green-400' : 'text-red-400'}`}>
+                  {blanktapes === null ? 'Checking...' : blanktapes ? 'Online' : 'Offline'}
                 </span>
               </div>
-              {/* Example Collaborator 4 */}
+              {/* Partner 4: PNB */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
                   <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer">
-                    <img 
-                      src="../src/images/pnb.png" 
-                      alt="National Book Store Logo"
-                      className="w-12 h-12 object-contain"
-                    />
+                    <img src="/src/images/pnb.png" alt="PNB Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">PNB</p>
-                <span
-                  className={`mt-1 text-xs font-semibold ${
-                    pnb === null
-                      ? 'text-gray-400'
-                      : pnb
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
-                  {pnb === null
-                    ? 'Checking...'
-                    : pnb
-                    ? 'Online'
-                    : 'Offline'}
+                <span className={`mt-1 text-xs font-semibold ${pnb === null ? 'text-gray-400' : pnb ? 'text-green-400' : 'text-red-400'}`}>
+                  {pnb === null ? 'Checking...' : pnb ? 'Online' : 'Offline'}
                 </span>
               </div>
-              {/* Example Collaborator 5 */}
+              {/* Partner 5: Jollibee */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
                   <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
-                    <img 
-                      src="../src/images/jabee.png" 
-                      alt="National Book Store Logo"
-                      className="w-12 h-12 object-contain"
-                    />
+                    <img src="/src/images/jabee.png" alt="Jollibee Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">Jollibee</p>
-                <span
-                  className={`mt-1 text-xs font-semibold ${
-                    jollibee === null
-                      ? 'text-gray-400'
-                      : jollibee
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
-                  {jollibee === null
-                    ? 'Checking...'
-                    : jollibee
-                    ? 'Online'
-                    : 'Offline'}
+                <span className={`mt-1 text-xs font-semibold ${jollibee === null ? 'text-gray-400' : jollibee ? 'text-green-400' : 'text-red-400'}`}>
+                  {jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}
                 </span>
               </div>
-              {/* Add more collaborators as needed */}
             </div>
           </div>
-
-          <div className="border-t border-gray-800 mt-10 pt-6">
-            <p className="text-center text-gray-400 text-sm">
-              © {new Date().getFullYear()} SiniLikhain. All rights reserved.
+          <div className="pt-4">
+            <p className="text-center text-gray-500 text-xs tracking-wide">
+              © {new Date().getFullYear()} <span className="font-bold text-[#f8d49f]">SiniLikhain</span>. All rights reserved.
             </p>
           </div>
         </div>

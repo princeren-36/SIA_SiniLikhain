@@ -76,7 +76,6 @@ const ArtisanSidebar = ({ isOpen, toggleSidebar }) => {
         )}
       </div>
 
-      <div className="border-t my-2" style={{ borderColor: '#3a4e6b' }}></div>
 
       {/* Menu items */}
       <nav className="flex-1 overflow-y-auto">
