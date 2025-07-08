@@ -14,6 +14,10 @@ function Buyer() {
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [addedProductId, setAddedProductId] = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [cartOffset, setCartOffset] = useState(300); // Default value, will be updated on load
+  const cartRef = React.useRef(null);
 
   useEffect(() => {
     axios.get(`${API_BASE}/products?approved=true`).then(res => {
@@ -21,6 +25,46 @@ function Buyer() {
       const cats = Array.from(new Set(res.data.map(p => p.category).filter(Boolean)));
       setCategories(cats);
     });
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+  // Track window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  // Measure the cart's initial position to know when to make it fixed
+  useEffect(() => {
+    const updateCartOffset = () => {
+      if (cartRef.current) {
+        const cartRect = cartRef.current.getBoundingClientRect();
+        const cartOffsetFromTop = cartRect.top + window.scrollY;
+        setCartOffset(cartOffsetFromTop);
+      }
+    };
+    
+    // Update on load and resize
+    updateCartOffset();
+    window.addEventListener('resize', updateCartOffset);
+    
+    return () => {
+      window.removeEventListener('resize', updateCartOffset);
+    };
   }, []);
 
   const filteredProducts = products.filter(product => {
@@ -45,7 +89,7 @@ function Buyer() {
     window.dispatchEvent(new Event("cart-updated"));
     setSnackbarOpen(true);
     setAddedProductId(product._id);
-    setTimeout(() => setAddedProductId(null), 1200);
+    setTimeout(() => setAddedProductId(null), 2200); // Show check for 2.2s
   };
 
   const handleOpenProduct = (product) => {
@@ -62,7 +106,7 @@ function Buyer() {
   }, [snackbarOpen]);
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden" style={{ overflowY: 'visible' }}>
       <NavbarBuyer />
       {/* Full-width hero section with AboutBuyer.jsx design */}
       <div
@@ -84,11 +128,24 @@ function Buyer() {
           </p>
         </div>
       </div>
-      <div className="p-4 min-h-screen" style={{ background: '#f8f9fa', marginTop: 0 }}>
+      <div className="p-4 pb-8 min-h-screen" 
+           style={{ 
+             background: '#f8f9fa', 
+             marginTop: 0, 
+             overflow: 'visible',
+             position: 'relative'
+           }}>
         <div id="main-content" className="h-18" />
-        <div className="flex w-full items-start gap-8" style={{ minHeight: '80vh' }}>
+        <div className="flex flex-col lg:flex-row items-start" 
+             style={{ 
+               minHeight: '80vh', 
+               position: 'relative',
+               maxWidth: '1800px',
+               margin: '0 auto',
+               paddingRight: scrollPosition > cartOffset && windowWidth >= 1024 ? '340px' : '0'
+             }}>
           {/* Product grid on the left */}
-          <div className="flex-1">
+          <div className="w-full mb-6 lg:mb-0" style={{ overflow: 'visible' }}>
             <div className="flex flex-col md:flex-row items-center gap-2 mb-6 justify-center">
               <div className="relative w-full max-w-xs md:max-w-md lg:max-w-lg" style={{ minWidth: 280 }}>
                 <input
@@ -99,7 +156,6 @@ function Buyer() {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black bg-white text-black"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  {/* Search icon SVG */}
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" /></svg>
                 </span>
               </div>
@@ -115,64 +171,87 @@ function Buyer() {
                 ))}
               </select>
             </div>
-            {/* Product grid styled to match screenshot */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            {/* Updated product grid with no space between cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border-t border-l border-[#5e503f] mx-auto">
               {filteredProducts.map((product) => (
-                <div key={product._id} className="w-[320px] flex flex-col items-center shadow-none rounded-none relative" style={{ boxShadow: 'none', background: 'white' }}>
-                  {/* Image card, visually separated, now clickable for modal */}
-                  <div
-                    className="w-full flex justify-center pt-8 pb-4 min-h-[180px] cursor-pointer"
-                    style={{ background: 'white', border: '3px solid #5e503f' }}
+                <div key={product._id} className="w-full bg-white border-r border-b border-[#5e503f] relative overflow-hidden">
+                  {/* Integrated product card with larger image and info in one container */}
+                  <div 
+                    className="cursor-pointer w-full flex flex-col"
                     onClick={() => handleOpenProduct(product)}
                     tabIndex={0}
                     role="button"
                     aria-label={`View details for ${product.name}`}
                     onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleOpenProduct(product); }}
                   >
-                    <img
-                      src={`${API_BASE}${product.image}`}
-                      alt={product.name}
-                      className="object-contain h-36 w-36"
-                      style={{ background: 'white', border: 'none' }}
-                    />
-                  </div>
-                  {/* Product info card with borders */}
-                  <div className="w-full border-t border-b border-l border-r" style={{ borderColor: '#5e503f', borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                    <div className="text-center py-4 px-2 border-b" style={{ borderColor: '#5e503f' }}>
-                      <span className="font-mono text-lg font-semibold tracking-wider text-black uppercase letter-spacing-wider">{product.name}</span>
+                    <div className="w-full pt-4 pb-2 flex items-center justify-center min-h-[200px] bg-[#fcfcfc]">
+                      <img
+                        src={`${API_BASE}${product.image}`}
+                        alt={product.name}
+                        className="object-contain h-48 w-48 transition-transform duration-300 hover:scale-105"
+                      />
                     </div>
-                    <div className="flex flex-row border-b relative" style={{ borderColor: '#5e503f' }}>
-                      <div className="flex items-center justify-center border-r py-3 w-1/2" style={{ borderColor: '#5e503f' }}>
-                        <span className="font-mono text-base text-black">₱{Number(product.price).toFixed(2)}</span>
-                      </div>
-                      <div className="w-1/2 relative flex items-center justify-center">
-                        <button
-                          className="flex items-center justify-center py-3 w-full font-mono text-base text-[#bfa181] hover:bg-[#f5eee6] transition-colors duration-150 cursor-pointer tracking-widest font-semibold border-none bg-transparent"
-                          style={{ fontSize: '0.95rem', position: 'relative', zIndex: 1 }}
-                          onClick={() => handleAddToCart(product, 1)}
-                        >
-                          ADD TO CART
-                        </button>
-                        {addedProductId === product._id && (
-                          <span style={{position:'absolute',top:'-10px',right:'-10px',zIndex:20}}>
-                            <span style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:28,height:28,borderRadius:'50%',background:'#bfa181',boxShadow:'0 2px 8px #0002'}}>
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 11 17 4 10" /></svg>
-                            </span>
-                          </span>
-                        )}
-                      </div>
+                    
+                    <div className="text-center py-3 px-4 bg-[#f8f5f2] border-t border-[#e8e0d8]">
+                      <h3 className="font-mono text-lg font-semibold tracking-wider text-black uppercase letter-spacing-wider truncate">{product.name}</h3>
+                      {product.quantity < 10 && (
+                        <p className="text-xs text-[#d97706] mt-1">Only {product.quantity} left</p>
+                      )}
                     </div>
                   </div>
+                  
+                  <div className="flex flex-row border-t relative" style={{ borderColor: '#5e503f' }}>
+                    <div className="flex items-center justify-center border-r py-3 w-1/2" style={{ borderColor: '#5e503f' }}>
+                      <span className="font-mono text-base text-black">₱{Number(product.price).toFixed(2)}</span>
+                    </div>
+                    <div className="w-1/2 relative flex items-center justify-center">
+                      <button
+                        className="flex items-center justify-center py-3 w-full font-mono text-base text-[#5e503f] hover:bg-[#e6e0d8] transition-colors duration-150 cursor-pointer tracking-widest font-semibold border-none bg-transparent"
+                        style={{ fontSize: '0.95rem', position: 'relative', zIndex: 1 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product, 1);
+                        }}
+                      >
+                        ADD TO CART
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {addedProductId === product._id && (
+                    <span className="absolute top-3 right-3 z-20">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#5e503f] shadow-lg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 11 17 4 10" /></svg>
+                      </span>
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
           </div>
           <div
-            className="max-w-xs w-full"
-            style={{ position: 'sticky', top: 32, alignSelf: 'flex-start', height: 'fit-content', background: 'white', zIndex: 10 }}
+            ref={cartRef}
+            className={`${windowWidth < 1024 && scrollPosition > cartOffset ? 'hidden' : ''} lg:w-[300px] shrink-0`}
+            style={{ 
+              position: scrollPosition > cartOffset && windowWidth >= 1024 ? 'fixed' : 'static',
+              top: scrollPosition > cartOffset && windowWidth >= 1024 ? '20px' : 'auto',
+              right: scrollPosition > cartOffset && windowWidth >= 1024 ? '20px' : 'auto',
+              height: 'fit-content', 
+              background: 'white', 
+              zIndex: 50,
+              border: '1px solid #eee',
+              borderRadius: '6px',
+              padding: '15px',
+              marginLeft: windowWidth >= 1024 ? '30px' : '0',
+              width: '300px',
+              maxHeight: scrollPosition > cartOffset && windowWidth >= 1024 ? 'calc(100vh - 50px)' : 'none',
+              overflowY: scrollPosition > cartOffset && windowWidth >= 1024 ? 'auto' : 'visible',
+              boxShadow: 'none', // Remove all shadow
+              transition: 'none' // Remove transition on box-shadow and position
+            }}
           >
             {/* If sticky is not working, ensure no parent has overflow-y set! */}
-            <div className="flex items-center justify-between border-b border-[#bfa181] pb-2 mb-2">
+            <div className="flex items-center justify-between border-b border-[#5e503f] pb-2 mb-2">
               <span className="font-mono text-xl font-semibold tracking-widest text-black">CART</span>
               <span className="font-mono text-sm font-bold tracking-wider">Subtotal: ₱{cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</span>
             </div>
@@ -188,7 +267,7 @@ function Buyer() {
                       <div className="font-mono text-[11px] text-black">{item.quantity} × ₱{Number(item.price).toFixed(2)}</div>
                     </div>
                     <button
-                      className="text-[#bfa181] text-base font-bold hover:bg-[#f5eee6] rounded px-1"
+                      className="text-[#5e503f] text-base font-bold hover:bg-[#e6e0d8] rounded px-1"
                       onClick={() => {
                         const updatedCart = cart.filter(i => i._id !== item._id);
                         setCart(updatedCart);
@@ -205,14 +284,14 @@ function Buyer() {
             {cart.length > 0 && (
               <div className="flex gap-2 mt-2">
                 <button
-                  className="w-1/2 border border-[#bfa181] bg-white text-[#bfa181] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#f5eee6] transition-colors duration-150 cursor-pointer"
+                  className="w-1/2 border border-[#5e503f] bg-white text-[#5e503f] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#e6e0d8] transition-colors duration-150 cursor-pointer"
                   style={{ letterSpacing: 2 }}
                   onClick={() => window.location.href = '/cart'}
                 >
                   VIEW CART
                 </button>
                 <button
-                  className="w-1/2 border border-[#bfa181] bg-white text-[#bfa181] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#f5eee6] transition-colors duration-150"
+                  className="w-1/2 border border-[#5e503f] bg-white text-[#5e503f] font-mono font-bold py-1 text-xs uppercase tracking-widest hover:bg-[#e6e0d8] transition-colors duration-150"
                   style={{ letterSpacing: 2 }}
                   onClick={() => window.location.href = '/cart#checkout'}
                 >
