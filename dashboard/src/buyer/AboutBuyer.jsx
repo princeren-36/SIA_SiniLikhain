@@ -441,6 +441,35 @@ function About() {
               </ul>
             </div>
           </div>
+          {/* Collaboration section - inserted before copyright */}
+          <div className="mt-10 mb-8">
+            <h3 className="text-center text-lg font-semibold mb-4 font-mono">In Collaboration With</h3>
+            <div className="flex flex-wrap justify-center items-center gap-8">
+              {/* Example Collaborator 1 */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" 
+                    alt="React Logo" 
+                    className="w-12 h-12 object-contain"
+                  />
+                </div>
+                <p className="text-gray-400 text-sm">React</p>
+              </div>
+              {/* Example Collaborator 2 */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" 
+                    alt="TypeScript Logo" 
+                    className="w-12 h-12 object-contain"
+                  />
+                </div>
+                <p className="text-gray-400 text-sm">TypeScript</p>
+              </div>
+              {/* Add more collaborators as needed */}
+            </div>
+          </div>
           <div className="border-t border-gray-800 mt-10 pt-6">
             <p className="text-center text-gray-400 text-sm">
               © {new Date().getFullYear()} SiniLikhain. All rights reserved.
