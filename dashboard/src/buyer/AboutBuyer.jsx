@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from "./NavbarBuyer";
 import cartBg from "../images/2.jpg";
 import missionImg from "../images/4.jpg";
@@ -9,7 +9,26 @@ import { FaHandHoldingHeart, FaEye, FaHistory, FaLightbulb, FaInfoCircle } from 
 
 function About() {
   const [activeAccordion, setActiveAccordion] = useState(null);
-  
+
+  // Add collaborator status state
+  const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
+  const [nbsOnline, setNbsOnline] = useState(null);
+
+  // Check collaborator status on mount
+  useEffect(() => {
+    // Helper to check if a site is up (using fetch with mode: 'no-cors')
+    const checkStatus = async (url, setter) => {
+      try {
+        await fetch(url, { mode: 'no-cors' });
+        setter(true);
+      } catch {
+        setter(false);
+      }
+    };
+    checkStatus('http://192.168.9.69:5173/', setKahitSaanOnline);
+    checkStatus('http://192.168.9.19:5173/', setNbsOnline);
+  }, []);
+
   // Animation function for scroll reveal
   const handleIntersection = (entries, observer) => {
     entries.forEach(entry => {
@@ -441,35 +460,71 @@ function About() {
               </ul>
             </div>
           </div>
+          
           {/* Collaboration section - inserted before copyright */}
           <div className="mt-10 mb-8">
             <h3 className="text-center text-lg font-semibold mb-4 font-mono">In Collaboration With</h3>
             <div className="flex flex-wrap justify-center items-center gap-8">
               {/* Example Collaborator 1 */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
-                  <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" 
-                    alt="React Logo" 
-                    className="w-12 h-12 object-contain"
-                  />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src="../src/images/LogoWhite.webp" 
+                      alt="Kahit Saan Logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </a>
                 </div>
-                <p className="text-gray-400 text-sm">React</p>
+                <p className="text-gray-400 text-sm">Kahit Saan</p>
+                <span
+                  className={`mt-1 text-xs font-semibold ${
+                    kahitSaanOnline === null
+                      ? 'text-gray-400'
+                      : kahitSaanOnline
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {kahitSaanOnline === null
+                    ? 'Checking...'
+                    : kahitSaanOnline
+                    ? 'Online'
+                    : 'Offline'}
+                </span>
               </div>
               {/* Example Collaborator 2 */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 shadow-md">
-                  <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" 
-                    alt="TypeScript Logo" 
-                    className="w-12 h-12 object-contain"
-                  />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md">
+                  <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer">
+                    <img 
+                      src="../src/images/nbs.svg" 
+                      alt="National Book Store Logo"
+                      className="w-12 h-12 object-contain"
+                    />
+                  </a>
                 </div>
-                <p className="text-gray-400 text-sm">TypeScript</p>
+                <p className="text-gray-400 text-sm">National Book Store</p>
+                <span
+                  className={`mt-1 text-xs font-semibold ${
+                    nbsOnline === null
+                      ? 'text-gray-400'
+                      : nbsOnline
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {nbsOnline === null
+                    ? 'Checking...'
+                    : nbsOnline
+                    ? 'Online'
+                    : 'Offline'}
+                </span>
               </div>
               {/* Add more collaborators as needed */}
             </div>
           </div>
+
           <div className="border-t border-gray-800 mt-10 pt-6">
             <p className="text-center text-gray-400 text-sm">
               © {new Date().getFullYear()} SiniLikhain. All rights reserved.
