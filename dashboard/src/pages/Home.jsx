@@ -4,8 +4,9 @@ import logo from "../images/homepage.jpg";
 import image1 from "../images/1.jpg";
 import image2 from "../images/2.jpg";
 import image3 from "../images/3.jpg";
-import image4 from "../images/4.jpg";
-import image5 from "../images/5.jpg";
+import image4 from "../images/Fernando.jpg";
+import image5 from "../images/Juan.jpg";
+import image6 from "../images/Vicente.jpg";
 import React, { useState, useEffect } from "react";
 import { FaHandHoldingHeart, FaShoppingBag, FaPalette, FaUserFriends, FaArrowRight, FaArrowDown, FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
@@ -437,16 +438,16 @@ function Home() {
             <div className="bg-[#22303f] rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="h-64 overflow-hidden">
                 <img 
-                  src="/src/images/background.jpg" 
+                  src="/src/images/Fernando.jpg" 
                   alt="Artisan Maria" 
                   className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">Maria Santos</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Fernando Amorsolo</h3>
                 <p className="text-sm text-[#eae0d5] mb-3">Textile Weaver, Ilocos Region</p>
                 <p className="text-gray-300 mb-4">
-                  "My grandmother taught me to weave when I was just eight years old. Each piece carries our family's traditions and stories."
+                  "Known for his vibrant depictions of Philippine rural life, often featuring idyllic landscapes and scenes of daily life. "
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-[#eae0d5] text-sm">15+ years experience</span>
@@ -457,16 +458,16 @@ function Home() {
             <div className="bg-[#22303f] rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="h-64 overflow-hidden">
                 <img 
-                  src="/src/images/2.jpg" 
+                  src="/src/images/Juan.jpg" 
                   alt="Artisan Antonio" 
                   className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">Antonio Reyes</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Juan Luna</h3>
                 <p className="text-sm text-[#eae0d5] mb-3">Bamboo Craftsman, Bicol Region</p>
                 <p className="text-gray-300 mb-4">
-                  "Bamboo is life in our village. It's flexible yet strong - I create pieces that represent our resilience as Filipinos."
+                  "A renowned 19th-century painter, famous for historical and genre paintings like "Spoliarium". "
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-[#eae0d5] text-sm">20+ years experience</span>
@@ -477,16 +478,16 @@ function Home() {
             <div className="bg-[#22303f] rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="h-64 overflow-hidden">
                 <img 
-                  src="/src/images/3.jpg" 
+                  src="/src/images/Vicente.jpg" 
                   alt="Artisan Elena" 
                   className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">Elena Mabini</h3>
+                <h3 className="text-xl font-bold text-white mb-2">Vicente Manansala</h3>
                 <p className="text-sm text-[#eae0d5] mb-3">Pottery Artist, Vigan</p>
                 <p className="text-gray-300 mb-4">
-                  "Clay connects me to my ancestors. Each pot I create is a conversation between the past and present."
+                  "A key figure in Philippine modernism, known for his cubist-inspired style and depictions of Filipino life"
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-[#eae0d5] text-sm">12+ years experience</span>
@@ -514,7 +515,7 @@ function Home() {
             <div className="bg-[#222] bg-opacity-90 backdrop-blur-sm p-6 rounded-xl text-white border border-white/20">
               <div className="flex items-center mb-4">
                 <div className="flex flex-col">
-                  <p className="font-semibold">Maria Santos</p>
+                  <p className="font-semibold">Fernando Amorsolo</p>
                   <p className="text-sm text-gray-300">Loyal Customer</p>
                 </div>
               </div>
@@ -526,7 +527,7 @@ function Home() {
             <div className="bg-[#222] bg-opacity-90 backdrop-blur-sm p-6 rounded-xl text-white border border-white/20">
               <div className="flex items-center mb-4">
                 <div className="flex flex-col">
-                  <p className="font-semibold">Juan Reyes</p>
+                  <p className="font-semibold">Juan Luna</p>
                   <p className="text-sm text-gray-300">Art Collector</p>
                 </div>
               </div>
@@ -538,7 +539,7 @@ function Home() {
             <div className="bg-[#222] bg-opacity-90 backdrop-blur-sm p-6 rounded-xl text-white border border-white/20">
               <div className="flex items-center mb-4">
                 <div className="flex flex-col">
-                  <p className="font-semibold">Elena Cruz</p>
+                  <p className="font-semibold">Vicente Manansala</p>
                   <p className="text-sm text-gray-300">Interior Designer</p>
                 </div>
               </div>

@@ -5,6 +5,8 @@ import missionImg from "../images/4.jpg";
 import visionImg from "../images/1.jpg";
 import historyImg from "../images/5.jpg";
 import backgroundImg from "../images/6.jpg";
+import sigma from "../images/7.jpg";
+import craft from "../images/8.jpg";
 import { FaHandHoldingHeart, FaEye, FaHistory, FaLightbulb, FaInfoCircle } from 'react-icons/fa';
 
 function About() {
@@ -267,7 +269,7 @@ function About() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="col-span-2 row-span-2">
               <img 
-                src={cartBg} 
+                src={sigma} 
                 alt="Featured handcrafted product" 
                 className="w-full h-full object-cover rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 style={{ height: "100%", maxHeight: "400px" }}
@@ -275,7 +277,7 @@ function About() {
             </div>
             <div>
               <img 
-                src={missionImg} 
+                src={craft} 
                 alt="Product showcase" 
                 className="w-full h-full object-cover rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 style={{ height: "100%", maxHeight: "200px" }}
@@ -327,7 +329,7 @@ function About() {
                 className="border border-gray-200 rounded-lg overflow-hidden"
               >
                 <button 
-                  className={`w-full text-left p-4 flex justify-between items-center focus:outline-none ${activeAccordion === index ? 'bg-[#5e503f] text-white' : 'bg-white text-gray-800 hover:bg-gray-50'}`}
+                  className={`w-full text-left p-4 flex justify-between items-center focus:outline-none ${activeAccordion === index ? 'bg-[#5e503f] text-black' : 'bg-white text-gray-800 hover:bg-gray-50'}`}
                   onClick={() => toggleAccordion(index)}
                 >
                   <span className="font-medium">{faq.question}</span>
