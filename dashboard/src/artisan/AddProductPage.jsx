@@ -106,7 +106,7 @@ const AddProductPage = () => {
           </div>
         </div>
 
-        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
+        <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold addproduct-title">Add New Product</h2>
           </div>
@@ -114,7 +114,7 @@ const AddProductPage = () => {
           {/* Admin Approval Info Card */}
           <div className={`mb-8 p-4 rounded-lg border-l-4 ${
             isDarkMode 
-              ? 'bg-[#23232b] border-blue-500 text-blue-200' 
+              ? 'bg-[#23232b] border-blue-500 text-blue-100' 
               : 'bg-blue-50 border-blue-500 text-blue-800'
           }`}>
             <div className="flex items-start">

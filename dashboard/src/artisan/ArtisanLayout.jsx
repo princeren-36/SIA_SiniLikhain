@@ -21,7 +21,7 @@ const ArtisanLayout = ({ children, blurOverlay }) => {
         style={{ marginLeft: sidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED }}
       >
         <Navbar toggleSidebar={toggleSidebar} />
-        <main className="relative z-10 flex-1">
+        <main className="relative z-10 flex-1 bg-[#23232b] text-white">
           {children}
         </main>
       </div>

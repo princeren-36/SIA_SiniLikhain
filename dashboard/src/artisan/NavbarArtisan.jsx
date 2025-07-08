@@ -188,24 +188,16 @@ function NavbarArtisan({ showLinks = true, toggleSidebar }) {
 
       {/* Logout confirmation dialog */}
       {openDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 backdrop-blur-sm bg-black/40 dark:bg-gray-900/60 pointer-events-none"></div>
-          <div className="relative z-10 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg shadow-2xl p-6 min-w-[300px] pointer-events-auto">
-            <h2 className="text-lg font-bold mb-4 text-black dark:text-white">Confirm Logout</h2>
-            <p className="mb-6 text-gray-800 dark:text-gray-200">Are you sure you want to log out?</p>
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs border border-gray-300 dark:border-gray-600"
-                onClick={handleCancelLogout}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 text-xs border border-red-700 dark:border-red-800"
-                onClick={handleConfirmLogout}
-              >
-                Log Out
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-lg p-8 w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
+            <div className="text-lg font-bold mb-3 text-[#1b2a41] flex items-center gap-2" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+              <svg className="w-6 h-6 text-[#324a5f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0V7a3 3 0 016 0v1" /></svg>
+              Confirm Logout
+            </div>
+            <div className="mb-5 text-[#1b2a41]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you sure you want to log out of your account?</div>
+            <div className="flex justify-end gap-3">
+              <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
+              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}>Logout</button>
             </div>
           </div>
         </div>

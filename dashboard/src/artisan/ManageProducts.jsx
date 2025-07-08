@@ -226,7 +226,7 @@ const ManageProducts = () => {
             </div>
           </div>
           
-          <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
+          <div className={`w-full p-6 md:p-8 ${isDarkMode ? 'bg-[#23232b] text-white' : 'bg-white text-gray-800'}`}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold">Manage Products</h2>
             </div>
@@ -234,7 +234,7 @@ const ManageProducts = () => {
             {/* Product Status Guide - curvy card with thin colored left border */}
             <div className={`mb-6 flex items-start gap-4 rounded-2xl shadow p-4 border-l-4 ${
               isDarkMode
-                ? 'bg-purple-900/40 text-purple-100 border-purple-600'
+                ? 'bg-[#23232b] text-purple-100 border-purple-600'
                 : 'bg-purple-50 text-purple-800 border-purple-400'
             }`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

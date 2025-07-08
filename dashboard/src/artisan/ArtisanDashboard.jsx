@@ -183,10 +183,10 @@ const ArtisanDashboard = () => {
 
   return (
     <ArtisanLayout>
-      <div className={`flex flex-col w-full min-h-screen ${isDarkMode ? 'bg-[#18181b] text-white' : 'bg-white text-gray-800'}`}>
-        <div className="p-8">
-          <h2 className="text-2xl font-bold mb-4 text-white">Artisan Dashboard</h2>
-          <p className="text-white mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="p-4 md:p-6 lg:p-8 overflow-x-auto">
+          <h2 className="text-2xl font-bold mb-4">Artisan Dashboard</h2>
+          <p className="mb-6">Welcome to your dashboard! Here you can see an overview of your activity.</p>
           {/* Product Status Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-green-900 rounded-lg p-6 text-center min-h-[100px]">
@@ -203,10 +203,10 @@ const ArtisanDashboard = () => {
           ) : error ? (
             <p className="text-red-400">{error}</p>
           ) : (
-            <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 xl:gap-8">
               {/* Main Content (left and center) */}
-              <div className="flex-1 min-w-0">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                   {/* Analytics Cards */}
                   <div className="bg-gray-800 rounded-lg p-6 text-center min-h-[100px]">
                     <div className="text-3xl font-bold text-blue-300">{totalProducts}</div>
@@ -379,11 +379,11 @@ const ArtisanDashboard = () => {
                 </div>
               </div>
               {/* Top Selling Products (right sidebar) */}
-              <div className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-6">
-                <div className="bg-gray-800 rounded-lg p-6 mb-0 h-full flex flex-col">
-                  <h3 className="text-lg font-semibold text-blue-300 mb-4">Top Selling Products</h3>
+              <div className="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col gap-4 md:gap-6">
+                <div className="bg-gray-800 rounded-lg p-4 md:p-6 mb-0 h-full flex flex-col">
+                  <h3 className="text-lg font-semibold text-blue-300 mb-3 md:mb-4">Top Selling Products</h3>
                   <div className="flex-1 overflow-y-auto">
-                    <table className="w-full text-white text-sm">
+                    <table className="w-full text-white text-xs md:text-sm">
                       <thead>
                         <tr>
                           <th className="text-left pb-1">Product</th>
@@ -406,9 +406,9 @@ const ArtisanDashboard = () => {
                   </div>
                 </div>
                 {/* Realtime Calendar as a separate card */}
-                <div className={`bg-gray-800 rounded-lg p-6 ${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'}`}> 
+                <div className={`bg-gray-800 rounded-lg p-3 md:p-4 ${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'}`}> 
                   <h4 className="text-md font-semibold text-white mb-2">Calendar</h4>
-                  <Calendar value={currentDate} className={isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'} />
+                  <Calendar value={currentDate} className={`${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'} w-full text-xs md:text-sm`} />
                   <div className="text-xs text-white text-center mt-2">
                     Today: {currentDate.toLocaleDateString()}<br/>
                     Time: {currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -418,36 +418,38 @@ const ArtisanDashboard = () => {
             </div>
           )}
           {/* Purchases Table */}
-          <div className="bg-gray-800 rounded-lg p-6 mt-8 overflow-x-auto">
+          <div className="bg-gray-800 rounded-lg p-4 md:p-6 mt-6 md:mt-8 overflow-x-auto">
             <h3 className="text-lg font-semibold text-white mb-4">Purchases</h3>
-            <table className="min-w-full text-white">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2 text-left">Date</th>
-                  <th className="px-4 py-2 text-left">Reference</th>
-                  <th className="px-4 py-2 text-left">Supplier</th>
-                  <th className="px-4 py-2 text-left">Payment Mode</th>
-                  <th className="px-4 py-2 text-left">Status</th>
-                  <th className="px-4 py-2 text-left">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {purchases.map((row, idx) => (
-                  <tr key={idx} className="border-t border-gray-700">
-                    <td className="px-4 py-2">{row.date}</td>
-                    <td className="px-4 py-2">{row.reference}</td>
-                    <td className="px-4 py-2">{row.supplier}</td>
-                    <td className="px-4 py-2">{row.payment}</td>
-                    <td className="px-4 py-2">
-                      {row.status === 'Complete' && <span className="bg-green-400/20 text-green-400 px-3 py-1 rounded-full text-xs font-semibold">Complete</span>}
-                      {row.status === 'Partial' && <span className="bg-purple-400/20 text-purple-400 px-3 py-1 rounded-full text-xs font-semibold">Partial</span>}
-                      {row.status === 'Unpaid' && <span className="bg-red-400/20 text-red-400 px-3 py-1 rounded-full text-xs font-semibold">Unpaid</span>}
-                    </td>
-                    <td className="px-4 py-2">{row.amount}</td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-white table-auto">
+                <thead>
+                  <tr>
+                    <th className="px-3 md:px-4 py-2 text-left">Date</th>
+                    <th className="px-3 md:px-4 py-2 text-left">Reference</th>
+                    <th className="px-3 md:px-4 py-2 text-left">Supplier</th>
+                    <th className="px-3 md:px-4 py-2 text-left">Payment</th>
+                    <th className="px-3 md:px-4 py-2 text-left">Status</th>
+                    <th className="px-3 md:px-4 py-2 text-left">Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {purchases.map((row, idx) => (
+                    <tr key={idx} className="border-t border-gray-700">
+                      <td className="px-3 md:px-4 py-2">{row.date}</td>
+                      <td className="px-3 md:px-4 py-2">{row.reference}</td>
+                      <td className="px-3 md:px-4 py-2">{row.supplier}</td>
+                      <td className="px-3 md:px-4 py-2">{row.payment}</td>
+                      <td className="px-3 md:px-4 py-2">
+                        {row.status === 'Complete' && <span className="bg-green-400/20 text-green-400 px-2 md:px-3 py-1 rounded-full text-xs font-semibold">Complete</span>}
+                        {row.status === 'Partial' && <span className="bg-purple-400/20 text-purple-400 px-2 md:px-3 py-1 rounded-full text-xs font-semibold">Partial</span>}
+                        {row.status === 'Unpaid' && <span className="bg-red-400/20 text-red-400 px-2 md:px-3 py-1 rounded-full text-xs font-semibold">Unpaid</span>}
+                      </td>
+                      <td className="px-3 md:px-4 py-2">{row.amount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

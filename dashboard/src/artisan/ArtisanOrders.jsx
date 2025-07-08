@@ -87,7 +87,7 @@ const ArtisanOrders = () => {
               className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "all" ? "bg-[#386641] text-white border-[#386641]" : "bg-white text-[#386641] border-[#386641] hover:bg-[#e9edc9]"}`}
             >
               ALL ORDERS
-            </button>
+            </button>s
             <button
               onClick={() => setSelectedFilter("pending")}
               className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "pending" ? "bg-[#b38664] text-white border-[#b38664]" : "bg-white text-[#b38664] border-[#b38664] hover:bg-[#f5eee6]"}`}
