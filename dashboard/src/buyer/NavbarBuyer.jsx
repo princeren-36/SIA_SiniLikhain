@@ -97,6 +97,11 @@ function Navbar({ showLinks = true }) {
     if (activeKey) updateUnderline(activeKey); else clearUnderline();
   }, [location.pathname]);
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <>
       <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black backdrop-blur-md" style={{position:'sticky'}}>
@@ -121,22 +126,44 @@ function Navbar({ showLinks = true }) {
               {navLinks[0].label}
             </Link>
             {/* Render the rest of the nav links */}
-            {navLinks.slice(1).map(link => (
-              <Link
-                key={link.to}
-                to={link.to}
-                ref={el => navRefs.current[link.to] = el}
-                className={
-                  `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
-                  (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
-                }
-                style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
-                onMouseEnter={() => handleMouseEnter(link.to)}
-                aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.slice(1).map(link => {
+              // Only show Profile link if user is logged in
+              if (link.to === "/buyerprofile") {
+                if (!user) return null;
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    ref={el => navRefs.current[link.to] = el}
+                    className={
+                      `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                      (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
+                    }
+                    style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                    onMouseEnter={() => handleMouseEnter(link.to)}
+                    aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  ref={el => navRefs.current[link.to] = el}
+                  className={
+                    `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                    (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
+                  }
+                  style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                  onMouseEnter={() => handleMouseEnter(link.to)}
+                  aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             {/* Username after cart, before logout */}
             {user && user.role === 'buyer' && (
               <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
