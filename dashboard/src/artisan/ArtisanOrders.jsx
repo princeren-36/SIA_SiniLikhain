@@ -92,37 +92,37 @@ const ArtisanOrders = () => {
           <div className="mb-8 flex flex-wrap justify-center gap-2">
             <button
               onClick={() => setSelectedFilter("all")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "all" ? "bg-[#5c3d2e] text-white border-[#5c3d2e]" : "bg-white text-[#5c3d2e] border-[#5c3d2e] hover:bg-[#f8f2ed]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "all" ? "bg-[#5c3d2e] text-[#23232b] border-[#5c3d2e]" : "bg-white text-[#5c3d2e] border-[#5c3d2e] hover:bg-[#f8f2ed]"}`}
             >
               ALL ORDERS
             </button>
             <button
               onClick={() => setSelectedFilter("pending")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "pending" ? "bg-[#b38664] text-white border-[#b38664]" : "bg-white text-[#b38664] border-[#b38664] hover:bg-[#f5eee6]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "pending" ? "bg-[#b38664] text-[#23232b] border-[#b38664]" : "bg-white text-[#b38664] border-[#b38664] hover:bg-[#f5eee6]"}`}
             >
               PENDING
             </button>
             <button
               onClick={() => setSelectedFilter("processing")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "processing" ? "bg-[#8b6d5c] text-white border-[#8b6d5c]" : "bg-white text-[#8b6d5c] border-[#8b6d5c] hover:bg-[#f0e8e4]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "processing" ? "bg-[#8b6d5c] text-[#23232b] border-[#8b6d5c]" : "bg-white text-[#8b6d5c] border-[#8b6d5c] hover:bg-[#f0e8e4]"}`}
             >
               PROCESSING
             </button>
             <button
               onClick={() => setSelectedFilter("shipped")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "shipped" ? "bg-[#6f4e37] text-white border-[#6f4e37]" : "bg-white text-[#6f4e37] border-[#6f4e37] hover:bg-[#ece5e0]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "shipped" ? "bg-[#6f4e37] text-[#23232b] border-[#6f4e37]" : "bg-white text-[#6f4e37] border-[#6f4e37] hover:bg-[#ece5e0]"}`}
             >
               SHIPPED
             </button>
             <button
               onClick={() => setSelectedFilter("delivered")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "delivered" ? "bg-[#483429] text-white border-[#483429]" : "bg-white text-[#483429] border-[#483429] hover:bg-[#e9e5e3]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "delivered" ? "bg-[#483429] text-[#f7e7d4] border-[#483429]" : "bg-white text-[#483429] border-[#483429] hover:bg-[#e9e5e3]"}`}
             >
               DELIVERED
             </button>
             <button
               onClick={() => setSelectedFilter("cancelled")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "cancelled" ? "bg-[#4a2c1b] text-white border-[#4a2c1b]" : "bg-white text-[#4a2c1b] border-[#4a2c1b] hover:bg-[#eae0da]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#b38664] ${selectedFilter === "cancelled" ? "bg-[#4a2c1b] text-[#f7e7d4] border-[#4a2c1b]" : "bg-white text-[#4a2c1b] border-[#4a2c1b] hover:bg-[#eae0da]"}`}
             >
               CANCELLED
             </button>
@@ -311,7 +311,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "processing");
                                       }}
-                                      className="bg-white border border-[#8b6d5c] hover:bg-[#f0e8e4] text-[#8b6d5c] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
+                                      className="bg-blue-600 border border-gray-900 hover:bg-blue-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     >PROCESSING</button>
                                   )}
                                   {order.status !== "shipped" && (
@@ -320,7 +320,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "shipped");
                                       }}
-                                      className="bg-white border border-[#6f4e37] hover:bg-[#ece5e0] text-[#6f4e37] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
+                                      className="bg-orange-600 border border-gray-900 hover:bg-orange-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
                                     >SHIPPED</button>
                                   )}
                                   {order.status !== "delivered" && (
@@ -329,7 +329,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "delivered");
                                       }}
-                                      className="bg-white border border-[#483429] hover:bg-[#e9e5e3] text-[#483429] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
+                                      className="bg-green-600 border border-gray-900 hover:bg-green-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                                     >DELIVERED</button>
                                   )}
                                   {order.status !== "cancelled" && (
@@ -338,7 +338,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "cancelled");
                                       }}
-                                      className="bg-white border border-[#4a2c1b] hover:bg-[#eae0da] text-[#4a2c1b] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
+                                      className="bg-red-600 border border-gray-900 hover:bg-red-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                                     >CANCEL</button>
                                   )}
                                 </div>
