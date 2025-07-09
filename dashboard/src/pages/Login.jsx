@@ -288,31 +288,34 @@ function Login() {
               }}
             />
           </div>
-          <div className="w-full flex items-center mb-4">
-            <input
-              id="rememberMe"
-              type="checkbox"
-              checked={rememberMe}
-              onChange={e => setRememberMe(e.target.checked)}
-              className="mr-2 accent-black h-4 w-4 rounded focus:ring-black border-black"
-            />
-            <label htmlFor="rememberMe" className="text-sm text-black select-none" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
-              Remember me
-            </label>
+          <div className="w-full flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <input
+                id="rememberMe"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={e => setRememberMe(e.target.checked)}
+                className="mr-2 accent-black h-4 w-4 rounded focus:ring-black border-black"
+              />
+              <label htmlFor="rememberMe" className="text-sm text-black select-none" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
+                Remember me
+              </label>
+            </div>
+            <p
+              className="text-sm text-black hover:text-gray-700 cursor-pointer transition-colors duration-200"
+              onClick={() => navigate("/forgot-password")}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', textDecoration: 'none' }}
+            >
+              Forgot password?
+            </p>
           </div>
           <button
-            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide cursor-pointer"
+            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-4 mt-2 text-lg tracking-wide cursor-pointer"
             style={{ fontFamily: 'Poppins, Verdana, monospace', background: '#000', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer' }}
             onClick={handleLogin}
           >
             Login
           </button>
-          <p
-            className="text-right text-sm text-blue-600 underline cursor-pointer mb-2"
-            onClick={() => navigate("/forgot-password")}
-          >
-            Forgot password?
-          </p>
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
             Don't have an account?{' '}
             <span
