@@ -203,4 +203,43 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get orders by artisan username
+router.get("/artisan/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    
+    // First get all products from this artisan to get their IDs
+    const artisanProducts = await Product.find({ artisan: username });
+    const artisanProductIds = artisanProducts.map(p => p._id);
+    
+    if (artisanProductIds.length === 0) {
+      return res.json([]);
+    }
+    
+    // Find orders that contain at least one of the artisan's products
+    const orders = await Order.find({
+      "items.productId": { $in: artisanProductIds },
+      status: { $ne: "cancelled" } // Exclude cancelled orders
+    });
+    
+    // For each order, include only items from this artisan
+    const processedOrders = orders.map(order => {
+      // Clone the order object to avoid modifying the database object
+      const orderObj = order.toObject();
+      
+      // Filter items to only include those from this artisan
+      orderObj.items = orderObj.items.filter(item => 
+        artisanProductIds.some(id => id.toString() === item.productId.toString())
+      );
+      
+      return orderObj;
+    });
+    
+    res.json(processedOrders);
+  } catch (error) {
+    console.error("Error fetching artisan orders:", error);
+    res.status(500).json({ message: "Error fetching orders", error: error.message });
+  }
+});
+
 module.exports = router;
