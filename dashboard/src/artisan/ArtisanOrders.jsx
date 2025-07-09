@@ -128,12 +128,22 @@ const ArtisanOrders = () => {
             </button>
           </div>
           {/* Summary (optional) */}
-          <div className="flex gap-4 mb-4 flex-wrap">
-            <span className="font-mono text-[#483429]">Completed: {orders.filter(o => o.status === "delivered").length}</span>
-            <span className="font-mono text-[#7d5a50]">Pending: {orders.filter(o => o.status === "pending").length}</span>
-            <span className="font-mono text-[#8b6d5c]">Processing: {orders.filter(o => o.status === "processing").length}</span>
-            <span className="font-mono text-[#6f4e37]">Shipped: {orders.filter(o => o.status === "shipped").length}</span>
-            <span className="font-mono text-[#4a2c1b]">Cancelled: {orders.filter(o => o.status === "cancelled").length}</span>
+          <div className="flex gap-6 mb-4 flex-wrap font-mono">
+            <span className="text-[#f0e0d6]">
+              Completed: {orders.filter(o => o.status === "delivered").length}
+            </span>
+            <span className="text-[#e6d7d0]">
+              Pending: {orders.filter(o => o.status === "pending").length}
+            </span>
+            <span className="text-[#b38664]">
+              Processing: {orders.filter(o => o.status === "processing").length}
+            </span>
+            <span className="text-[#c4b0a9]">
+              Shipped: {orders.filter(o => o.status === "shipped").length}
+            </span>
+            <span className="text-[#d8bfb9]">
+              Cancelled: {orders.filter(o => o.status === "cancelled").length}
+            </span>
           </div>
           {/* Table/Order List Section */}
           <div className="rounded-lg shadow-sm border border-gray-700 p-4" style={{ backgroundColor: '#23232b', color: '#fff' }}>
@@ -311,7 +321,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "processing");
                                       }}
-                                      className="bg-blue-600 border border-gray-900 hover:bg-blue-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                      className="bg-[#f0e0d6] border border-[#b38664] hover:bg-[#e6d7d0] text-[#5c3d2e] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-[#b38664]"
                                     >PROCESSING</button>
                                   )}
                                   {order.status !== "shipped" && (
@@ -320,7 +330,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "shipped");
                                       }}
-                                      className="bg-orange-600 border border-gray-900 hover:bg-orange-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                      className="bg-[#e6d7d0] border border-[#8b6d5c] hover:bg-[#e0cfc7] text-[#6f4e37] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-[#8b6d5c]"
                                     >SHIPPED</button>
                                   )}
                                   {order.status !== "delivered" && (
@@ -329,7 +339,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "delivered");
                                       }}
-                                      className="bg-green-600 border border-gray-900 hover:bg-green-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                      className="bg-[#e0cfc7] border border-[#6f4e37] hover:bg-[#d1c0b5] text-[#483429] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-[#6f4e37]"
                                     >DELIVERED</button>
                                   )}
                                   {order.status !== "cancelled" && (
@@ -338,7 +348,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "cancelled");
                                       }}
-                                      className="bg-red-600 border border-gray-900 hover:bg-red-700 text-white px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                                      className="bg-[#e8d0c5] border border-[#4a2c1b] hover:bg-[#d8c0b5] text-[#4a2c1b] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-bold shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4a2c1b]"
                                     >CANCEL</button>
                                   )}
                                 </div>
