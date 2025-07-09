@@ -31,6 +31,7 @@ function SiniLikhainBaybayin() {
   const handleMouseLeave = (idx) => {
     setHovered((h) => h.map((v, i) => (i === idx ? false : v)));
   };
+  
 
   return (
     
@@ -205,7 +206,29 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee}) {
 
 function Home() {
   const navigate = useNavigate();
-  
+  // Business partner online status states
+  const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
+  const [nbsOnline, setNbsOnline] = useState(null);
+  const [blanktapes, setblanktapes] = useState(null);
+  const [pnb, setPnb] = useState(null);
+  const [jollibee, setJollibee] = useState(null);
+
+  useEffect(() => {
+    const checkStatus = async (url, setter) => {
+      try {
+        await fetch(url, { mode: 'no-cors' });
+        setter(true);
+      } catch {
+        setter(false);
+      }
+    };
+    checkStatus('http://192.168.9.69:5173/', setKahitSaanOnline);
+    checkStatus('http://192.168.9.19:5173/', setNbsOnline);
+    checkStatus('http://192.168.9.83:5173/', setblanktapes);
+    checkStatus('http://192.168.9.23:5173/', setPnb);
+    checkStatus('http://192.168.9.37:5173/', setJollibee);
+  }, []);
+
   // Animation function for scroll reveal
   const handleIntersection = (entries, observer) => {
     entries.forEach(entry => {
@@ -707,7 +730,13 @@ function Home() {
         </div>
       </div>
       
-      <Footer />
+      <Footer 
+        kahitSaanOnline={kahitSaanOnline}
+        nbsOnline={nbsOnline}
+        blanktapes={blanktapes}
+        pnb={pnb}
+        jollibee={jollibee}
+      />
       
       {/* Add keyframes for fadeIn animation */}
       <style jsx>{`
