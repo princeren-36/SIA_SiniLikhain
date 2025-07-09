@@ -8,4 +8,5 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
   },
+  base: process.env.BASE_URL || '/SIA_SiniLikhain',
 });
