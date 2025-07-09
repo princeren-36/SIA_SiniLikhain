@@ -7,17 +7,17 @@ import { format } from "date-fns";
 import cartBg from '../images/2.jpg';
 
 const statusColors = {
-  pending: "bg-yellow-100 text-yellow-800 border border-yellow-200",
-  processing: "bg-blue-100 text-blue-800 border border-blue-200",
-  shipped: "bg-indigo-100 text-indigo-800 border border-indigo-200",
-  delivered: "bg-green-100 text-green-800 border border-green-200",
-  cancelled: "bg-red-100 text-red-800 border border-red-200",
+  pending: "bg-[#f0e0d6] text-[#7d5a50] border border-[#d8bfb9]",
+  processing: "bg-[#e6d7d0] text-[#6f4e37] border border-[#c9b5ae]",
+  shipped: "bg-[#e0cfc7] text-[#5c3d2e] border border-[#c4b0a9]",
+  delivered: "bg-[#d1c0b5] text-[#483429] border border-[#b3a295]",
+  cancelled: "bg-[#e8d0c5] text-[#4a2c1b] border border-[#c6b5ad]",
 };
 
 const paymentColors = {
-  pending: "bg-yellow-100 text-yellow-800 border border-yellow-200",
-  paid: "bg-green-100 text-green-800 border border-green-200",
-  failed: "bg-red-100 text-red-800 border border-red-200",
+  pending: "bg-[#f0e0d6] text-[#7d5a50] border border-[#d8bfb9]",
+  paid: "bg-[#d1c0b5] text-[#483429] border border-[#b3a295]",
+  failed: "bg-[#e8d0c5] text-[#4a2c1b] border border-[#c6b5ad]",
 };
 
 const ArtisanOrders = () => {
@@ -92,7 +92,7 @@ const ArtisanOrders = () => {
           <div className="mb-8 flex flex-wrap justify-center gap-2">
             <button
               onClick={() => setSelectedFilter("all")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "all" ? "bg-[#386641] text-white border-[#386641]" : "bg-white text-[#386641] border-[#386641] hover:bg-[#e9edc9]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "all" ? "bg-[#5c3d2e] text-white border-[#5c3d2e]" : "bg-white text-[#5c3d2e] border-[#5c3d2e] hover:bg-[#f8f2ed]"}`}
             >
               ALL ORDERS
             </button>
@@ -104,36 +104,36 @@ const ArtisanOrders = () => {
             </button>
             <button
               onClick={() => setSelectedFilter("processing")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "processing" ? "bg-[#6a4c93] text-white border-[#6a4c93]" : "bg-white text-[#6a4c93] border-[#6a4c93] hover:bg-[#edeaff]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "processing" ? "bg-[#8b6d5c] text-white border-[#8b6d5c]" : "bg-white text-[#8b6d5c] border-[#8b6d5c] hover:bg-[#f0e8e4]"}`}
             >
               PROCESSING
             </button>
             <button
               onClick={() => setSelectedFilter("shipped")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "shipped" ? "bg-[#003049] text-white border-[#003049]" : "bg-white text-[#003049] border-[#003049] hover:bg-[#e0e7ef]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "shipped" ? "bg-[#6f4e37] text-white border-[#6f4e37]" : "bg-white text-[#6f4e37] border-[#6f4e37] hover:bg-[#ece5e0]"}`}
             >
               SHIPPED
             </button>
             <button
               onClick={() => setSelectedFilter("delivered")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "delivered" ? "bg-[#386641] text-white border-[#386641]" : "bg-white text-[#386641] border-[#386641] hover:bg-[#e9edc9]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "delivered" ? "bg-[#483429] text-white border-[#483429]" : "bg-white text-[#483429] border-[#483429] hover:bg-[#e9e5e3]"}`}
             >
               DELIVERED
             </button>
             <button
               onClick={() => setSelectedFilter("cancelled")}
-              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "cancelled" ? "bg-[#ae2012] text-white border-[#ae2012]" : "bg-white text-[#ae2012] border-[#ae2012] hover:bg-[#fbeee6]"}`}
+              className={`px-6 py-2 transition-colors border-2 font-mono font-medium tracking-widest rounded-lg shadow ${selectedFilter === "cancelled" ? "bg-[#4a2c1b] text-white border-[#4a2c1b]" : "bg-white text-[#4a2c1b] border-[#4a2c1b] hover:bg-[#eae0da]"}`}
             >
               CANCELLED
             </button>
           </div>
           {/* Summary (optional) */}
-          <div className="flex gap-4 mb-4">
-            <span className="font-mono text-green-500">Completed: {orders.filter(o => o.status === "delivered").length}</span>
-            <span className="font-mono text-yellow-500">Pending: {orders.filter(o => o.status === "pending").length}</span>
-            <span className="font-mono text-blue-500">Processing: {orders.filter(o => o.status === "processing").length}</span>
-            <span className="font-mono text-indigo-500">Shipped: {orders.filter(o => o.status === "shipped").length}</span>
-            <span className="font-mono text-red-500">Cancelled: {orders.filter(o => o.status === "cancelled").length}</span>
+          <div className="flex gap-4 mb-4 flex-wrap">
+            <span className="font-mono text-[#483429]">Completed: {orders.filter(o => o.status === "delivered").length}</span>
+            <span className="font-mono text-[#7d5a50]">Pending: {orders.filter(o => o.status === "pending").length}</span>
+            <span className="font-mono text-[#8b6d5c]">Processing: {orders.filter(o => o.status === "processing").length}</span>
+            <span className="font-mono text-[#6f4e37]">Shipped: {orders.filter(o => o.status === "shipped").length}</span>
+            <span className="font-mono text-[#4a2c1b]">Cancelled: {orders.filter(o => o.status === "cancelled").length}</span>
           </div>
           {/* Table/Order List Section */}
           <div className="rounded-lg shadow-sm border border-gray-700 p-4" style={{ backgroundColor: '#23232b', color: '#fff' }}>
@@ -155,29 +155,29 @@ const ArtisanOrders = () => {
                     className="bg-[#23232b] rounded-xl shadow-lg overflow-hidden border border-gray-700 hover:border-[#b38664] transition-colors"
                   >
                     <div
-                      className="p-6 cursor-pointer flex flex-wrap items-center justify-between border-b border-gray-100"
+                      className="p-5 cursor-pointer flex flex-wrap items-center justify-between border-b border-[#b38664]/20"
                       onClick={() => toggleOrderExpansion(order._id)}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <span className="font-mono font-medium text-[#b38664]">
                           Order #{order._id.substring(order._id.length - 8)}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs text-gray-400">
                           {format(new Date(order.createdAt), "MMM d, yyyy h:mm a")}
                         </span>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${statusColors[order.status]}`}>
                           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                         </span>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${paymentColors[order.paymentStatus]}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${paymentColors[order.paymentStatus]}`}>
                           Payment: {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
                         </span>
                       </div>
                       <div className="flex items-center">
                         {/* Show the number of items in this order */}
-                        <span className="text-lg font-mono font-semibold text-[#f59e42] bg-[#23232b] px-3 py-1 rounded-full mr-3 border-2 border-[#f59e42] shadow">
+                        <span className="text-sm font-mono font-semibold text-[#7d5a50] bg-[#23232b] px-2 py-1 rounded-full mr-3 border border-[#7d5a50] shadow">
                           {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
                         </span>
-                        <span className="text-2xl font-extrabold text-[#fff] bg-[#f59e42] px-4 py-1 rounded-full mr-2 border-2 border-[#fff] shadow-lg tracking-wider">
+                        <span className="text-base font-semibold text-[#fff] bg-[#5c3d2e] px-3 py-1 rounded-full mr-2 border border-[#b38664] shadow tracking-wider">
                           ₱{order.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString('en-PH', { minimumFractionDigits: 2 })}
                         </span>
                         <svg
@@ -221,25 +221,24 @@ const ArtisanOrders = () => {
                                     )}
                                   </div>
                                   <div className="ml-4 flex-1">
-                                    <h4 className="font-mono text-md text-[#b38664]">
+                                    <h4 className="font-mono text-sm text-[#b38664]">
                                       {item.name}
                                     </h4>
-                                    <div className="mt-2 flex justify-between text-sm">
+                                    <div className="mt-2 flex justify-between text-xs">
                                       <div>
                                         <p className="text-gray-500">Quantity: {item.quantity}</p>
                                       </div>
-                                      <p className="font-mono text-md text-black">
+                                      <p className="font-mono text-sm text-[#5c3d2e] font-medium">
                                         ₱{(item.price * item.quantity).toFixed(2)}
                                       </p>
                                     </div>
                                   </div>
                                 </div>
                               ))}
-                            </div>
-                            <div className="mt-6 pt-4 border-t border-gray-200">
+                            </div>                              <div className="mt-6 pt-4 border-t border-[#b38664]/20">
                               <div className="flex justify-between items-center">
-                                <span className="font-mono text-xl font-semibold text-[#1b2a41]">Total</span>
-                                <span className="font-mono text-xl font-semibold text-[#1b2a41]">
+                                <span className="font-mono text-lg font-semibold text-[#5c3d2e]">Total</span>
+                                <span className="font-mono text-lg font-semibold text-[#5c3d2e]">
                                   ₱{order.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}
                                 </span>
                               </div>
@@ -302,7 +301,7 @@ const ArtisanOrders = () => {
                               
                               {/* Update status */}
                               <div>
-                                <h3 className="text-base font-mono font-semibold mb-3 text-[#1b2a41] uppercase tracking-wider">
+                                <h3 className="text-base font-mono font-semibold mb-3 text-[#5c3d2e] uppercase tracking-wider">
                                   Update Status
                                 </h3>
                                 <div className="grid grid-cols-2 gap-3">
@@ -312,7 +311,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "processing");
                                       }}
-                                      className="bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] text-[#b38664] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-semibold"
+                                      className="bg-white border border-[#8b6d5c] hover:bg-[#f0e8e4] text-[#8b6d5c] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
                                     >PROCESSING</button>
                                   )}
                                   {order.status !== "shipped" && (
@@ -321,7 +320,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "shipped");
                                       }}
-                                      className="bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] text-[#b38664] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-semibold"
+                                      className="bg-white border border-[#6f4e37] hover:bg-[#ece5e0] text-[#6f4e37] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
                                     >SHIPPED</button>
                                   )}
                                   {order.status !== "delivered" && (
@@ -330,7 +329,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "delivered");
                                       }}
-                                      className="bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] text-[#b38664] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-semibold"
+                                      className="bg-white border border-[#483429] hover:bg-[#e9e5e3] text-[#483429] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
                                     >DELIVERED</button>
                                   )}
                                   {order.status !== "cancelled" && (
@@ -339,7 +338,7 @@ const ArtisanOrders = () => {
                                         e.stopPropagation();
                                         handleUpdateStatus(order._id, "cancelled");
                                       }}
-                                      className="bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] text-[#b38664] px-3 py-2 font-mono tracking-wider text-sm transition-colors rounded font-semibold"
+                                      className="bg-white border border-[#4a2c1b] hover:bg-[#eae0da] text-[#4a2c1b] px-3 py-1 font-mono tracking-wider text-xs transition-colors rounded font-semibold"
                                     >CANCEL</button>
                                   )}
                                 </div>
