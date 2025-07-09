@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import cartBg from '../images/2.jpg';
 import ArtisanLayout from "./ArtisanLayout";
+import { API_BASE } from '../utils/api';
 
 function AddProduct() {
   // Sidebar state
@@ -35,17 +36,25 @@ function AddProduct() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let intervalId;
     if (!user || user.role !== "artisan") {
       navigate("/");
     } else {
-      axios.get("http://localhost:5000/products").then((res) => {
-        // Only show products that are approved and belong to this artisan
-        const artisanProducts = res.data.filter(p => p.artisan === user.username && p.approved === true);
-        setProducts(artisanProducts);
-      }).catch(err => {
-        console.error("Error fetching products:", err);
-      });
+      const fetchProducts = () => {
+        axios.get(`${API_BASE}/products`).then((res) => {
+          // Show ALL products that belong to this artisan
+          const artisanProducts = res.data.filter(p => p.artisan === user.username);
+          setProducts(artisanProducts);
+        }).catch(err => {
+          console.error("Error fetching products:", err);
+        });
+      };
+      fetchProducts();
+      intervalId = setInterval(fetchProducts, 5000); // Poll every 5 seconds
     }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [user, navigate]);
 
   const handleChange = (e) => {
@@ -116,13 +125,13 @@ function AddProduct() {
 
     try {
       if (editId) {
-        const res = await axios.put(`http://localhost:5000/products/${editId}`, data);
+        const res = await axios.put(`${API_BASE}/products/${editId}`, data);
         setProducts((prev) =>
           prev.map((p) => (p._id === editId ? res.data : p))
         );
         alert("Product updated successfully!");
       } else {
-        const res = await axios.post("http://localhost:5000/products", data);
+        const res = await axios.post(`${API_BASE}/products`, data);
         setProducts((prev) => [...prev, res.data]);
         alert("The piece is in place. Await the gatekeeper's glance before it takes its place.");
       }
@@ -133,7 +142,13 @@ function AddProduct() {
       setErrors({});
     } catch (err) {
       console.error("Error submitting product:", err);
-      alert("Error saving product. Please try again.");
+      let message = "Error saving product. Please try again.";
+      if (err.response && err.response.data && err.response.data.message) {
+        message += "\n" + err.response.data.message;
+      } else if (err.message) {
+        message += "\n" + err.message;
+      }
+      alert(message);
     }
   };
 
@@ -146,7 +161,7 @@ function AddProduct() {
       quantity: product.quantity || 1,
       category: product.category || "",
     });
-    setPreview(product.image ? `http://localhost:5000${product.image}` : null);
+    setPreview(product.image ? `${API_BASE}${product.image}` : null);
     setOpenForm(true);
     setSelectedProduct(null);
     setErrors({});
@@ -155,7 +170,7 @@ function AddProduct() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`http://localhost:5000/products/${id}`);
+        await axios.delete(`${API_BASE}/products/${id}`);
         setProducts((prev) => prev.filter((p) => p._id !== id));
         if (editId === id) {
           setEditId(null);
@@ -424,7 +439,7 @@ function AddProduct() {
                         <td className="py-4 px-6">
                           {p.image ? (
                             <img
-                              src={`http://localhost:5000${p.image}`}
+                              src={p.image ? `${API_BASE}${p.image}` : undefined}
                               alt={p.name}
                               className="w-16 h-16 object-cover rounded shadow"
                             />

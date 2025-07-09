@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faSave, faBan } from '@fortawesome/free-solid-svg-icons';
 import { FaSearch, FaFilter, FaImage } from "react-icons/fa";
 import cartBg from '../images/2.jpg';
+import { API_BASE } from '../utils/api';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
@@ -65,7 +66,7 @@ const ManageProducts = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/products");
+      const res = await axios.get(`${API_BASE}/products`);
       // Filter products by artisan (match _id, username, or email for compatibility)
       const artisanProducts = res.data.filter(p =>
         p.artisan === user._id ||
@@ -95,7 +96,7 @@ const ManageProducts = () => {
     });
     // Set image preview if the product has an image
     if (product.image) {
-      setImagePreview(`http://localhost:5000${product.image}`);
+      setImagePreview(`${API_BASE}${product.image}`);
     } else {
       setImagePreview(null);
     }
@@ -120,7 +121,7 @@ const ManageProducts = () => {
       }
 
       // Update product details
-      await axios.put(`http://localhost:5000/products/${id}`, formData, {
+      await axios.put(`${API_BASE}/products/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -178,7 +179,7 @@ const ManageProducts = () => {
   // Handle actual deletion
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/products/${id}`);
+      await axios.delete(`${API_BASE}/products/${id}`);
       setProducts((prev) => prev.filter((p) => p._id !== id));
       setConfirmDelete(null);
       alert("Product deleted successfully!");
@@ -347,7 +348,7 @@ const ManageProducts = () => {
                                     />
                                   ) : product.image ? (
                                     <img 
-                                      src={`http://localhost:5000${product.image}`} 
+                                      src={`${API_BASE}${product.image}`} 
                                       alt={product.name}
                                       className="h-16 w-16 object-cover rounded-lg border-2 border-purple-500" 
                                     />
@@ -372,7 +373,7 @@ const ManageProducts = () => {
                             ) : (
                               product.image ? (
                                 <img 
-                                  src={`http://localhost:5000${product.image}`} 
+                                  src={`${API_BASE}${product.image}`} 
                                   alt={product.name}
                                   className="h-16 w-16 object-cover rounded-lg shadow" 
                                 />

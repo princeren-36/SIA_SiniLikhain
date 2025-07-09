@@ -30,12 +30,30 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { name, price, artisan, quantity, category } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : "";
+  // Log the body to debug
+  console.log('req.body:', req.body);
 
-  const newProduct = new Product({ name, price, image, artisan, quantity, category, status: "pending", approved: false });
-  await newProduct.save();
-  res.json(newProduct);
+  // Destructure all fields
+  const { name, price, artisan, userId, quantity, category, status } = req.body;
+
+  // Create the product (adjust as needed for your schema)
+  try {
+    const product = new Product({
+      name,
+      price,
+      artisan,
+      userId, // This should match your schema exactly
+      quantity,
+      category,
+      status,
+      image: req.file ? `/uploads/${req.file.filename}` : undefined
+    });
+    await product.save();
+    res.status(201).json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
+  }
 });
 
 router.patch("/:id/approve", async (req, res) => {

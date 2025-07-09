@@ -3,6 +3,7 @@ import ArtisanLayout from "./ArtisanLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import cartBg from '../images/2.jpg';
+import { API_BASE } from '../utils/api';
 
 const AddProductPage = () => {
   const [formData, setFormData] = useState({ name: "", price: "", image: null, quantity: 1, category: "" });
@@ -80,13 +81,19 @@ const AddProductPage = () => {
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("artisan", user.username);
+    data.append("userId", String(user._id)); // Ensure userId is a string
     if (formData.image) data.append("image", formData.image);
     data.append("quantity", formData.quantity);
     data.append("category", formData.category);
     // Set product status as pending for admin approval
     data.append("status", "pending");
+    console.log('user:', user);
+    console.log('user._id:', user && user._id);
+    for (let pair of data.entries()) {
+      console.log(pair[0]+ ': ' + pair[1]);
+    }
     try {
-      await axios.post("http://localhost:5000/products", data);
+      await axios.post(`${API_BASE}/products`, data);
       alert("Product submitted successfully and awaiting admin approval!");
       navigate("/artisan/products");
     } catch (err) {

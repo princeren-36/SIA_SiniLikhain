@@ -2,20 +2,13 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   name: String,
-  price: String,
-  image: String,
+  price: Number,
   artisan: String,
-  quantity: { type: Number, default: 1 },
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
+  quantity: Number,
   category: String,
-  ratings: [
-    {
-      user: String,
-      value: Number
-    }
-  ],
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
-  approved: { type: Boolean, default: false }, // Added for frontend compatibility
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+  status: String,
+  image: String
 });
 
 module.exports = mongoose.model("Product", productSchema);
