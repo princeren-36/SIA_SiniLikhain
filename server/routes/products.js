@@ -14,9 +14,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get("/", async (req, res) => {
-  // If ?approved=true, only return approved products
+  // If ?approved=true, return products with approved: true OR status: "approved"
   if (req.query.approved === "true") {
-    const products = await Product.find({ approved: true });
+    const products = await Product.find({ $or: [ { approved: true }, { status: "approved" } ] });
     return res.json(products);
   }
   // Filter by artisan if provided

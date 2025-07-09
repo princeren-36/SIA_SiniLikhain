@@ -7,7 +7,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../style/calendar-theme.css';
 import { API_BASE } from "../utils/api";
-import { getArtisanProducts } from "../utils/artisan";
+import { getArtisanProducts, getProductSoldCounts } from "../utils/artisan";
 
 const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#a78bfa", "#f472b6", "#38bdf8", "#facc15"];
 
@@ -19,6 +19,9 @@ const ArtisanDashboard = () => {
   const [stockView, setStockView] = useState('all'); // 'all', 'low' or 'high'
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isDarkMode, setIsDarkMode] = useState(true); // Force dark mode
+  const [soldCounts, setSoldCounts] = useState({});
+  const [recentSales, setRecentSales] = useState([]);
+  const [artisanOrders, setArtisanOrders] = useState([]);
 
   // Memoize user to avoid re-parsing on every render
   const user = useMemo(() => {
@@ -35,22 +38,105 @@ const ArtisanDashboard = () => {
   useEffect(() => {
     if (!user || user.role !== "artisan") return;
     setLoading(true);
-    getArtisanProducts(user.username)
-      .then((artisanProducts) => {
-        setProducts(artisanProducts);
+    
+    // Fetch products, sold counts, and artisan orders in parallel
+    Promise.all([
+      getArtisanProducts(user.username),
+      getProductSoldCounts(user.username),
+      axios.get(`${API_BASE}/orders/artisan/${user._id}`)
+    ])
+      .then(([artisanProducts, productSoldCounts, ordersResponse]) => {
+        // Merge sold counts with products
+        const productsWithSales = artisanProducts.map(product => ({
+          ...product,
+          sold: productSoldCounts[product._id] || 0
+        }));
+        
+        // Process the artisan orders to extract recent sales
+        const orders = ordersResponse.data;
+        
+        // Sort orders by date (newest first)
+        const sortedOrders = [...orders].sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        
+        // Save the complete orders list
+        setArtisanOrders(sortedOrders);
+        
+        // Extract recent sales from the orders
+        const recentSalesData = sortedOrders.slice(0, 5).flatMap(order => {
+          const orderDate = new Date(order.createdAt);
+          const formattedDate = orderDate.toLocaleDateString();
+          
+          return order.items.map(item => ({
+            orderId: order._id,
+            orderDate: formattedDate,
+            productId: item.productId?._id || item.productId,
+            productName: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            buyerUsername: order.userId?.username || 'Unknown'
+          }));
+        });
+        
+        setProducts(productsWithSales);
+        setSoldCounts(productSoldCounts);
+        setRecentSales(recentSalesData);
         setLoading(false);
       })
       .catch((err) => {
+        console.error("Error fetching dashboard data:", err);
         setError("Error fetching products");
         setLoading(false);
       });
+    
     // Polling: refresh products every 15 seconds
     const poll = setInterval(() => {
-      getArtisanProducts(user.username)
-        .then((artisanProducts) => {
-          setProducts(artisanProducts);
+      Promise.all([
+        getArtisanProducts(user.username),
+        getProductSoldCounts(user.username),
+        axios.get(`${API_BASE}/orders/artisan/${user._id}`)
+      ])
+        .then(([artisanProducts, productSoldCounts, ordersResponse]) => {
+          // Merge sold counts with products
+          const productsWithSales = artisanProducts.map(product => ({
+            ...product,
+            sold: productSoldCounts[product._id] || 0
+          }));
+          
+          // Process the artisan orders to extract recent sales
+          const orders = ordersResponse.data;
+          
+          // Sort orders by date (newest first)
+          const sortedOrders = [...orders].sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          
+          // Save the complete orders list
+          setArtisanOrders(sortedOrders);
+          
+          // Extract recent sales from the orders
+          const recentSalesData = sortedOrders.slice(0, 5).flatMap(order => {
+            const orderDate = new Date(order.createdAt);
+            const formattedDate = orderDate.toLocaleDateString();
+            
+            return order.items.map(item => ({
+              orderId: order._id,
+              orderDate: formattedDate,
+              productId: item.productId?._id || item.productId,
+              productName: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              buyerUsername: order.userId?.username || 'Unknown'
+            }));
+          });
+          
+          setProducts(productsWithSales);
+          setSoldCounts(productSoldCounts);
+          setRecentSales(recentSalesData);
         });
     }, 15000);
+    
     return () => clearInterval(poll);
   }, [user]);
 
@@ -446,30 +532,48 @@ const ArtisanDashboard = () => {
                     <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"> 
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /> 
                     </svg> 
-                    Top Selling Products 
-                  </h3> 
+                    Recent Sold Products 
+                  </h3>
+                  <p className={`text-xs mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Recent orders from your customers
+                  </p>
                   <div className="flex-1 overflow-y-auto"> 
                     <table className={`w-full text-xs md:text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}> 
                       <thead> 
                         <tr className={isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}> 
                           <th className="text-left pb-2 font-semibold">Product</th> 
-                          <th className="text-right pb-2 font-semibold">Sold</th> 
+                          <th className="text-center pb-2 font-semibold">Qty</th>
+                          <th className="text-right pb-2 font-semibold">Date</th>
                         </tr> 
                       </thead> 
                       <tbody> 
-                        {products 
-                          .slice() 
-                          .sort((a, b) => (parseInt(b.sold) || 0) - (parseInt(a.sold) || 0)) 
-                          .slice(0, 5) 
-                          .map((p, idx) => ( 
-                            <tr key={p._id || p.name || idx} className={`${isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'} hover:bg-opacity-10 hover:bg-gray-500`}> 
-                              <td className="py-2 pr-2">{p.name}</td> 
-                              <td className="py-2 text-right font-medium">{p.sold || 0}</td> 
+                        {recentSales.length > 0 ? (
+                          recentSales.map((sale, idx) => ( 
+                            <tr key={`${sale.orderId}-${idx}`} className={`${isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'} hover:bg-opacity-10 hover:bg-gray-500`}> 
+                              <td className="py-2 pr-1" title={sale.productName}>
+                                {sale.productName.length > 12 ? `${sale.productName.substring(0, 12)}...` : sale.productName}
+                              </td> 
+                              <td className="py-2 text-center font-medium">
+                                <span className={`px-1.5 py-0.5 rounded ${isDarkMode ? 'bg-blue-900/50 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>
+                                  {sale.quantity}
+                                </span>
+                              </td>
+                              <td className="py-2 text-right text-xs" title={`Buyer: ${sale.buyerUsername}`}>{sale.orderDate}</td>
                             </tr> 
-                          ))} 
+                          ))
+                        ) : (
+                          <tr className={`${isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'}`}>
+                            <td colSpan="3" className="py-4 text-center text-gray-500">No recent sales data yet</td>
+                          </tr>
+                        )}
                       </tbody> 
                     </table> 
-                  </div> 
+                  </div>
+                  {recentSales.length > 0 && artisanOrders.length > recentSales.length && (
+                    <div className={`text-xs text-center mt-2 pt-2 border-t ${isDarkMode ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'}`}>
+                      Showing {recentSales.length} most recent sales from {artisanOrders.length} orders
+                    </div>
+                  )}
                 </div> 
                 {/* Realtime Calendar as a separate card */} 
                 <div className={`p-5 rounded-2xl shadow-xl border flex-1 flex flex-col justify-between mt-2 ${isDarkMode ? 'bg-[#1f1f23] border-purple-900 react-calendar-dark' : 'bg-gradient-to-br from-purple-100 to-purple-50 border-purple-400 react-calendar-light'}`}>  

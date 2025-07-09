@@ -21,10 +21,24 @@ function Buyer() {
 
   useEffect(() => {
     axios.get(`${API_BASE}/products?approved=true`).then(res => {
-      setProducts(res.data.filter(p => p.quantity > 0));
-      const cats = Array.from(new Set(res.data.map(p => p.category).filter(Boolean)));
+      setProducts(res.data.filter(p => (p.approved === true || p.status === "approved") && p.quantity > 0));
+      const cats = Array.from(new Set(res.data.filter(p => p.approved).map(p => p.category).filter(Boolean)));
       setCategories(cats);
     });
+  }, []);
+
+  useEffect(() => {
+    let intervalId;
+    const fetchProducts = () => {
+      axios.get(`${API_BASE}/products?approved=true`).then(res => {
+        setProducts(res.data.filter(p => (p.approved === true || p.status === "approved") && p.quantity > 0));
+        const cats = Array.from(new Set(res.data.filter(p => p.approved).map(p => p.category).filter(Boolean)));
+        setCategories(cats);
+      });
+    };
+    fetchProducts();
+    intervalId = setInterval(fetchProducts, 5000); // Poll every 5 seconds
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -355,7 +369,7 @@ function Buyer() {
                         user,
                         value: star
                       });
-                      const { data } = await axios.get(`${API_BASE}/products?approved=true`);
+                      const { data } = await axios.get(`${API_BASE}/products`);
                       const updated = data.find(p => p._id === selectedProduct._id);
                       setSelectedProduct(updated);
                       setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
