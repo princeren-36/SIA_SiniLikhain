@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE } from '../utils/api';
@@ -8,6 +10,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 function RegisterBuyer() {
   const [userData, setUserData] = useState({
@@ -26,6 +33,12 @@ function RegisterBuyer() {
   const [phoneFocused, setPhoneFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [pendingReg, setPendingReg] = useState(null);
+  const [infoMsg, setInfoMsg] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -87,20 +100,52 @@ function RegisterBuyer() {
     if (!validateForm()) return;
     try {
       const { confirmPassword, ...submitData } = userData;
-      await axios.post(`${API_BASE}/users/register`, submitData);
-      alert("Registration successful! You can now log in.");
-      navigate("/Login");
+      // Check if email is already used for this role
+      const check = await axios.post(`${API_BASE}/users/register`, submitData);
+      // If we get here, email is not used, OTP sent
+      setPendingReg({ email: submitData.email, role: submitData.role });
+      setOtpDialogOpen(true);
+      setInfoMsg(check.data.message || 'OTP sent to your email. Please enter it below.');
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        alert(err.response.data.message);
+        // If email is already used, show error as toast
+        toast.error(err.response.data.message);
       } else {
-        alert("Registration failed. Please try again later.");
+        toast.error("Registration failed. Please try again later.");
+      }
+      setOtpDialogOpen(false);
+    }
+  };
+
+  const handleOtpVerify = async () => {
+    setOtpError('');
+    if (!otp.trim()) {
+      setOtpError('OTP is required.');
+      return;
+    }
+    try {
+      await axios.post(`${API_BASE}/users/verify-registration-otp`, {
+        email: pendingReg.email,
+        role: pendingReg.role,
+        otp: otp.trim(),
+      });
+      setInfoMsg('Registration successful! You can now log in.');
+      setTimeout(() => {
+        setOtpDialogOpen(false);
+        navigate('/Login');
+      }, 1500);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setOtpError(err.response.data.message);
+      } else {
+        setOtpError('OTP verification failed. Please try again.');
       }
     }
   };
 
   return (
     <div className="font-poppins poppins-font">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div
         className="flex h-screen items-center justify-center bg-cover bg-center flex-row font-poppins relative"
         style={{
@@ -435,6 +480,25 @@ function RegisterBuyer() {
               Login
             </span>
           </p>
+          <Dialog open={otpDialogOpen} onClose={() => setOtpDialogOpen(false)}>
+            <DialogTitle>Email Verification</DialogTitle>
+            <DialogContent>
+              <div style={{ marginBottom: 12 }}>{infoMsg}</div>
+              <TextField
+                label="Enter OTP"
+                value={otp}
+                onChange={e => setOtp(e.target.value)}
+                fullWidth
+                error={!!otpError}
+                helperText={otpError}
+                autoFocus
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOtpDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleOtpVerify} variant="contained">Verify</Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </div>
     </div>
