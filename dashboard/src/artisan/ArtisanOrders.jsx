@@ -64,10 +64,12 @@ const ArtisanOrders = () => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
-  const filteredOrders = orders.filter(order => {
-    if (selectedFilter === "all") return true;
-    return order.status === selectedFilter;
-  });
+  const filteredOrders = orders
+    .filter(order => {
+      if (selectedFilter === "all") return true;
+      return order.status === selectedFilter;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <ArtisanLayout>
