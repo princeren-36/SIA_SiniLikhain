@@ -3,6 +3,7 @@ import NavbarBuyer from "./NavbarBuyer";
 import axios from 'axios';
 import cartBg from '../images/2.jpg';
 import { API_BASE } from "../utils/api";
+import { toast } from 'react-toastify';
 
 function Buyer() {
   const [products, setProducts] = useState([]);
@@ -17,6 +18,7 @@ function Buyer() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [cartOffset, setCartOffset] = useState(300); // Default value, will be updated on load
+  const [ratingLoading, setRatingLoading] = useState(false);
   const cartRef = React.useRef(null);
 
   useEffect(() => {
@@ -351,7 +353,6 @@ function Buyer() {
             <div className="flex items-center justify-center mb-2">
               <span className="text-sm text-gray-700 mr-2">Your Rating:</span>
               {[1,2,3,4,5].map(star => {
-                // Get user from localStorage or sessionStorage
                 let user = null;
                 try {
                   user = JSON.parse(localStorage.getItem("user"))?.username || JSON.parse(sessionStorage.getItem("user"))?.username;
@@ -364,22 +365,35 @@ function Buyer() {
                     key={star}
                     className={`text-xl ${star <= userRating ? 'text-yellow-400' : 'text-gray-300'} focus:outline-none`}
                     onClick={async () => {
-                      if (!user) return;
-                      await axios.post(`${API_BASE}/products/${selectedProduct._id}/rate`, {
-                        user,
-                        value: star
-                      });
-                      const { data } = await axios.get(`${API_BASE}/products`);
-                      const updated = data.find(p => p._id === selectedProduct._id);
-                      setSelectedProduct(updated);
-                      setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
+                      if (!user) {
+                        toast.warn('You must be logged in to rate.');
+                        return;
+                      }
+                      setRatingLoading(true);
+                      try {
+                        await axios.post(`${API_BASE}/products/${selectedProduct._id}/rate`, {
+                          user,
+                          value: star
+                        });
+                        const { data } = await axios.get(`${API_BASE}/products`);
+                        const updated = data.find(p => p._id === selectedProduct._id);
+                        setSelectedProduct(updated);
+                        setProducts(prev => prev.map(p => p._id === updated._id ? updated : p));
+                      } catch (err) {
+                        toast.error('Failed to submit rating.');
+                      } finally {
+                        setRatingLoading(false);
+                      }
                     }}
                     aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                    disabled={ratingLoading}
+                    title={!user ? 'Log in to rate' : ''}
                   >
                     ★
                   </button>
                 );
               })}
+              {ratingLoading && <span className="ml-2 text-xs text-gray-400">Saving...</span>}
             </div>
           </div>
         </div>
