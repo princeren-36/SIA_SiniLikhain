@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar } from "react-icons/fa";
 import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
@@ -27,13 +28,18 @@ const fetchArtisanStatistics = async (artisanId, artisanUsername) => {
     const averageRating = getAverageBuyerRating(products);
     
     // Fetch completed sales (still by artisanId)
-    const ordersResponse = await api.get(`/orders?artisanId=${artisanId}&status=completed`);
-    const salesCompleted = ordersResponse.data?.length || 0;
+    const completedOrdersResponse = await api.get(`/orders?artisanId=${artisanId}&status=delivered`);
+    const salesCompleted = completedOrdersResponse.data?.length || 0;
+    
+    // Fetch total orders count
+    const totalOrdersResponse = await api.get(`/orders/artisan/${artisanId}`);
+    const totalOrders = totalOrdersResponse.data?.length || 0;
     
     return {
       totalProducts,
       averageRating,
-      salesCompleted
+      salesCompleted,
+      totalOrders
     };
   } catch (error) {
     console.error("Error fetching artisan statistics:", error);
@@ -60,7 +66,8 @@ const ArtisanProfile = () => {
     statistics: {
       totalProducts: 0,
       averageRating: 0,
-      salesCompleted: 0
+      salesCompleted: 0,
+      totalOrders: 0
     }
   });
   const [imageFile, setImageFile] = useState(null);
@@ -104,7 +111,8 @@ const ArtisanProfile = () => {
             statistics: {
               totalProducts: userData?.statistics?.totalProducts || 24,
               averageRating: userData?.statistics?.averageRating || 4.8,
-              salesCompleted: userData?.statistics?.salesCompleted || 152
+              salesCompleted: userData?.statistics?.salesCompleted || 152,
+              totalOrders: userData?.statistics?.totalOrders || 180
             }
           });
         }
@@ -133,7 +141,8 @@ const ArtisanProfile = () => {
         let stats = {
           totalProducts: 0,
           averageRating: 0,
-          salesCompleted: 0
+          salesCompleted: 0,
+          totalOrders: 0
         };
         
         try {
@@ -185,7 +194,8 @@ const ArtisanProfile = () => {
         let stats = {
           totalProducts: 0,
           averageRating: 0,
-          salesCompleted: 0
+          salesCompleted: 0,
+          totalOrders: 0
         };
         
         try {
@@ -220,7 +230,8 @@ const ArtisanProfile = () => {
                 : {
                     totalProducts: user.statistics?.totalProducts || prev.statistics?.totalProducts || 0,
                     averageRating: user.statistics?.averageRating || prev.statistics?.averageRating || 0,
-                    salesCompleted: user.statistics?.salesCompleted || prev.statistics?.salesCompleted || 0
+                    salesCompleted: user.statistics?.salesCompleted || prev.statistics?.salesCompleted || 0,
+                    totalOrders: user.statistics?.totalOrders || prev.statistics?.totalOrders || 0
                   }
             }));
           }
@@ -836,16 +847,21 @@ const ArtisanProfile = () => {
                 <div className="rounded-xl shadow-md p-4 border bg-[#18181b] border-gray-700 text-white">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-white">Sales Completed</p>
-                      <h3 className="text-2xl font-semibold text-white">
+                      <p className="text-sm text-white">Orders</p>
+                      <h3 className="text-2xl font-semibold text-white flex items-baseline">
                         {isLoading ? (
                           <span className="inline-block w-12 h-8 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></span>
                         ) : (
-                          (profileData.statistics && typeof profileData.statistics.salesCompleted === 'number') ? profileData.statistics.salesCompleted : 0
+                          <>
+                            <span>{(profileData.statistics && typeof profileData.statistics.totalOrders === 'number') ? profileData.statistics.totalOrders : 0}</span>
+                            <span className="text-sm ml-2 text-gray-300">
+                              ({(profileData.statistics && typeof profileData.statistics.salesCompleted === 'number') ? profileData.statistics.salesCompleted : 0} completed)
+                            </span>
+                          </>
                         )}
                       </h3>
                       <div className="text-xs mt-1 text-white">
-                        Successfully delivered orders
+                        Total orders / Successfully delivered
                       </div>
                     </div>
                     <div className="p-3 rounded-full bg-white flex items-center justify-center shadow" style={{ minWidth: '48px', minHeight: '48px' }}>
