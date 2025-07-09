@@ -85,7 +85,7 @@ function Login() {
     let currentErrors = {};
 
     if (!credentials.username.trim()) {
-      currentErrors.username = "Username is required";
+      currentErrors.username = "Email or username is required";
     }
     if (!credentials.password.trim()) {
       currentErrors.password = "Password is required";
@@ -104,7 +104,7 @@ function Login() {
       const user = response.data.user;
       if (rememberMe) {
         localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("lastUsername", credentials.username); // Save last used username only if Remember Me is checked
+        localStorage.setItem("lastUsername", credentials.username); // Save last used username/email only if Remember Me is checked
       } else {
         sessionStorage.setItem("user", JSON.stringify(user));
         localStorage.removeItem("lastUsername"); // Remove lastUsername if Remember Me is not checked
@@ -125,7 +125,7 @@ function Login() {
       }
       setLoginError("");
     } catch (error) {
-      setLoginError("Invalid username or password.");
+      setLoginError("Invalid email/username or password.");
       setErrors({ username: true, password: true });
     }
   };
@@ -161,7 +161,7 @@ function Login() {
               )}
             </p>
             <p className="mt-4 text-base md:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
-              Please log in your account to continue.
+              Please log in to your account to continue.
             </p>
           </div>
           {loginError && (
@@ -177,7 +177,7 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              label="Enter Username"
+              label="Enter Email or Username"
               variant="outlined"
               fullWidth
               autoComplete="off"
@@ -219,6 +219,11 @@ function Login() {
                   fontFamily: 'Poppins, Verdana, monospace',
                   fontWeight: 400,
                 },
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  document.getElementById('password').focus();
+                }
               }}
             />
           </div>
@@ -285,6 +290,11 @@ function Login() {
                   fontFamily: 'Poppins, Verdana, monospace',
                   fontWeight: 400,
                 },
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleLogin();
+                }
               }}
             />
           </div>

@@ -42,7 +42,7 @@ function ForgotPassword() {
 
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center bg-cover bg-center poppins-font"
+      className="relative min-h-screen flex items-center justify-center bg-cover bg-center poppins-font px-2 sm:px-4 md:px-0"
       style={{
         backgroundImage: `url(${loginImg})`,
         fontFamily: 'Poppins, Verdana, monospace',
@@ -52,24 +52,24 @@ function ForgotPassword() {
       }}
     >
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0" />
-      <div className="absolute top-6 left-6 cursor-pointer z-20" onClick={() => navigate("/")}> 
-        <img src={logo} alt="SiniLikhain Logo" className="w-20 h-20 rounded-full shadow-lg border-2 border-black hover:scale-105 transition-transform duration-200 bg-white" />
+      <div className="absolute top-3 left-3 sm:top-6 sm:left-6 cursor-pointer z-20" onClick={() => navigate("/")}> 
+        <img src={logo} alt="SiniLikhain Logo" className="w-14 h-14 sm:w-20 sm:h-20 rounded-full shadow-lg border-2 border-black hover:scale-105 transition-transform duration-200 bg-white" />
       </div>
-      <div className="relative z-10 flex flex-col justify-center items-center w-full max-w-md bg-white/90 shadow-2xl p-10 rounded-3xl m-4 backdrop-blur-md border border-black"
+      <div className="relative z-10 flex flex-col justify-center items-center w-full max-w-md bg-white/90 shadow-2xl p-4 sm:p-8 md:p-10 rounded-2xl sm:rounded-3xl m-2 sm:m-4 backdrop-blur-md border border-black"
         style={{
           boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)',
           fontFamily: 'Poppins, Verdana, monospace'
         }}>
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-black drop-shadow-lg leading-tight" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#111' }}>
+        <div className="mb-4 sm:mb-6 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black drop-shadow-lg leading-tight" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#111' }}>
             Forgot Password
           </h1>
-          <p className="mt-4 text-base md:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
+          <p className="mt-2 sm:mt-4 text-sm sm:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
             Enter your email address and we'll send you an OTP to reset your password.
           </p>
         </div>
         
-        <div className="w-full mb-4 relative">
+        <div className="w-full mb-3 sm:mb-4 relative">
           <TextField
             type="email"
             name="email"
@@ -122,7 +122,7 @@ function ForgotPassword() {
         </div>
         
         <button
-          className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-4 mt-2 text-lg tracking-wide cursor-pointer"
+          className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-3 sm:mb-4 mt-2 text-base sm:text-lg tracking-wide cursor-pointer"
           style={{ fontFamily: 'Poppins, Verdana, monospace', background: '#000', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer' }}
           onClick={handleSendOtp}
         >
@@ -130,14 +130,14 @@ function ForgotPassword() {
         </button>
         
         {msg && <div className="w-full mt-2 mb-2">
-          <p className="text-center text-green-600 bg-green-50 border border-green-200 rounded-md py-2 px-3" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{msg}</p>
+          <p className="text-center text-green-600 bg-green-50 border border-green-200 rounded-md py-2 px-3 text-xs sm:text-base" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{msg}</p>
         </div>}
         
         {error && <div className="w-full mt-2 mb-2">
-          <p className="text-center text-red-600 bg-red-50 border border-red-200 rounded-md py-2 px-3" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{error}</p>
+          <p className="text-center text-red-600 bg-red-50 border border-red-200 rounded-md py-2 px-3 text-xs sm:text-base" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>{error}</p>
         </div>}
         
-        <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
+        <p className="text-center text-black mt-4 text-xs sm:text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
           <span
             onClick={() => navigate("/login")}
             className="text-black hover:text-gray-700 cursor-pointer transition-colors duration-200 font-semibold"
