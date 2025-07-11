@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 //const API_BASE = "http://localhost:5000"; // Default local development server
 //const API_BASE = "http://192.168.9.48:5000";// = main host server - school
 const API_BASE = "http://192.168.9.46:5000"; // = frontend host server - school
-=======
-// Choose one of the following API_BASE options:
-const API_BASE = "http://localhost:5000"; // Default local development server
-//const API_BASE = "http://192.168.9.48:5000";// = main host server - school
-//const API_BASE = "http://192.168.9.46:5000"; // = frontend host server - school
->>>>>>> 9cfb64e41a8a7d1b2abd9c29a0a5a823d67d6a6c
 //const API_BASE = "http://192.168.100.15:5000"; // = rentao server
 //const API_BASE = "http://192.168.1.241:5000"; // = marc pogi server
 //const API_BASE = "http://192.168.9.47:5000"; // = frontend host server - school
