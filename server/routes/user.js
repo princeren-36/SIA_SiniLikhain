@@ -95,7 +95,14 @@ router.post("/verify-registration-otp", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username, password });
+  // Find user by username OR email
+  const user = await User.findOne({
+    $or: [
+      { username: username },
+      { email: username }
+    ],
+    password
+  });
 
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
