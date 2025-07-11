@@ -85,7 +85,7 @@ function Login() {
     let currentErrors = {};
 
     if (!credentials.username.trim()) {
-      currentErrors.username = "Username is required";
+      currentErrors.username = "Email or username is required";
     }
     if (!credentials.password.trim()) {
       currentErrors.password = "Password is required";
@@ -104,7 +104,7 @@ function Login() {
       const user = response.data.user;
       if (rememberMe) {
         localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("lastUsername", credentials.username); // Save last used username only if Remember Me is checked
+        localStorage.setItem("lastUsername", credentials.username); // Save last used username/email only if Remember Me is checked
       } else {
         sessionStorage.setItem("user", JSON.stringify(user));
         localStorage.removeItem("lastUsername"); // Remove lastUsername if Remember Me is not checked
@@ -125,7 +125,7 @@ function Login() {
       }
       setLoginError("");
     } catch (error) {
-      setLoginError("Invalid username or password.");
+      setLoginError("Invalid email/username or password.");
       setErrors({ username: true, password: true });
     }
   };
@@ -161,7 +161,7 @@ function Login() {
               )}
             </p>
             <p className="mt-4 text-base md:text-base font-normal text-black" style={{ fontFamily: 'Poppins, Verdana, monospace', color: '#333' }}>
-              Please log in your account to continue.
+              Please log in to your account to continue.
             </p>
           </div>
           {loginError && (
@@ -177,7 +177,7 @@ function Login() {
               onChange={handleChange}
               onFocus={() => setUsernameFocused(true)}
               onBlur={() => setUsernameFocused(false)}
-              label="Enter Username"
+              label="Enter Email or Username"
               variant="outlined"
               fullWidth
               autoComplete="off"
@@ -219,6 +219,11 @@ function Login() {
                   fontFamily: 'Poppins, Verdana, monospace',
                   fontWeight: 400,
                 },
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  document.getElementById('password').focus();
+                }
               }}
             />
           </div>
@@ -286,33 +291,41 @@ function Login() {
                   fontWeight: 400,
                 },
               }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleLogin();
+                }
+              }}
             />
           </div>
-          <div className="w-full flex items-center mb-4">
-            <input
-              id="rememberMe"
-              type="checkbox"
-              checked={rememberMe}
-              onChange={e => setRememberMe(e.target.checked)}
-              className="mr-2 accent-black h-4 w-4 rounded focus:ring-black border-black"
-            />
-            <label htmlFor="rememberMe" className="text-sm text-black select-none" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
-              Remember me
-            </label>
+          <div className="w-full flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <input
+                id="rememberMe"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={e => setRememberMe(e.target.checked)}
+                className="mr-2 accent-black h-4 w-4 rounded focus:ring-black border-black"
+              />
+              <label htmlFor="rememberMe" className="text-sm text-black select-none" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
+                Remember me
+              </label>
+            </div>
+            <p
+              className="text-sm text-black hover:text-gray-700 cursor-pointer transition-colors duration-200"
+              onClick={() => navigate("/forgot-password")}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', textDecoration: 'none' }}
+            >
+              Forgot password?
+            </p>
           </div>
           <button
-            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide cursor-pointer"
+            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-4 mt-2 text-lg tracking-wide cursor-pointer"
             style={{ fontFamily: 'Poppins, Verdana, monospace', background: '#000', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer' }}
             onClick={handleLogin}
           >
             Login
           </button>
-          <p
-            className="text-right text-sm text-blue-600 underline cursor-pointer mb-2"
-            onClick={() => navigate("/forgot-password")}
-          >
-            Forgot password?
-          </p>
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
             Don't have an account?{' '}
             <span

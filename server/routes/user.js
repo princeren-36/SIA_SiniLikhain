@@ -7,7 +7,6 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const router = express.Router();
 
-// Configure multer storage for avatar uploads
 const storage = multer.diskStorage({
   destination: "./uploads",
   filename: (req, file, cb) => {
@@ -16,17 +15,81 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Registration with email OTP verification
 router.post("/register", async (req, res) => {
   const { username, email, phone, password, role } = req.body;
 
   try {
-    const existing = await User.findOne({ username });
-    if (existing) return res.status(400).json({ message: "User exists" });
+    const existingEmail = await User.findOne({ email, role });
+    if (existingEmail) return res.status(400).json({ message: "Email already used for this role" });
 
-    const user = await User.create({ username, email, phone, password, role });
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) return res.status(400).json({ message: "Username already taken" });
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Save OTP and expiry in a temporary user object (not yet created in DB)
+    // Send OTP email
+    const transporter = require('nodemailer').createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'sinilikhain.noreply@gmail.com',
+        pass: 'hhvk flet iozz gqvm'
+      }
+    });
+    try {
+      await transporter.sendMail({
+        from: 'SiniLikhain <sinilikhain.noreply@gmail.com>',
+        to: email,
+        subject: 'SiniLikhain Registration OTP',
+        text: `Your OTP for SiniLikhain registration is: ${otp}. It will expire in 10 minutes.`
+      });
+    } catch (err) {
+      console.error('Error sending registration OTP:', err);
+      return res.status(500).json({ message: 'Failed to send OTP. Please try again.' });
+    }
+
+    // Store OTP and registration data in memory (for demo; in production use Redis or DB)
+    if (!global.pendingRegistrations) global.pendingRegistrations = {};
+    global.pendingRegistrations[email+":"+role] = {
+      username, email, phone, password, role,
+      otp,
+      otpExpires: Date.now() + 10 * 60 * 1000
+    };
+
+    res.json({ message: 'OTP sent to email. Please verify to complete registration.' });
+  } catch (err) {
+    console.error("Error registering user:", err);
+    res.status(500).json({ success: false, message: "Error registering user" });
+  }
+});
+
+// OTP verification endpoint for registration
+router.post("/verify-registration-otp", async (req, res) => {
+  const { email, role, otp } = req.body;
+  try {
+    if (!global.pendingRegistrations) return res.status(400).json({ message: 'No pending registration for this email.' });
+    const regKey = email+":"+role;
+    const reg = global.pendingRegistrations[regKey];
+    if (!reg) return res.status(400).json({ message: 'No pending registration for this email and role.' });
+    if (reg.otp !== otp) return res.status(400).json({ message: 'Invalid OTP.' });
+    if (Date.now() > reg.otpExpires) {
+      delete global.pendingRegistrations[regKey];
+      return res.status(400).json({ message: 'OTP expired.' });
+    }
+    // Create user
+    const user = await User.create({
+      username: reg.username,
+      email: reg.email,
+      phone: reg.phone,
+      password: reg.password,
+      role: reg.role
+    });
+    delete global.pendingRegistrations[regKey];
     res.json({ user });
-  } catch {
-    res.status(500).json({ message: "Error registering user" });
+  } catch (err) {
+    console.error('Error verifying registration OTP:', err);
+    res.status(500).json({ message: 'Error verifying OTP' });
   }
 });
 
@@ -46,17 +109,13 @@ router.get("/all", async (req, res) => {
 
 router.put("/:id", upload.single("avatar"), async (req, res) => {
   try {
-    // Handle avatar file upload
     const userData = { ...req.body };
     
-    // If a new avatar file is uploaded
     if (req.file) {
-      // First check if the user already has an avatar and remove it if exists
       const existingUser = await User.findById(req.params.id);
       if (existingUser && existingUser.avatar && existingUser.avatar.includes('/uploads/')) {
         try {
           const oldAvatarPath = existingUser.avatar.replace('/uploads/', '');
-          // Delete the old avatar file (using your deleteFile utility)
           await deleteFile(path.join('uploads', oldAvatarPath));
           console.log(`Deleted old avatar: ${oldAvatarPath}`);
         } catch (err) {
@@ -64,7 +123,6 @@ router.put("/:id", upload.single("avatar"), async (req, res) => {
         }
       }
       
-      // Add the new avatar path to userData
       userData.avatar = `/uploads/${req.file.filename}`;
     }
     

@@ -153,6 +153,13 @@ const ArtisanDashboard = () => {
   const totalQuantity = products.reduce((sum, p) => sum + (parseInt(p.quantity) || 0), 0);
   const totalValue = products.reduce((sum, p) => sum + ((parseFloat(p.price) || 0) * (parseInt(p.quantity) || 0)), 0);
 
+  // Calculate total revenue from delivered orders
+  const totalRevenue = artisanOrders
+    .filter(order => order.status === 'delivered')
+    .reduce((sum, order) =>
+      sum + order.items.reduce((itemSum, item) => itemSum + (item.price * item.quantity), 0)
+    , 0);
+
   // Data for charts
   const barData = products.map(p => ({
     name: p.name,
@@ -325,8 +332,8 @@ const ArtisanDashboard = () => {
                       </svg>
                     </div>
                     <div className="flex flex-col gap-2 z-10 relative">
-                      <span className={`font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Inventory Value</span>
-                      <div className={`text-4xl font-extrabold ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>₱{totalValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                      <span className={`font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Total Revenue</span>
+                      <div className={`text-4xl font-extrabold ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>₱{totalRevenue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
                     </div>
                   </div>
                 </div>

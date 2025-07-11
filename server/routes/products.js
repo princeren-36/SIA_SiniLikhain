@@ -106,16 +106,23 @@ router.post("/buy", async (req, res) => {
 
 router.post("/:id/rate", async (req, res) => {
   const { user, value } = req.body;
-  if (!user || !value) return res.status(400).json({ message: "Missing user or value" });
+  const { id } = req.params;
+  if (!user || !value) return res.status(400).json({ error: 'Missing user or value' });
 
-  const product = await Product.findById(req.params.id);
-  if (!product) return res.status(404).json({ message: "Product not found" });
+  try {
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ error: 'Product not found' });
 
-  product.ratings = product.ratings.filter(r => r.user !== user);
-  product.ratings.push({ user, value });
-  await product.save();
+    // Remove previous rating by this user if exists
+    product.ratings = product.ratings.filter(r => r.user !== user);
+    // Add new rating
+    product.ratings.push({ user, value });
+    await product.save();
 
-  res.json(product);
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // General file upload endpoint for profile images and other assets

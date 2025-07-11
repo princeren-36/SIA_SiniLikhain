@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE } from '../utils/api';
@@ -83,24 +90,59 @@ function RegisterArtisan() {
     return isValid;
   };
 
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [pendingReg, setPendingReg] = useState(null);
+  const [infoMsg, setInfoMsg] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpError, setOtpError] = useState('');
+
   const handleRegister = async () => {
     if (!validateForm()) return;
     try {
       const { confirmPassword, ...submitData } = userData;
-      await axios.post(`${API_BASE}/users/register`, submitData);
-      alert("Registration successful! You can now log in.");
-      navigate("/Login");
+      const res = await axios.post(`${API_BASE}/users/register`, submitData);
+      setPendingReg({ email: submitData.email, role: submitData.role });
+      setOtpDialogOpen(true);
+      setInfoMsg(res.data.message || 'OTP sent to your email. Please enter it below.');
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        alert(err.response.data.message);
+        toast.error(err.response.data.message);
       } else {
-        alert("Registration failed. Please try again later.");
+        toast.error("Registration failed. Please try again later.");
+      }
+      setOtpDialogOpen(false);
+    }
+  };
+
+  const handleOtpVerify = async () => {
+    setOtpError('');
+    if (!otp.trim()) {
+      setOtpError('OTP is required.');
+      return;
+    }
+    try {
+      await axios.post(`${API_BASE}/users/verify-registration-otp`, {
+        email: pendingReg.email,
+        role: pendingReg.role,
+        otp: otp.trim(),
+      });
+      setInfoMsg('Registration successful! You can now log in.');
+      setTimeout(() => {
+        setOtpDialogOpen(false);
+        navigate('/Login');
+      }, 1500);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setOtpError(err.response.data.message);
+      } else {
+        setOtpError('OTP verification failed. Please try again.');
       }
     }
   };
 
   return (
     <div className="poppins-font">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div
         className="flex h-screen items-center justify-center bg-cover bg-center flex-row relative"
         style={{
@@ -428,6 +470,25 @@ function RegisterArtisan() {
           >
             Register
           </button>
+          <Dialog open={otpDialogOpen} onClose={() => setOtpDialogOpen(false)}>
+            <DialogTitle>Email Verification</DialogTitle>
+            <DialogContent>
+              <div style={{ marginBottom: 12 }}>{infoMsg}</div>
+              <TextField
+                label="Enter OTP"
+                value={otp}
+                onChange={e => setOtp(e.target.value)}
+                fullWidth
+                error={!!otpError}
+                helperText={otpError}
+                autoFocus
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOtpDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleOtpVerify} variant="contained">Verify</Button>
+            </DialogActions>
+          </Dialog>
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
             Already have an account?{' '}
             <span
