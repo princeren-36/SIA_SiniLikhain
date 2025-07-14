@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar, FaTrash } from "react-icons/fa";
 import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
 import NavbarBuyer from "./NavbarBuyer";
@@ -70,6 +71,9 @@ const BuyerProfile = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [userId, setUserId] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [refreshOrders, setRefreshOrders] = useState(0);
+  const navigate = useNavigate();
   
   // Get user ID from localStorage or sessionStorage
   useEffect(() => {
@@ -79,7 +83,7 @@ const BuyerProfile = () => {
         const userStorage = localStorage.getItem("user") || sessionStorage.getItem("user");
         if (!userStorage) {
           console.warn("No user found in storage");
-          setIsLoading(false);
+          navigate("/login"); // Redirect to login if not authenticated
           return;
         }
         
@@ -128,12 +132,16 @@ const BuyerProfile = () => {
           totalSpent: 0,
           ratingsCount: 0
         };
-        
+        let fetchedOrders = [];
         try {
           stats = await fetchBuyerStatistics(userId);
+          // Fetch all orders for this buyer
+          const ordersResponse = await axios.get(`${API_BASE}/orders?userId=${userId}`);
+          fetchedOrders = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
         } catch (statsError) {
-          console.warn("Could not fetch statistics, using fallback data", statsError);
+          console.warn("Could not fetch statistics or orders, using fallback data", statsError);
         }
+        setOrders(fetchedOrders);
         
         if (response && response.data) {
           // Format the date
@@ -169,6 +177,22 @@ const BuyerProfile = () => {
     fetchProfileData();
   }, [userId]);
   
+  // Fetch orders when userId or refreshOrders changes
+  useEffect(() => {
+    if (!userId) return;
+    setIsLoading(true);
+    fetch(`${API_BASE}/orders/user/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        setOrders(Array.isArray(data) ? data : []);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setOrders([]);
+        setIsLoading(false);
+      });
+  }, [userId, refreshOrders]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfileData({
@@ -351,6 +375,10 @@ const getAvatarUrl = (avatar) => {
         setIsEditing(true);
       }
     }
+  };
+  
+  const handleRefreshOrders = () => {
+    setRefreshOrders(prev => prev + 1);
   };
   
   return (
@@ -625,6 +653,58 @@ const getAvatarUrl = (avatar) => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                    {/* Orders Table */}
+                    <div className="mt-10">
+                      <div className="mt-10 flex items-center justify-between">
+                        <h3 className="text-xl font-semibold mb-3 text-[#5e503f] flex items-center gap-2">
+                          <FaShoppingBag className="flex-shrink-0" />
+                          My Orders
+                        </h3>
+                        <button
+                          onClick={handleRefreshOrders}
+                          className="bg-[#5e503f] text-white px-4 py-2 rounded hover:bg-[#4c4238] transition-colors text-sm font-medium"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? 'Refreshing...' : 'Refresh'}
+                        </button>
+                      </div>
+                      {orders.length === 0 ? (
+                        <div className="text-gray-500 text-sm">No orders found.</div>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full border border-gray-200 bg-white rounded-lg">
+                            <thead>
+                              <tr className="bg-[#f5eee6] text-[#5e503f]">
+                                <th className="px-3 py-2 text-left">Order ID</th>
+                                <th className="px-3 py-2 text-left">Date</th>
+                                <th className="px-3 py-2 text-left">Status</th>
+                                <th className="px-3 py-2 text-left">Items & Artisan Status</th>
+                                <th className="px-3 py-2 text-right">Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {orders.map(order => (
+                                <tr key={order._id} className="border-t border-gray-100 hover:bg-[#f8f5f2]">
+                                  <td className="px-3 py-2 font-mono text-xs">{order._id.slice(-8)}</td>
+                                  <td className="px-3 py-2">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
+                                  <td className="px-3 py-2 capitalize">{order.status}</td>
+                                  <td className="px-3 py-2">
+                                    <ul className="list-disc pl-4">
+                                      {order.items && order.items.length > 0 ? order.items.map((item, idx) => (
+                                        <li key={idx} className="mb-1">
+                                          <span className="font-semibold">{item.name}</span>
+                                        </li>
+                                      )) : <li>No items</li>}
+                                    </ul>
+                                  </td>
+                                  <td className="px-3 py-2 text-right">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </>

@@ -45,7 +45,8 @@ router.post("/", upload.single("image"), async (req, res) => {
       userId, // This should match your schema exactly
       quantity,
       category,
-      status,
+      status: "pending",
+      approved: false,
       image: req.file ? `/uploads/${req.file.filename}` : undefined
     });
     await product.save();
