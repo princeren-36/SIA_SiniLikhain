@@ -218,10 +218,10 @@ function Checkout() {
             
             <div className="flex flex-col md:flex-row gap-8">
               {/* Shipping Information Form */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-2xl font-mono font-semibold mb-6 tracking-widest text-black">SHIPPING INFORMATION</h3>
                 <form onSubmit={handlePlaceOrder} className="space-y-4">
-                  <div className="flex gap-4">
+                  <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
                       <label htmlFor="lastName" className="block text-md font-mono mb-2 text-[#1b2a41]">Last Name</label>
                       <input 
@@ -250,7 +250,7 @@ function Checkout() {
                         className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#bfa181] focus:outline-none text-black"
                       />
                     </div>
-                    <div className="w-20">
+                    <div className="w-full md:w-20">
                       <label htmlFor="middleInitial" className="block text-md font-mono mb-2 text-[#1b2a41]">M.I.</label>
                       <input 
                         type="text" 
@@ -392,34 +392,34 @@ function Checkout() {
               </div>
 
               {/* Order Summary */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-2xl font-mono font-semibold mb-6 tracking-widest text-black">ORDER SUMMARY</h3>
-                <div className="border p-6 bg-gray-50">
+                <div className="border p-4 md:p-6 bg-gray-50 rounded-lg md:rounded-xl">
                   <h4 className="font-semibold text-lg mb-4 text-[#1b2a41]">Items ({cart.length})</h4>
                   <div className="max-h-96 overflow-y-auto mb-6">
                     {cart.map((product, idx) => (
-                      <div key={idx} className="flex justify-between items-center py-3 border-b border-gray-200">
-                        <div className="flex items-center gap-4">
+                      <div key={idx} className="flex flex-col sm:flex-row justify-between items-center py-3 border-b border-gray-200 gap-2">
+                        <div className="flex items-center gap-4 w-full sm:w-auto">
                           <img src={`${API_BASE}${product.image}`} alt={product.name} className="w-12 h-12 object-contain" />
                           <div>
                             <div className="font-mono text-md text-[#b38664]">{product.name}</div>
                             <div className="text-sm text-gray-600">Quantity: {product.quantity}</div>
                           </div>
                         </div>
-                        <div className="font-mono text-md text-black">₱{(product.price * product.quantity).toFixed(2)}</div>
+                        <div className="font-mono text-md text-black w-full sm:w-auto text-right">₱{(product.price * product.quantity).toFixed(2)}</div>
                       </div>
                     ))}
                   </div>
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center text-sm">
+                    <div className="flex flex-row justify-between items-center text-sm">
                       <span className="text-gray-600">Subtotal</span>
                       <span className="font-semibold">₱{calculateCartTotal(cart)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
+                    <div className="flex flex-row justify-between items-center text-sm">
                       <span className="text-gray-600">Shipping Fee</span>
                       <span className="font-semibold">₱0.00</span>
                     </div>
-                    <div className="border-t border-gray-300 pt-3 mt-3 flex justify-between items-center">
+                    <div className="border-t border-gray-300 pt-3 mt-3 flex flex-row justify-between items-center">
                       <span className="font-mono text-xl font-semibold text-[#1b2a41]">Total</span>
                       <span className="font-mono text-xl font-semibold text-[#1b2a41]">₱{calculateCartTotal(cart)}</span>
                     </div>
@@ -427,7 +427,7 @@ function Checkout() {
                   <div className="mt-6">
                     <button 
                       onClick={() => navigate('/cart')}
-                      className="w-full px-8 py-2 text-[#b38664] font-mono font-bold text-md tracking-widest bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] transition rounded-none"
+                      className="w-full px-8 py-2 text-[#b38664] font-mono font-bold text-md tracking-widest bg-white border-2 border-[#b38664] hover:bg-[#f5eee6] transition rounded-lg"
                     >
                       BACK TO CART
                     </button>

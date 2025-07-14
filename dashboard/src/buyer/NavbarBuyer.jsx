@@ -7,6 +7,7 @@ function Navbar({ showLinks = true }) {
   const [hovered, setHovered] = useState("");
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const [cartCount, setCartCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navRefs = useRef({});
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,32 +105,68 @@ function Navbar({ showLinks = true }) {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-8 py-3 shadow-none gap-5 sticky top-0 left-0 right-0 z-30 bg-black backdrop-blur-md" style={{position:'sticky'}}>
-        <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl flex items-center gap-4" style={{ fontFamily: 'Source Code Pro, monospace' }}>
-          SiniLikhain
-        </div>
-        {showLinks && (
-          <div className="flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
-            {/* Home link */}
-            <Link
-              key={navLinks[0].to}
-              to={navLinks[0].to}
-              ref={el => navRefs.current[navLinks[0].to] = el}
-              className={
-                `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
-                (location.pathname === navLinks[0].to ? "text-white" : "text-[#ccc9dc]")
-              }
-              style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
-              onMouseEnter={() => handleMouseEnter(navLinks[0].to)}
-              aria-label={typeof navLinks[0].label === 'string' ? navLinks[0].label : 'Home'}
-            >
-              {navLinks[0].label}
-            </Link>
-            {/* Render the rest of the nav links */}
-            {navLinks.slice(1).map(link => {
-              // Only show Profile link if user is logged in
-              if (link.to === "/buyerprofile") {
-                if (!user) return null;
+      <nav className="fixed top-0 left-0 w-full z-[100] bg-black backdrop-blur-md" style={{position:'fixed', width:'100%', zIndex:100}}>
+        <div className="flex items-center justify-between px-4 md:px-8 py-3 gap-5">
+          <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl flex items-center gap-4" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+            SiniLikhain
+          </div>
+          {/* Mobile menu button */}
+          <button className="md:hidden p-2 group flex items-center justify-center" aria-label="Open menu" onClick={() => setMobileMenuOpen(v => !v)}>
+            <span className={`relative block w-6 h-6 transition-transform duration-300 ${mobileMenuOpen ? 'scale-110 opacity-80' : 'scale-100 opacity-100'}`}>
+              {/* Top bar */}
+              <span
+                className={`absolute left-0 top-1 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-3' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+              ></span>
+              {/* Middle bar */}
+              <span
+                className={`absolute left-0 top-3 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+              ></span>
+              {/* Bottom bar */}
+              <span
+                className={`absolute left-0 top-5 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-3' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+              ></span>
+            </span>
+          </button>
+          {/* Desktop links */}
+          {showLinks && (
+            <div className="hidden md:flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
+              {/* Home link */}
+              <Link
+                key={navLinks[0].to}
+                to={navLinks[0].to}
+                ref={el => navRefs.current[navLinks[0].to] = el}
+                className={
+                  `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                  (location.pathname === navLinks[0].to ? "text-white" : "text-[#ccc9dc]")
+                }
+                style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                onMouseEnter={() => handleMouseEnter(navLinks[0].to)}
+                aria-label={typeof navLinks[0].label === 'string' ? navLinks[0].label : 'Home'}
+              >
+                {navLinks[0].label}
+              </Link>
+              {/* Render the rest of the nav links */}
+              {navLinks.slice(1).map(link => {
+                // Only show Profile link if user is logged in
+                if (link.to === "/buyerprofile") {
+                  if (!user) return null;
+                  return (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      ref={el => navRefs.current[link.to] = el}
+                      className={
+                        `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                        (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
+                      }
+                      style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                      onMouseEnter={() => handleMouseEnter(link.to)}
+                      aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                }
                 return (
                   <Link
                     key={link.to}
@@ -146,52 +183,67 @@ function Navbar({ showLinks = true }) {
                     {link.label}
                   </Link>
                 );
-              }
+              })}
+              {/* Username after cart, before logout */}
+              {user && user.role === 'buyer' && (
+                <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
+                  {user.username}
+                </span>
+              )}
+              <button
+                ref={el => navRefs.current.logout = el}
+                onClick={handleLogoutClick}
+                className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 ` +
+                  (location.pathname === "/login" ? "text-white bg-black" : "text-[#ccc9dc]")
+                }
+                style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, background: location.pathname === "/login" ? '#000' : 'transparent', color: location.pathname === "/login" ? '#fff' : '#ccc9dc' }}
+                onMouseEnter={() => handleMouseEnter("logout")}
+              >
+                {user ? "Logout" : "Login"}
+              </button>
+              {/* Underline bar */}
+              <span
+                className="absolute bottom-[-8px] h-[3px] transition-all duration-200"
+                style={{
+                  left: underlineStyle.left,
+                  width: underlineStyle.width,
+                  opacity: underlineStyle.opacity,
+                  pointerEvents: 'none',
+                  background: '#5e503f',
+                }}
+              />
+            </div>
+          )}
+        </div>
+        {/* Mobile menu */}
+        {showLinks && mobileMenuOpen && (
+          <div className="flex flex-col gap-2 px-4 pb-4 md:hidden bg-black">
+            {navLinks.map(link => {
+              if (link.to === "/buyerprofile" && !user) return null;
               return (
                 <Link
                   key={link.to}
                   to={link.to}
-                  ref={el => navRefs.current[link.to] = el}
-                  className={
-                    `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
-                    (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
-                  }
+                  className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
                   style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
-                  onMouseEnter={() => handleMouseEnter(link.to)}
-                  aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               );
             })}
-            {/* Username after cart, before logout */}
             {user && user.role === 'buyer' && (
-              <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
+              <span className="text-base font-semibold text-[#fff] px-3 py-2 rounded-lg bg-[#5e503f] mt-2" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1}}>
                 {user.username}
               </span>
             )}
             <button
-              ref={el => navRefs.current.logout = el}
               onClick={handleLogoutClick}
-              className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 ` +
-                (location.pathname === "/login" ? "text-white bg-black" : "text-[#ccc9dc]")
-              }
+              className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === "/login" ? 'bg-black text-white' : 'text-[#ccc9dc]'}`}
               style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, background: location.pathname === "/login" ? '#000' : 'transparent', color: location.pathname === "/login" ? '#fff' : '#ccc9dc' }}
-              onMouseEnter={() => handleMouseEnter("logout")}
             >
               {user ? "Logout" : "Login"}
             </button>
-            {/* Underline bar */}
-            <span
-              className="absolute bottom-[-8px] h-[3px] transition-all duration-200"
-              style={{
-                left: underlineStyle.left,
-                width: underlineStyle.width,
-                opacity: underlineStyle.opacity,
-                pointerEvents: 'none',
-                background: '#5e503f',
-              }}
-            />
           </div>
         )}
       </nav>

@@ -384,8 +384,8 @@ const getAvatarUrl = (avatar) => {
   return (
     <div className="page" style={{ height: '100vh' }}>
       <NavbarBuyer />
-      {/* Allow vertical scroll on the page and children */}
-      <div className="min-h-screen h-screen bg-[#f8f9fa] w-full text-gray-900 flex flex-col">
+      {/* Add top padding to prevent content from being hidden behind fixed navbar */}
+      <div className="min-h-screen h-screen bg-[#f8f9fa] w-full text-gray-900 flex flex-col pt-[44px] md:pt-[56px]">
         <div className="w-full flex-1 flex flex-col py-0 md:py-0">
           <div className="bg-white w-full px-0 flex-1 flex flex-col">
             <div className="bg-[#5e503f] w-full py-6 flex-shrink-0">
@@ -663,7 +663,8 @@ const getAvatarUrl = (avatar) => {
                         </h3>
                         <button
                           onClick={handleRefreshOrders}
-                          className="bg-[#5e503f] text-white px-4 py-2 rounded hover:bg-[#4c4238] transition-colors text-sm font-medium"
+                          className="bg-[#5e503f] text-white px-4 py-2 rounded border border-[#5e503f] hover:bg-[#4c4238] hover:border-[#4c4238] transition-colors text-sm font-medium shadow focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2"
+                          style={{ color: '#fff', backgroundColor: '#5e503f', border: '1px solid #5e503f' }}
                           disabled={isLoading}
                         >
                           {isLoading ? 'Refreshing...' : 'Refresh'}
@@ -672,8 +673,8 @@ const getAvatarUrl = (avatar) => {
                       {orders.length === 0 ? (
                         <div className="text-gray-500 text-sm">No orders found.</div>
                       ) : (
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full border border-gray-200 bg-white rounded-lg">
+                        <div className="overflow-x-auto w-full">
+                          <table className="min-w-full border border-gray-200 bg-white rounded-lg hidden sm:table">
                             <thead>
                               <tr className="bg-[#f5eee6] text-[#5e503f]">
                                 <th className="px-3 py-2 text-left">Order ID</th>
@@ -703,6 +704,28 @@ const getAvatarUrl = (avatar) => {
                               ))}
                             </tbody>
                           </table>
+                          {/* Mobile card view */}
+                          <div className="sm:hidden flex flex-col gap-4">
+                            {orders.map(order => (
+                              <div key={order._id} className="border border-gray-200 rounded-lg bg-white p-4 shadow-sm">
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className="font-mono text-xs text-[#5e503f]">Order #{order._id.slice(-8)}</span>
+                                  <span className="text-xs text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</span>
+                                </div>
+                                <div className="mb-1 text-sm"><span className="font-semibold">Status:</span> <span className="capitalize">{order.status}</span></div>
+                                <div className="mb-1 text-sm"><span className="font-semibold">Items:</span>
+                                  <ul className="list-disc pl-4">
+                                    {order.items && order.items.length > 0 ? order.items.map((item, idx) => (
+                                      <li key={idx} className="mb-1">
+                                        <span>{item.name}</span>
+                                      </li>
+                                    )) : <li>No items</li>}
+                                  </ul>
+                                </div>
+                                <div className="mt-2 text-right font-bold text-[#5e503f]">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

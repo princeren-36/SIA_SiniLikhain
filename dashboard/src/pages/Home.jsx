@@ -258,7 +258,7 @@ function Home() {
     <div className="flex flex-col min-h-screen bg-black">
       <Navbar />
       {/* Hero Section */}
-      <div className="relative min-h-[80vh] md:h-screen flex items-center justify-center overflow-hidden py-16 md:py-0">
+      <div className="relative min-h-[60vh] sm:min-h-[80vh] md:h-screen flex items-center justify-center overflow-hidden py-8 sm:py-16 md:py-0">
         <div className="absolute inset-0 z-0">
           <img
             src={logo}
@@ -267,28 +267,28 @@ function Home() {
             style={{ filter: 'brightness(0.6)' }}
           />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 text-center">
           <SiniLikhainBaybayin />
-          <p className="mt-3 md:mt-4 max-w-3xl mx-auto text-base sm:text-lg md:text-xl text-white font-[source-code-pro,monospace] tracking-wide opacity-90">
+          <p className="mt-2 sm:mt-3 md:mt-4 max-w-3xl mx-auto text-xs sm:text-base md:text-xl text-white font-[source-code-pro,monospace] tracking-wide opacity-90">
             Connecting Filipino Artisans with the World
           </p>
-          <h1 className="mt-4 md:mt-6 text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold font-[source-code-pro,monospace] text-white mb-6 md:mb-8 leading-tight tracking-wide">
+          <h1 className="mt-2 sm:mt-4 md:mt-6 text-base sm:text-xl md:text-3xl lg:text-5xl font-bold font-[source-code-pro,monospace] text-white mb-4 sm:mb-6 md:mb-8 leading-tight tracking-wide">
             In simplicity, the seed of creation;
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
             in humble tools, the birth of brilliance.
           </h1>
-          <div className="mt-6 md:mt-10 flex flex-wrap justify-center gap-3 md:gap-4">
+          <div className="mt-4 sm:mt-6 md:mt-10 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
             <a
               href="/buyer"
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-[#5e503f] text-white font-[source-code-pro,monospace] text-sm sm:text-base rounded-lg shadow-lg hover:bg-[#4d3f2f] transition-all duration-300 flex items-center gap-2"
+              className="px-3 sm:px-5 md:px-6 py-2 sm:py-3 md:py-4 bg-[#5e503f] text-white font-[source-code-pro,monospace] text-xs sm:text-sm md:text-base rounded-md sm:rounded-lg shadow-lg hover:bg-[#4d3f2f] transition-all duration-300 flex items-center gap-1 sm:gap-2"
             >
               <span>Shop Now</span>
               <FaArrowRight />
             </a>
             <a
               href="/aboutbuyer"
-              className="px-6 sm:px-8 py-3 sm:py-4 border border-white text-white font-[source-code-pro,monospace] text-sm sm:text-base rounded-lg hover:bg-white hover:text-black transition-all duration-300"
+              className="px-3 sm:px-5 md:px-6 py-2 sm:py-3 md:py-4 border border-white text-white font-[source-code-pro,monospace] text-xs sm:text-sm md:text-base rounded-md sm:rounded-lg hover:bg-white hover:text-black transition-all duration-300"
             >
               Learn More
             </a>
@@ -297,22 +297,22 @@ function Home() {
       </div>
       
       {/* Features Section */}
-      <div id="features" className="bg-[#f8f9fa] py-10 sm:py-12 md:py-16 px-4 md:px-8">
+      <div id="features" className="bg-[#f8f9fa] py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
         <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <span className="inline-block px-2 sm:px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
               Our Features
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-2 sm:mb-3">
+            <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-1 sm:mb-2 md:mb-3">
               Why Choose SiniLikhain
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xs sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
               Discover what makes our marketplace the premier destination for authentic Filipino crafts
             </p>
-            <div className="w-16 sm:w-24 h-1 bg-[#5e503f] mx-auto mt-4 sm:mt-6"></div>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-[#5e503f] mx-auto mt-2 sm:mt-4 md:mt-6"></div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-8 sm:mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-4 sm:mt-8 md:mt-12">
             <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
               <div className="bg-[#5e503f]/10 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto">
                 <FaHandHoldingHeart className="text-[#5e503f] text-xl sm:text-2xl" />
@@ -369,10 +369,10 @@ function Home() {
             <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
               From artisan creation to your doorstep - a simple journey of connecting cultures
             </p>
-            <div className="w-16 sm:w-24 h-1 bg-[#5e503f] mx-auto mt-4 sm:mt-6"></div>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-[#5e503f] mx-auto mt-2 sm:mt-4 md:mt-6"></div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 sm:mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4 sm:mt-8 md:mt-12">
             <div className="relative">
               <div className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 h-full">
                 <div className="absolute -top-3 -left-3 sm:-top-4 sm:-left-4 w-10 h-10 sm:w-12 sm:h-12 bg-[#5e503f] text-white rounded-full flex items-center justify-center text-lg sm:text-xl font-bold">
@@ -438,63 +438,60 @@ function Home() {
       </div>
       
       {/* Showcase Section */}
-      <div className="bg-white py-10 sm:py-12 md:py-16 px-4 md:px-8">
+      <div className="bg-white py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
         <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
+          <div className="text-center mb-4 sm:mb-6 md:mb-10">
+            <span className="inline-block px-1 sm:px-2 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs font-medium mb-2">
               Featured Crafts
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-2 sm:mb-3">
+            <h2 className="text-base sm:text-xl md:text-3xl font-bold text-[#1b2a41] font-mono mb-1 sm:mb-2 md:mb-3">
               Discover Filipino Artistry
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xs sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
               Explore our curated selection of handcrafted treasures
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
-            <div className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4 md:gap-6 mt-4 sm:mt-6 md:mt-10">
+            <div className="group relative overflow-hidden rounded-md sm:rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
               <img 
                 src={image1} 
                 alt="Handwoven Textiles" 
-                className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-36 sm:h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Handwoven Textiles</h3>
-                <p className="text-gray-200 mb-3 sm:mb-4 text-xs sm:text-sm">Traditional patterns meet modern design</p>
-                <a href="/buyer" className="text-white flex items-center gap-2 text-xs sm:text-sm font-medium group-hover:text-[#f8d49f] transition-colors">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1">Handwoven Textiles</h3>
+                <p className="text-gray-200 mb-2 sm:mb-3 text-xs sm:text-sm">Traditional patterns meet modern design</p>
+                <a href="/buyer" className="text-white flex items-center gap-2 text-xs font-medium group-hover:text-[#f8d49f] transition-colors">
                   <span>Explore Collection</span>
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
             </div>
-            
-            <div className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
+            <div className="group relative overflow-hidden rounded-md sm:rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
               <img 
                 src={image3} 
                 alt="Handcrafted Pottery" 
-                className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-36 sm:h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Handcrafted Pottery</h3>
-                <p className="text-gray-200 mb-3 sm:mb-4 text-xs sm:text-sm">Earth-toned ceramic masterpieces</p>
-                <a href="/buyer" className="text-white flex items-center gap-2 text-xs sm:text-sm font-medium group-hover:text-[#f8d49f] transition-colors">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1">Handcrafted Pottery</h3>
+                <p className="text-gray-200 mb-2 sm:mb-3 text-xs sm:text-sm">Earth-toned ceramic masterpieces</p>
+                <a href="/buyer" className="text-white flex items-center gap-2 text-xs font-medium group-hover:text-[#f8d49f] transition-colors">
                   <span>Explore Collection</span>
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
               </div>
             </div>
-            
-            <div className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
+            <div className="group relative overflow-hidden rounded-md sm:rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
               <img 
                 src={image2} 
                 alt="Bamboo Crafts" 
-                className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-36 sm:h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Bamboo Crafts</h3>
-                <p className="text-gray-200 mb-3 sm:mb-4 text-xs sm:text-sm">Sustainable and elegant home decor</p>
-                <a href="/buyer" className="text-white flex items-center gap-2 text-xs sm:text-sm font-medium group-hover:text-[#f8d49f] transition-colors">
+              <div className="absolute inset-0 bg-gradient-to-t from_black/70 to-transparent flex flex-col justify-end p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1">Bamboo Crafts</h3>
+                <p className="text-gray-200 mb-2 sm:mb-3 text-xs sm:text-sm">Sustainable and elegant home decor</p>
+                <a href="/buyer" className="text-white flex items-center gap-2 text-xs font-medium group-hover:text-[#f8d49f] transition-colors">
                   <span>Explore Collection</span>
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </a>
@@ -505,22 +502,21 @@ function Home() {
       </div>
       
       {/* Artisan Spotlight Section */}
-      <div className="bg-[#1b2a41] py-10 sm:py-12 md:py-16 px-4 md:px-8">
+      <div className="bg-[#1b2a41] py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
         <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-[#eae0d5]/20 text-[#eae0d5] rounded-full text-xs sm:text-sm font-medium mb-2">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <span className="inline-block px-2 sm:px-3 py-1 bg-[#eae0d5]/20 text-[#eae0d5] rounded-full text-xs sm:text-sm font-medium mb-2">
               Meet Our Creators
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white font-mono mb-2 sm:mb-3">
+            <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-white font-mono mb-1 sm:mb-2 md:mb-3">
               Artisan Spotlight
             </h2>
-            <p className="text-base sm:text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xs sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
               The skilled hands and creative minds behind our unique Filipino crafts
             </p>
-            <div className="w-16 sm:w-24 h-1 bg-[#eae0d5] mx-auto mt-4 sm:mt-6"></div>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-[#eae0d5] mx-auto mt-2 sm:mt-4 md:mt-6"></div>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-4 sm:mt-8 md:mt-12">
             <div className="bg-[#22303f] rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="h-48 sm:h-56 md:h-64 overflow-hidden">
                 <img 
@@ -585,19 +581,19 @@ function Home() {
       </div>
       
       {/* Testimonials Section */}
-      <div className="bg-[#222] py-10 sm:py-12 md:py-16 px-4 md:px-8">
+      <div className="bg-[#222] py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
         <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-white/20 text-white rounded-full text-xs sm:text-sm font-medium mb-2">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <span className="inline-block px-2 sm:px-3 py-1 bg-white/20 text-white rounded-full text-xs sm:text-sm font-medium mb-2">
               Testimonials
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white font-mono mb-2 sm:mb-3">
+            <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-white font-mono mb-1 sm:mb-2 md:mb-3">
               What Our Community Says
             </h2>
-            <div className="w-16 sm:w-24 h-1 bg-white mx-auto mt-4 sm:mt-6"></div>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-white mx-auto mt-2 sm:mt-4 md:mt-6"></div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 md:gap-6">
             <div className="bg-[#222] bg-opacity-90 backdrop-blur-sm p-5 sm:p-6 rounded-xl text-white border border-white/20">
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="flex flex-col">
@@ -638,22 +634,21 @@ function Home() {
       </div>
       
       {/* Impact Statistics Section */}
-      <div id="impact" className="bg-white py-10 sm:py-12 md:py-16 px-4 md:px-8 relative overflow-hidden">
+      <div id="impact" className="bg-white py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700 relative z-10">
-          <div className="text-center mb-8 sm:mb-12">
-            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <span className="inline-block px-2 sm:px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
               Our Impact
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-2 sm:mb-3">
+            <h2 className="text-lg sm:text-2xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-1 sm:mb-2 md:mb-3">
               Creating Positive Change
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xs sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
               Every purchase helps preserve Filipino craftsmanship and supports artisan communities
             </p>
-            <div className="w-16 sm:w-24 h-1 bg-[#5e503f] mx-auto mt-4 sm:mt-6"></div>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-[#5e503f] mx-auto mt-2 sm:mt-4 md:mt-6"></div>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8 mt-8 sm:mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-8 mt-4 sm:mt-8 md:mt-12">
             <div className="bg-[#eae0d5]/20 p-5 sm:p-8 rounded-xl text-center hover:bg-[#eae0d5]/30 transition-all duration-300">
               <h3 className="text-3xl sm:text-4xl font-bold text-[#5e503f] mb-2">100+</h3>
               <p className="text-base sm:text-lg font-medium text-gray-700">Artisans Supported</p>
@@ -699,26 +694,26 @@ function Home() {
       </div>
       
       {/* Call to Action */}
-      <div className="bg-[#f8f9fa] py-10 sm:py-12 md:py-16 px-4 md:px-8">
+      <div className="bg-[#f8f9fa] py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
         <div className="max-w-5xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
-          <div className="bg-gradient-to-br from-[#5e503f] to-[#3d332a] text-white py-8 sm:py-10 md:py-12 px-5 sm:px-8 rounded-xl shadow-xl relative overflow-hidden text-center">
+          <div className="bg-gradient-to-br from-[#5e503f] to-[#3d332a] text-white py-6 sm:py-10 md:py-12 px-3 sm:px-8 rounded-xl shadow-xl relative overflow-hidden text-center">
             <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 font-mono tracking-wide">
+              <h2 className="text-lg sm:text-2xl md:text-4xl font-bold mb-2 sm:mb-4 font-mono tracking-wide">
                 Join the SiniLikhain Community
               </h2>
-              <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-3xl mx-auto">
+              <p className="text-xs sm:text-base md:text-xl mb-4 sm:mb-8 max-w-3xl mx-auto">
                 Discover unique handcrafted treasures and support Filipino artisans preserving traditional craftsmanship.
               </p>
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                 <a 
                   href="/buyer" 
-                  className="bg-white text-[#5e503f] px-6 py-2 sm:px-8 sm:py-3 rounded-lg text-sm sm:text-base font-medium shadow-md hover:bg-[#f8d49f] hover:text-[#3d332a] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#5e503f]"
+                  className="bg-white text-[#5e503f] px-3 sm:px-6 py-1.5 sm:py-3 rounded-md sm:rounded-lg text-xs sm:text-base font-medium shadow-md hover:bg-[#f8d49f] hover:text-[#3d332a] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#5e503f]"
                 >
                   Shop Now
                 </a>
                 <a 
                   href="/aboutbuyer" 
-                  className="bg-transparent border-2 border-white text-white px-6 py-2 sm:px-8 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-white hover:text-[#5e503f] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white"
+                  className="bg-transparent border-2 border-white text-white px-3 sm:px-6 py-1.5 sm:py-3 rounded-md sm:rounded-lg text-xs sm:text-base font-medium hover:bg-white hover:text-[#5e503f] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white"
                 >
                   Learn More
                 </a>
