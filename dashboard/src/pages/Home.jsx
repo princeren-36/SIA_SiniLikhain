@@ -73,7 +73,7 @@ function SiniLikhainBaybayin() {
   );
 }
 
-function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee}) {
+function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}) {
   return (
     <footer className="bg-gradient-to-t from-[#181818] to-[#232526] text-white pt-10 md:pt-14 pb-6 md:pb-8 border-t border-[#232526] shadow-inner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,8 +189,20 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee}) {
                 {jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}
               </span>
             </div>
+            {/* Partner 6: ITBytes */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                  <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
+                    <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
+                  </a>
+                </div>
+                <p className="text-gray-400 text-sm">ITBytes</p>
+                <span className={`mt-1 text-xs font-semibold ${ITBytes === null ? 'text-gray-400' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
+                  {ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
         <div className="pt-4">
           <p className="text-center text-gray-500 text-xs tracking-wide">
             © {new Date().getFullYear()} <span className="font-bold text-[#f8d49f]">SiniLikhain</span>. All rights reserved.
@@ -209,6 +221,7 @@ function Home() {
   const [blanktapes, setblanktapes] = useState(null);
   const [pnb, setPnb] = useState(null);
   const [jollibee, setJollibee] = useState(null);
+  const [ITBytes, setITBytes] = useState(null);
 
   useEffect(() => {
     const checkStatus = async (url, setter) => {
@@ -224,6 +237,7 @@ function Home() {
     checkStatus('http://192.168.9.83:5173/', setblanktapes);
     checkStatus('http://192.168.9.23:5173/', setPnb);
     checkStatus('http://192.168.9.37:5173/', setJollibee);
+    checkStatus('http://192.168.9.4:5173/', setITBytes);
   }, []);
 
   // Animation function for scroll reveal
@@ -729,6 +743,7 @@ function Home() {
         blanktapes={blanktapes}
         pnb={pnb}
         jollibee={jollibee}
+        ITBytes={ITBytes}
       />
       
       {/* Add keyframes for fadeIn animation */}
