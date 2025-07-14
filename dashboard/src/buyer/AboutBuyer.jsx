@@ -18,6 +18,7 @@ function About() {
   const [blanktapes, setblanktapes] = useState(null);
   const [pnb, setPnb] = useState(null);
   const [jollibee, setJollibee] = useState(null);
+  const [ITBytes, setITBytes] = useState(null);
 
   useEffect(() => {
     const checkStatus = async (url, setter) => {
@@ -33,6 +34,7 @@ function About() {
     checkStatus('http://192.168.9.83:5173/', setblanktapes);
     checkStatus('http://192.168.9.23:5173/', setPnb);
     checkStatus('http://192.168.9.37:5173/', setJollibee);
+    checkStatus('http://192.168.9.4:5173/', setITBytes);
   }, []);
 
   // Animation function for scroll reveal
@@ -528,6 +530,18 @@ function About() {
                 <p className="text-gray-400 text-sm">Jollibee</p>
                 <span className={`mt-1 text-xs font-semibold ${jollibee === null ? 'text-gray-400' : jollibee ? 'text-green-400' : 'text-red-400'}`}>
                   {jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}
+                </span>
+              </div>
+              {/* Partner 6: ITBytes */}
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                  <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
+                    <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
+                  </a>
+                </div>
+                <p className="text-gray-400 text-sm">ITBytes</p>
+                <span className={`mt-1 text-xs font-semibold ${ITBytes === null ? 'text-gray-400' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
+                  {ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}
                 </span>
               </div>
             </div>
