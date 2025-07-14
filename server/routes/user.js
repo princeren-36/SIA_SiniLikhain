@@ -41,8 +41,24 @@ router.post("/register", async (req, res) => {
       await transporter.sendMail({
         from: 'SiniLikhain <sinilikhain.noreply@gmail.com>',
         to: email,
-        subject: 'SiniLikhain Registration OTP',
-        text: `Your OTP for SiniLikhain registration is: ${otp}. It will expire in 10 minutes.`
+        subject: 'SiniLikhain Registration Verification Code',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #333;">SiniLikhain Registration</h1>
+            </div>
+            <p>Hello,</p>
+            <p>Thank you for registering with SiniLikhain! To complete your registration, please use the verification code below:</p>
+            <div style="background-color: #f5f5f5; padding: 15px; text-align: center; margin: 20px 0; border-radius: 5px;">
+              <h2 style="margin: 0; color: #333; letter-spacing: 5px;">${otp}</h2>
+            </div>
+            <p>This code will expire in <strong>10 minutes</strong>.</p>
+            <p>If you did not request this registration, please ignore this email.</p>
+            <p style="margin-top: 30px; font-size: 12px; color: #777; text-align: center;">
+              &copy; ${new Date().getFullYear()} SiniLikhain. All rights reserved.
+            </p>
+          </div>
+        `
       });
     } catch (err) {
       console.error('Error sending registration OTP:', err);
@@ -95,7 +111,13 @@ router.post("/verify-registration-otp", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username, password });
+  
+  // Check if login is with email or username
+  const query = username.includes('@') 
+    ? { email: username, password } 
+    : { username, password };
+  
+  const user = await User.findOne(query);
 
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
@@ -256,8 +278,24 @@ router.post('/forgot-password', async (req, res) => {
     await transporter.sendMail({
       from: '"SiniLikhain" <sinilikhain.noreply@gmail.com>', // sender (your Gmail)
       to: email, // recipient (the user's input)
-      subject: 'Your OTP Code',
-      text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`
+      subject: 'SiniLikhain Password Reset Verification Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #333;">Password Reset Request</h1>
+          </div>
+          <p>Hello,</p>
+          <p>We received a request to reset your password for your SiniLikhain account. Please use the verification code below to reset your password:</p>
+          <div style="background-color: #f5f5f5; padding: 15px; text-align: center; margin: 20px 0; border-radius: 5px;">
+            <h2 style="margin: 0; color: #333; letter-spacing: 5px;">${otp}</h2>
+          </div>
+          <p>This code will expire in <strong>10 minutes</strong>.</p>
+          <p>If you did not request a password reset, please ignore this email or contact support if you have concerns about your account security.</p>
+          <p style="margin-top: 30px; font-size: 12px; color: #777; text-align: center;">
+            &copy; ${new Date().getFullYear()} SiniLikhain. All rights reserved.
+          </p>
+        </div>
+      `
     });
     res.json({ message: 'OTP sent to email.' });
   } catch (err) {
