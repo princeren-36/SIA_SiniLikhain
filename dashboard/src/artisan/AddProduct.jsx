@@ -41,10 +41,8 @@ function AddProduct() {
       navigate("/");
     } else {
       const fetchProducts = () => {
-        axios.get(`${API_BASE}/products`).then((res) => {
-          // Show ALL products that belong to this artisan
-          const artisanProducts = res.data.filter(p => p.artisan === user.username);
-          setProducts(artisanProducts);
+        axios.get(`${API_BASE}/products?artisan=${user.username}&approved=true`).then((res) => {
+          setProducts(res.data);
         }).catch(err => {
           console.error("Error fetching products:", err);
         });
