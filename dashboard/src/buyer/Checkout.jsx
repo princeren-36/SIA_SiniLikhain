@@ -20,6 +20,14 @@ function Checkout() {
     email: '',
     paymentMethod: 'cod'
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountValid, setAccountValid] = useState(false);
+  const [accountHolder, setAccountHolder] = useState("");
+  const [accountCheckLoading, setAccountCheckLoading] = useState(false);
+  const [accountCheckError, setAccountCheckError] = useState("");
+
+  const BANK_API_BASE = "http://192.168.8.201:5000/api";
   
   // Most common provinces and cities
   const provinces = [
@@ -36,7 +44,8 @@ function Checkout() {
     'Pampanga',
     'Rizal',
     'South Cotabato',
-    'Zamboanga del Sur'
+    'Zamboanga del Sur',
+    'Nueva Vizcaya'
   ];
   
   // Cities by province
@@ -54,12 +63,12 @@ function Checkout() {
     'Pampanga': ['Angeles City', 'San Fernando', 'Mabalacat', 'Guagua'],
     'Camarines Sur': ['Naga City', 'Iriga', 'Pili', 'Calabanga'],
     'Leyte': ['Tacloban City', 'Ormoc', 'Baybay', 'Palo'],
-    'Zamboanga del Sur': ['Zamboanga City', 'Pagadian', 'Ipil', 'Aurora']
+    'Zamboanga del Sur': ['Zamboanga City', 'Pagadian', 'Ipil', 'Aurora'],
+    'Nueva Vizcaya': ['Bagabag', 'Villaverde', 'Solano', 'Bayombong', 'Diadi', 'Dupax Del Norte', 'Dupax Del Sur', 'Aritao', 'Sta Fe']
   };
 
   const [selectedProvince, setSelectedProvince] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate ? useNavigate() : () => {};
 
   const calculateCartTotal = (currentCart) => {
@@ -150,6 +159,41 @@ function Checkout() {
     }));
   };
 
+  const validateBankAccount = async () => {
+    setAccountCheckLoading(true);
+    setAccountCheckError("");
+    setAccountHolder("");
+    setAccountValid(false);
+    try {
+      const res = await axios.get(`${BANK_API_BASE}/users`);
+      const found = res.data.find(u => u.accountNumber === accountNumber);
+      if (found) {
+        setAccountHolder(found.name || found.username || "Account found");
+        setAccountValid(true);
+        // Auto-fill shipping info fields if available from bank
+        setShippingInfo(prev => ({
+          ...prev,
+          firstName: found.firstName || found.name?.split(" ")[0] || prev.firstName,
+          lastName: found.lastName || found.name?.split(" ").slice(1).join(" ") || prev.lastName,
+          email: found.email || prev.email,
+          address: found.address || prev.address,
+          city: found.city || prev.city,
+          province: found.province || prev.province,
+          postalCode: found.postalCode || prev.postalCode,
+          phone: found.contact || found.phone || prev.phone
+        }));
+      } else {
+        setAccountCheckError("Account not found.");
+        setAccountValid(false);
+      }
+    } catch (err) {
+      setAccountCheckError("Error connecting to bank API.");
+      setAccountValid(false);
+    } finally {
+      setAccountCheckLoading(false);
+    }
+  };
+
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     const user = getCurrentUser();
@@ -157,7 +201,6 @@ function Checkout() {
       navigate('/Login');
       return;
     }
-
     try {
       setIsLoading(true);
       const itemsToPurchase = cart.filter(item => item.quantity > 0);
@@ -165,12 +208,98 @@ function Checkout() {
         alert("Your cart is empty. Add items before purchasing.");
         return;
       }
-
+      if (shippingInfo.paymentMethod === "bank") {
+        if (!accountValid) {
+          alert("Please validate the bank account number.");
+          return;
+        }
+        // Find the buyer's bank userId by matching accountNumber with the user's email or contact
+        let buyerBankUserId = null;
+        let bankUsers = [];
+        try {
+          const bankUsersRes = await axios.get(`${BANK_API_BASE}/users`);
+          bankUsers = bankUsersRes.data;
+          const foundUser = bankUsers.find(u =>
+            (u.email && u.email === shippingInfo.email) ||
+            (u.contact && u.contact === shippingInfo.phone)
+          );
+          if (foundUser) {
+            buyerBankUserId = foundUser._id;
+          } else {
+            alert("Bank user not found for this email or phone. Please check your bank registration.");
+            setIsLoading(false);
+            return;
+          }
+        } catch (err) {
+          alert("Error fetching bank user info.");
+          setIsLoading(false);
+          return;
+        }
+        // Group items by seller's userId (if you want to support multiple sellers per order)
+        const sellerMap = {};
+        for (const item of itemsToPurchase) {
+          if (!item.userId) {
+            alert(`Product ${item.name} is missing seller (userId) info.`);
+            setIsLoading(false);
+            return;
+          }
+          if (!sellerMap[item.userId]) {
+            sellerMap[item.userId] = { total: 0, items: [], sellerId: item.userId };
+          }
+          sellerMap[item.userId].total += item.price * item.quantity;
+          sellerMap[item.userId].items.push(item);
+        }
+        // For each seller, get their bank account and transfer
+        for (const sellerId in sellerMap) {
+          // Fetch seller user info from your API
+          let sellerUser = null;
+          try {
+            const sellerRes = await axios.get(`${API_BASE}/users/${sellerId}`);
+            console.log('SellerId:', sellerId, 'Response:', sellerRes);
+            sellerUser = sellerRes.data;
+          } catch (err) {
+            console.error('Seller fetch error:', sellerId, err?.response?.status, err?.response?.data);
+            alert(`Error fetching seller info for sellerId ${sellerId}`);
+            setIsLoading(false);
+            return;
+          }
+          // Find seller's bank account number
+          const sellerBankUser = bankUsers.find(u =>
+            (u.email && sellerUser.email && u.email === sellerUser.email) ||
+            (u.contact && sellerUser.phone && u.contact === sellerUser.phone)
+          );
+          if (!sellerBankUser) {
+            alert(`Seller ${sellerUser.name || sellerUser.email || sellerId} does not have a registered bank account.`);
+            setIsLoading(false);
+            return;
+          }
+          const transferPayload = {
+            fromUserId: String(buyerBankUserId),
+            toAccountNumber: String(sellerBankUser.accountNumber),
+            amount: Math.round(Math.abs(Number(sellerMap[sellerId].total))),
+            description: `SiniLikhain order payment to seller ${sellerUser.name || sellerId}`
+          };
+          if (!transferPayload.fromUserId || !transferPayload.toAccountNumber || !transferPayload.amount) {
+            alert("Bank transfer payload is missing required fields.");
+            setIsLoading(false);
+            return;
+          }
+          console.log("Bank transfer payload:", transferPayload);
+          try {
+            await axios.post(`${BANK_API_BASE}/users/transfer`, transferPayload);
+          } catch (err) {
+            console.error("Bank transfer error:", err?.response?.data || err);
+            alert("Bank transfer failed: " + (err?.response?.data?.message || err.message || "Unknown error"));
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
       // Example API call - you would need to implement this endpoint on your server
       await axios.post(`${API_BASE}/orders`, {
         userId: user._id,
         items: itemsToPurchase,
-        shippingInfo,
+        shippingInfo: { ...shippingInfo, accountNumber: shippingInfo.paymentMethod === "bank" ? accountNumber : undefined },
         totalAmount: calculateCartTotal(cart)
       });
 
@@ -376,10 +505,34 @@ function Checkout() {
                       <option value="bank">Bank Transfer</option>
                     </select>
                   </div>
+                  {shippingInfo.paymentMethod === "bank" && (
+                    <div>
+                      <label htmlFor="accountNumber" className="block text-md font-mono mb-2 text-[#1b2a41]">Bank Account Number</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          id="accountNumber"
+                          name="accountNumber"
+                          value={accountNumber}
+                          onChange={e => { setAccountNumber(e.target.value.replace(/[^0-9]/g, "")); setAccountValid(false); setAccountHolder(""); setAccountCheckError(""); }}
+                          required
+                          pattern="\d+"
+                          inputMode="numeric"
+                          className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-[#bfa181] focus:outline-none text-black"
+                          placeholder="Enter your bank account number"
+                        />
+                        <button type="button" onClick={validateBankAccount} disabled={accountCheckLoading || !accountNumber} className="px-4 py-2 bg-[#bfa181] text-[#1b2a41] rounded font-mono font-bold border border-[#bfa181] hover:bg-[#eae0d5] hover:text-[#5e503f] focus:outline-none focus:ring-2 focus:ring-[#bfa181] disabled:bg-gray-200 disabled:text-gray-400 transition-colors">
+                          {accountCheckLoading ? "Checking..." : "Validate"}
+                        </button>
+                      </div>
+                      {accountValid && <div className="text-green-600 text-sm mt-1">Account holder: {accountHolder}</div>}
+                      {accountCheckError && <div className="text-red-600 text-sm mt-1">{accountCheckError}</div>}
+                    </div>
+                  )}
                   <div className="mt-8">
                     <button 
                       type="submit" 
-                      disabled={isLoading}
+                      disabled={isLoading || (shippingInfo.paymentMethod === 'bank' && !accountValid)}
                       style={{ backgroundColor: '#5e503f', borderColor: '#5e503f' }}
                       className="w-full px-8 py-3 border-2 text-white font-mono font-bold text-lg tracking-widest transition rounded-none disabled:bg-gray-400 disabled:border-gray-400"
                       onMouseOver={e => { e.currentTarget.style.backgroundColor = '#eae0d5'; e.currentTarget.style.color = '#5e503f'; }}

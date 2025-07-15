@@ -17,16 +17,26 @@ router.get("/", async (req, res) => {
   // If ?approved=true, return products with approved: true OR status: "approved"
   if (req.query.approved === "true") {
     const products = await Product.find({ $or: [ { approved: true }, { status: "approved" } ] });
-    return res.json(products);
+    // Always include sellerId in response
+    return res.json(products.map(p => ({
+      ...p.toObject(),
+      sellerId: p.userId // userId is the seller's id
+    })));
   }
   // Filter by artisan if provided
   if (req.query.artisan) {
     const products = await Product.find({ artisan: req.query.artisan });
-    return res.json(products);
+    return res.json(products.map(p => ({
+      ...p.toObject(),
+      sellerId: p.userId
+    })));
   }
   // Always return all products, regardless of status (for testing/demo)
   const products = await Product.find();
-  res.json(products);
+  res.json(products.map(p => ({
+    ...p.toObject(),
+    sellerId: p.userId
+  })));
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
@@ -50,7 +60,11 @@ router.post("/", upload.single("image"), async (req, res) => {
       image: req.file ? `/uploads/${req.file.filename}` : undefined
     });
     await product.save();
-    res.status(201).json(product);
+    // Always include sellerId in response
+    res.status(201).json({
+      ...product.toObject(),
+      sellerId: product.userId
+    });
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: err.message });
