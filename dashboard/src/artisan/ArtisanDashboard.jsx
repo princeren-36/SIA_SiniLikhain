@@ -262,12 +262,17 @@ const ArtisanDashboard = () => {
 
   return (
     <ArtisanLayout>
-      <div className={`flex-1 flex flex-col overflow-hidden transition-colors duration-300 ${isDarkMode ? 'bg-[#18181b] text-gray-100' : ''}`}>
-        <div className="p-4 md:p-6 lg:p-8 overflow-x-auto">
-          <h2 className={`text-2xl font-bold mb-4 tracking-tight flex items-center gap-3 ${isDarkMode ? 'text-gray-100' : 'text-[#1b2a41]'}`}>Artisan Dashboard</h2>
-          <p className={`mb-6 ${isDarkMode ? 'text-gray-500' : ''}`}>Welcome to your dashboard! Here you can see an overview of your activity.</p>
+      <div className={`flex-1 flex flex-col overflow-hidden transition-colors duration-300 min-h-screen ${isDarkMode ? 'bg-[#18181b] text-gray-100' : ''}`}>
+        {/* Sticky Top Bar for Mobile */}
+        <div className="block sm:hidden sticky top-0 z-30 bg-[#18181b] border-b border-gray-800 shadow-md px-4 py-3 flex items-center justify-between">
+          <h2 className="text-lg font-bold tracking-tight text-gray-100">Artisan Dashboard</h2>
+        </div>
+        <div className="p-2 sm:p-4 md:p-6 lg:p-8 overflow-x-auto pb-24 sm:pb-0">
+          {/* Hide duplicate heading on mobile */}
+          <h2 className={`hidden sm:flex text-xl sm:text-2xl font-bold mb-4 tracking-tight items-center gap-3 ${isDarkMode ? 'text-gray-100' : 'text-[#1b2a41]'}`}>Artisan Dashboard</h2>
+          <p className={`mb-6 text-sm sm:text-base ${isDarkMode ? 'text-gray-500' : ''}`}>Welcome to your dashboard! Here you can see an overview of your activity.</p>
           {/* Product Status Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-8">
             <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${isDarkMode ? 'bg-[#1f1f23] border-green-800' : 'bg-gradient-to-br from-green-100 to-green-50 border-green-500'}`}>
               <div className="absolute right-4 top-4 opacity-10 text-7xl">
                 <svg className="w-12 h-12" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -301,7 +306,7 @@ const ArtisanDashboard = () => {
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 xl:gap-8">
               {/* Main Content (left and center) */}
               <div className="flex-1 min-w-0 overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
                   {/* Analytics Cards */}
                   <div className={`p-6 rounded-2xl shadow-lg border-l-8 hover:scale-[1.03] transition-transform duration-300 relative overflow-hidden ${isDarkMode ? 'bg-[#1f1f23] border-blue-800' : 'bg-gradient-to-br from-blue-100 to-blue-50 border-blue-500'}`}>
                     <div className="absolute right-4 top-4 opacity-10 text-7xl">
@@ -338,8 +343,8 @@ const ArtisanDashboard = () => {
                   </div>
                 </div>
                 {/* Graphs */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                  <div className={`p-8 rounded-2xl shadow-xl border ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 mb-8">
+                  <div className={`p-3 sm:p-8 rounded-2xl shadow-xl border border-gray-800/60 sm:border ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}> 
                     <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-700'}`}>
                       <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -363,7 +368,7 @@ const ArtisanDashboard = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="h-[250px] w-full">
+                    <div className="h-[180px] sm:h-[250px] w-full">
                       <ChartLine
                         data={getProductQuantitiesChartData()}
                         options={{
@@ -410,7 +415,7 @@ const ArtisanDashboard = () => {
                       />
                     </div>
                   </div>
-                  <div className={`p-8 rounded-2xl shadow-xl border ${isDarkMode ? 'bg-[#1f1f23] border-green-900' : 'bg-white border-green-100'}`}>
+                  <div className={`p-3 sm:p-8 rounded-2xl shadow-xl border border-gray-800/60 sm:border ${isDarkMode ? 'bg-[#1f1f23] border-green-900' : 'bg-white border-green-100'}`}> 
                     <h3 className={`text-xl font-bold mb-4 flex items-center gap-2 ${isDarkMode ? 'text-green-400' : 'text-green-700'}`}>
                       <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -418,7 +423,7 @@ const ArtisanDashboard = () => {
                       </svg>
                       Products by Category
                     </h3>
-                    <ResponsiveContainer width="100%" height={250}>
+                    <ResponsiveContainer width="100%" height={180}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                           {pieData.map((entry, idx) => (
@@ -432,7 +437,7 @@ const ArtisanDashboard = () => {
                   </div>
                 </div>
                 {/* Stock Analysis Section */}
-                <div className={`p-8 rounded-2xl shadow-xl mb-8 border ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}>
+                <div className={`p-3 sm:p-8 rounded-2xl shadow-xl mb-8 border border-gray-800/60 sm:border ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}> 
                   <div className="flex justify-between items-center mb-4">
                     <h3 className={`text-xl font-bold flex items-center gap-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-700'}`}>
                       <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -479,7 +484,7 @@ const ArtisanDashboard = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="h-[250px] w-full">
+                  <div className="h-[180px] sm:h-[250px] w-full">
                     <ChartLine
                       data={getStockChartData()}
                       options={{
@@ -533,8 +538,8 @@ const ArtisanDashboard = () => {
                 </div>
               </div>
               {/* Top Selling Products (right sidebar) */}
-              <div className="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col h-full">
-                <div className={`p-6 rounded-2xl shadow-xl border flex flex-col ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}> 
+              <div className="w-full lg:w-64 xl:w-72 flex-shrink-0 flex flex-col h-full mt-4 lg:mt-0">
+                <div className={`p-3 sm:p-6 rounded-2xl shadow-xl border border-gray-800/60 sm:border flex flex-col ${isDarkMode ? 'bg-[#1f1f23] border-blue-900' : 'bg-white border-blue-100'}`}> 
                   <h3 className={`text-lg font-bold mb-3 md:mb-4 flex items-center gap-2 ${isDarkMode ? 'text-blue-400' : 'text-blue-700'}`}> 
                     <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"> 
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /> 
@@ -544,8 +549,9 @@ const ArtisanDashboard = () => {
                   <p className={`text-xs mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                     Recent orders from your customers
                   </p>
-                  <div className="flex-1 overflow-y-auto"> 
-                    <table className={`w-full text-xs md:text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}> 
+                  <div className="flex-1 overflow-x-auto overflow-y-auto relative">
+                    <div className="absolute left-0 top-0 h-full w-2 bg-gradient-to-r from-[#18181b] to-transparent pointer-events-none block sm:hidden" style={{zIndex:2}}></div>
+                    <table className={`w-full min-w-[320px] text-xs md:text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}> 
                       <thead> 
                         <tr className={isDarkMode ? 'border-b border-gray-700' : 'border-b border-gray-200'}> 
                           <th className="text-left pb-2 font-semibold">Product</th> 
@@ -583,7 +589,7 @@ const ArtisanDashboard = () => {
                   )}
                 </div> 
                 {/* Realtime Calendar as a separate card */} 
-                <div className={`p-5 rounded-2xl shadow-xl border flex-1 flex flex-col justify-between mt-2 ${isDarkMode ? 'bg-[#1f1f23] border-purple-900 react-calendar-dark' : 'bg-gradient-to-br from-purple-100 to-purple-50 border-purple-400 react-calendar-light'}`}>  
+                <div className={`p-3 sm:p-5 rounded-2xl shadow-xl border border-gray-800/60 sm:border flex-1 flex flex-col justify-between mt-2 ${isDarkMode ? 'bg-[#1f1f23] border-purple-900 react-calendar-dark' : 'bg-gradient-to-br from-purple-100 to-purple-50 border-purple-400 react-calendar-light'}`}>  
                   <h4 className={`text-lg font-bold mb-3 flex items-center gap-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-700'}`}> 
                     <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"> 
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> 
