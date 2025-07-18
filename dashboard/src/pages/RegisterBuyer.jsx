@@ -42,6 +42,8 @@ function RegisterBuyer() {
   const [otpArray, setOtpArray] = useState(['', '', '', '', '', '']);
   const [otpFocused, setOtpFocused] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -114,26 +116,33 @@ function RegisterBuyer() {
 
   const handleRegister = async () => {
     if (!validateForm()) return;
+    
+    setIsSendingOtp(true);
+    
     try {
       const { confirmPassword, ...submitData } = userData;
       // Check if email is already used for this role
       const check = await axios.post(`${API_BASE}/users/register`, submitData);
-      // If we get here, email is not used, OTP sent
-      setPendingReg({ email: submitData.email, role: submitData.role });
-      setOtpDialogOpen(true);
-      // Reset OTP fields when opening dialog
+      
+      // Reset OTP fields
       setOtpArray(['', '', '', '', '', '']);
       setOtp('');
       setOtpError('');
       setVerificationSuccess(false);
+      
+      // If we get here, email is not used, OTP sent
+      setPendingReg({ email: submitData.email, role: submitData.role });
+      
+      setIsSendingOtp(false);
+      setOtpDialogOpen(true);
     } catch (err) {
+      setIsSendingOtp(false);
       if (err.response && err.response.data && err.response.data.message) {
         // If email is already used, show error as toast
         toast.error(err.response.data.message);
       } else {
         toast.error("Registration failed. Please try again later.");
       }
-      setOtpDialogOpen(false);
     }
   };
 
@@ -148,6 +157,9 @@ function RegisterBuyer() {
       setOtpError('OTP must be 6 digits.');
       return;
     }
+    
+    setIsVerifying(true);
+    
     try {
       await axios.post(`${API_BASE}/users/verify-registration-otp`, {
         email: pendingReg.email,
@@ -157,6 +169,7 @@ function RegisterBuyer() {
       
       // Show success state
       setVerificationSuccess(true);
+      setIsVerifying(false);
       
       // Navigate after delay
       setTimeout(() => {
@@ -164,6 +177,7 @@ function RegisterBuyer() {
         navigate('/Login');
       }, 2000);
     } catch (err) {
+      setIsVerifying(false);
       if (err.response && err.response.data && err.response.data.message) {
         setOtpError(err.response.data.message);
       } else {
@@ -494,11 +508,24 @@ function RegisterBuyer() {
             />
           </div>
           <button
-            className="w-full bg-black text-white hover:bg-gray-900 font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide border border-black outline-none"
-            style={{ fontFamily: 'Poppins, Verdana, monospace', backgroundColor: '#000', color: '#fff' }}
+            className="w-full bg-black text-white hover:bg-gray-900 font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-2 mt-2 text-lg tracking-wide border border-black outline-none flex justify-center items-center"
+            style={{ 
+              fontFamily: 'Poppins, Verdana, monospace', 
+              backgroundColor: '#000', 
+              color: '#fff',
+              opacity: isSendingOtp ? '0.85' : '1'
+            }}
             onClick={handleRegister}
+            disabled={isSendingOtp}
           >
-            Register
+            {isSendingOtp ? (
+              <>
+                <span className="inline-block w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin mr-2"></span>
+                Sending OTP...
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
           <p className="text-center text-black mt-4 text-sm font-poppins">
             Already have an account?{' '}
@@ -550,6 +577,15 @@ function RegisterBuyer() {
                     <p className="text-xl font-semibold mb-2">Registration successful!</p>
                     <p className="text-base">You can now log in to your account.</p>
                   </div>
+                ) : isVerifying ? (
+                  <div className="flex flex-col justify-center items-center py-6">
+                    <div className="w-16 h-16 relative flex items-center justify-center">
+                      <span className="sr-only">Verifying...</span>
+                      <span className="absolute inline-block w-16 h-16 rounded-full border-4 border-black border-t-transparent animate-spin"></span>
+                      <span className="absolute inline-block w-10 h-10 rounded-full border-2 border-gray-400 border-t-transparent opacity-60 animate-spin-slow"></span>
+                    </div>
+                    <span className="mt-4 text-black font-semibold text-lg animate-pulse">Verifying OTP...</span>
+                  </div>
                 ) : (
                   <>
                     Enter the OTP sent to your email to verify your account.
@@ -589,7 +625,7 @@ function RegisterBuyer() {
               </div>
             </DialogContent>
             <DialogActions style={{ justifyContent: 'center', padding: '16px' }}>
-              {!verificationSuccess && (
+              {!verificationSuccess && !isVerifying && (
                 <>
                   <Button 
                     onClick={() => setOtpDialogOpen(false)}

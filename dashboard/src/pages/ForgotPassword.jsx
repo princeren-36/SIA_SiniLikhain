@@ -12,6 +12,7 @@ function ForgotPassword() {
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
   const [emailFocused, setEmailFocused] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
   const navigate = useNavigate();
 
   // Simple email validation
@@ -29,12 +30,21 @@ function ForgotPassword() {
       setMsg('');
       return;
     }
+    
+    setIsSendingOtp(true);
+    setError('');
+    setMsg('');
+    
     try {
       await axios.post(`${API_BASE}/users/forgot-password`, { email });
       setMsg('OTP sent to your email!');
       setError('');
-      setTimeout(() => navigate('/reset-password', { state: { email } }), 1000);
+      setTimeout(() => {
+        setIsSendingOtp(false);
+        navigate('/reset-password', { state: { email } });
+      }, 1000);
     } catch (err) {
+      setIsSendingOtp(false);
       setError(err.response?.data?.error || err.response?.data?.message || 'Failed to send OTP.');
       setMsg('');
     }
@@ -122,11 +132,27 @@ function ForgotPassword() {
         </div>
         
         <button
-          className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-3 sm:mb-4 mt-2 text-base sm:text-lg tracking-wide cursor-pointer"
-          style={{ fontFamily: 'Poppins, Verdana, monospace', background: '#000', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer' }}
+          className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-2 rounded-xl shadow-md transition-colors duration-200 mb-3 sm:mb-4 mt-2 text-base sm:text-lg tracking-wide cursor-pointer flex justify-center items-center"
+          style={{ 
+            fontFamily: 'Poppins, Verdana, monospace', 
+            background: '#000', 
+            color: '#fff', 
+            border: 'none', 
+            outline: 'none', 
+            cursor: isSendingOtp ? 'wait' : 'pointer',
+            opacity: isSendingOtp ? '0.85' : '1'
+          }}
           onClick={handleSendOtp}
+          disabled={isSendingOtp}
         >
-          Send OTP
+          {isSendingOtp ? (
+            <>
+              <span className="inline-block w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin mr-2"></span>
+              Sending OTP...
+            </>
+          ) : (
+            "Send OTP"
+          )}
         </button>
         
         {msg && <div className="w-full mt-2 mb-2">
