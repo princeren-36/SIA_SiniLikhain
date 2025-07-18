@@ -23,6 +23,10 @@ function ResetPassword() {
   const [passwordFocused, setPasswordFocused] = useState(false);
   const email = location.state?.email || '';
 
+  // Strong password validation
+  const isStrongPassword = (password) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+
   const handleReset = async () => {
     if (!otp) {
       setError('OTP is required.');
@@ -39,8 +43,8 @@ function ResetPassword() {
       setMsg('');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (!isStrongPassword(password)) {
+      setError('Password must be at least 8 characters, include uppercase, lowercase, number, and special character.');
       setMsg('');
       return;
     }

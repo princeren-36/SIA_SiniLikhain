@@ -27,7 +27,7 @@ function Register() {
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0" />
       <button
         className="absolute top-6 left-6 z-20 bg-white/80 hover:bg-white text-black font-semibold px-4 py-2 rounded-full shadow border border-gray-300 transition-colors duration-200"
-        onClick={() => navigate('/Login')}
+        onClick={() => navigate('/login')}
       >
         &#8592; Back
       </button>

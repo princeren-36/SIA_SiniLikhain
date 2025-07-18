@@ -48,46 +48,41 @@ function RegisterArtisan() {
     }
   };
 
+  // Validation helpers
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidUsername = (username) => /^[a-zA-Z0-9_]{3,20}$/.test(username);
+  const isValidPhone = (phone) => /^\d{10,15}$/.test(phone);
+  const isStrongPassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+
   const validateForm = () => {
-    let currentErrors = {};
-    let isValid = true;
-    if (!userData.username.trim()) {
-      currentErrors.username = "Username is required.";
-      isValid = false;
-    } else if (userData.username.trim().length < 3) {
-      currentErrors.username = "Username must be at least 3 characters long.";
-      isValid = false;
+    const newErrors = {};
+    if (!userData.username) {
+      newErrors.username = 'Username is required.';
+    } else if (!isValidUsername(userData.username)) {
+      newErrors.username = 'Username must be 3-20 alphanumeric characters.';
     }
-    if (!userData.email.trim()) {
-      currentErrors.email = "Email is required.";
-      isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email.trim())) {
-      currentErrors.email = "Invalid email format.";
-      isValid = false;
+    if (!userData.email) {
+      newErrors.email = 'Email is required.';
+    } else if (!isValidEmail(userData.email)) {
+      newErrors.email = 'Enter a valid email address.';
     }
-    if (!userData.phone.trim()) {
-      currentErrors.phone = "Phone number is required.";
-      isValid = false;
-    } else if (!/^\d{10,15}$/.test(userData.phone.trim())) {
-      currentErrors.phone = "Phone number must be 10-15 digits.";
-      isValid = false;
+    if (!userData.phone) {
+      newErrors.phone = 'Phone number is required.';
+    } else if (!isValidPhone(userData.phone)) {
+      newErrors.phone = 'Enter a valid phone number (10-15 digits).';
     }
-    if (!userData.password.trim()) {
-      currentErrors.password = "Password is required.";
-      isValid = false;
-    } else if (userData.password.trim().length < 6) {
-      currentErrors.password = "Password must be at least 6 characters long.";
-      isValid = false;
+    if (!userData.password) {
+      newErrors.password = 'Password is required.';
+    } else if (!isStrongPassword(userData.password)) {
+      newErrors.password = 'Password must be at least 8 characters, include uppercase, lowercase, number, and special character.';
     }
-    if (!userData.confirmPassword.trim()) {
-      currentErrors.confirmPassword = "Please confirm your password.";
-      isValid = false;
+    if (!userData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password.';
     } else if (userData.password !== userData.confirmPassword) {
-      currentErrors.confirmPassword = "Passwords do not match.";
-      isValid = false;
+      newErrors.confirmPassword = 'Passwords do not match.';
     }
-    setErrors(currentErrors);
-    return isValid;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
@@ -158,7 +153,7 @@ function RegisterArtisan() {
         <button
           className="fixed top-8 left-8 z-30 bg-white/80 hover:bg-white text-black font-semibold px-4 py-2 rounded-full shadow border border-gray-300 transition-colors duration-200"
           style={{ fontFamily: 'Poppins, Verdana, monospace' }}
-          onClick={() => navigate('/register')}
+          onClick={() => navigate('/login')}
         >
           &#8592; Back
         </button>

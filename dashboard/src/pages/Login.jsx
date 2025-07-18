@@ -84,16 +84,20 @@ function Login() {
   const handleLogin = async () => {
     let currentErrors = {};
 
+    // Email/username validation
     if (!credentials.username.trim()) {
       currentErrors.username = "Email or username is required";
+    } else if (!/^([\w-.]+@([\w-]+\.)+[\w-]{2,4}|[a-zA-Z0-9_]+)$/.test(credentials.username.trim())) {
+      currentErrors.username = "Enter a valid email or username (letters, numbers, _ only)";
     }
+    // Password validation
     if (!credentials.password.trim()) {
       currentErrors.password = "Password is required";
     }
 
     if (Object.keys(currentErrors).length > 0) {
       setErrors(currentErrors);
-      return; 
+      return;
     }
 
     localStorage.removeItem("user");
