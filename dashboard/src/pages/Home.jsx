@@ -131,7 +131,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8">
             {/* Partner 1: Kahit Saan */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                 <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer">
                   <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                 </a>
@@ -143,7 +143,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
             </div>
             {/* Partner 2: National Book Store */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                 <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer">
                   <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                 </a>
@@ -155,7 +155,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
             </div>
             {/* Partner 3: Blank Tapes */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                 <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer">
                   <img src="http://192.168.9.83:5173/src/img/logowhite.png" alt="Blank Tapes Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                 </a>
@@ -167,7 +167,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
             </div>
             {/* Partner 4: PNB */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                 <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer">
                   <img src="/src/images/pnb.png" alt="PNB Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                 </a>
@@ -179,7 +179,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
             </div>
             {/* Partner 5: Jollibee */}
             <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                 <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
                   <img src="/src/images/jabee.png" alt="Jollibee Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                 </a>
@@ -190,19 +190,19 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
               </span>
             </div>
             {/* Partner 6: ITBytes */}
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
-                  <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
-                    <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
-                  </a>
-                </div>
-                <p className="text-gray-400 text-sm">ITBytes</p>
-                <span className={`mt-1 text-xs font-semibold ${ITBytes === null ? 'text-gray-400' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
-                  {ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}
-                </span>
+            <div className="flex flex-col items-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
+                <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
+                  <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
+                </a>
               </div>
+              <p className="text-gray-400 text-sm">ITBytes</p>
+              <span className={`mt-1 text-xs font-semibold ${ITBytes === null ? 'text-gray-400' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
+                {ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}
+              </span>
             </div>
           </div>
+        </div>
         <div className="pt-4">
           <p className="text-center text-gray-500 text-xs tracking-wide">
             © {new Date().getFullYear()} <span className="font-bold text-[#f8d49f]">SiniLikhain</span>. All rights reserved.

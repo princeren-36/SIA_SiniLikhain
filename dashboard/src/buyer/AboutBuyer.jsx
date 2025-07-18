@@ -474,7 +474,7 @@ function About() {
             <div className="flex flex-wrap justify-center items-center gap-8">
               {/* Partner 1: Kahit Saan */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer">
                     <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="w-12 h-12 object-contain" />
                   </a>
@@ -486,7 +486,7 @@ function About() {
               </div>
               {/* Partner 2: National Book Store */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer">
                     <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="w-12 h-12 object-contain" />
                   </a>
@@ -498,9 +498,9 @@ function About() {
               </div>
               {/* Partner 3: Blank Tapes */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer">
-                    <img src="http://192.168.9.83:5173/src/img/logowhite.png" alt="Blank Tapes Logo" className="w-12 h-12 object-contain" />
+                    <img src="/src/images/logowhite.png" alt="Blank Tapes Logo" className="w-12 h-12 object-contain" />
                   </a>
                 </div>
                 <p className="text-gray-400 text-sm">Blank Tapes</p>
@@ -510,7 +510,7 @@ function About() {
               </div>
               {/* Partner 4: PNB */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer">
                     <img src="/src/images/pnb.png" alt="PNB Logo" className="w-12 h-12 object-contain" />
                   </a>
@@ -522,7 +522,7 @@ function About() {
               </div>
               {/* Partner 5: Jollibee */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
                     <img src="/src/images/jabee.png" alt="Jollibee Logo" className="w-12 h-12 object-contain" />
                   </a>
@@ -534,7 +534,7 @@ function About() {
               </div>
               {/* Partner 6: ITBytes */}
               <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md bg-white">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
                   <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
                     <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
                   </a>
