@@ -126,80 +126,113 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
           </div>
         </div>
         {/* Our Business Partners Section */}
-        <div className="mt-8 md:mt-10 mb-6 md:mb-8">
-          <h3 className="text-center text-base sm:text-lg font-semibold mb-4 font-mono text-[#f8d49f]">Our Business Partners</h3>
-          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8">
+        <div className="mt-8 md:mt-10 mb-6 md:mb-8 border-t border-gray-800 pt-8">
+          <div className="text-center mb-6">
+            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#f8d49f] rounded-full text-xs font-medium mb-2">
+              Partnerships
+            </span>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2 font-mono text-[#f8d49f]">Our Business Partners</h3>
+            <p className="text-gray-400 text-xs sm:text-sm max-w-2xl mx-auto">
+              Connecting with organizations who share our vision for promoting Filipino craftsmanship
+            </p>
+            <div className="w-10 sm:w-16 h-0.5 bg-[#f8d49f]/50 mx-auto mt-3"></div>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 mt-6">
             {/* Partner 1: Kahit Saan */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">Kahit Saan</h4>
+                <div className={`flex items-center gap-1.5 ${kahitSaanOnline === null ? 'text-gray-500' : kahitSaanOnline ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{kahitSaanOnline === null ? 'Checking...' : kahitSaanOnline ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-xs sm:text-sm">Kahit Saan</p>
-              <span className={`mt-1 text-xs font-semibold ${kahitSaanOnline === null ? 'text-gray-400' : kahitSaanOnline ? 'text-green-400' : 'text-red-400'}`}>
-                {kahitSaanOnline === null ? 'Checking...' : kahitSaanOnline ? 'Online' : 'Offline'}
-              </span>
             </div>
+            
             {/* Partner 2: National Book Store */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">National Book Store</h4>
+                <div className={`flex items-center gap-1.5 ${nbsOnline === null ? 'text-gray-500' : nbsOnline ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{nbsOnline === null ? 'Checking...' : nbsOnline ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-xs sm:text-sm">National Book Store</p>
-              <span className={`mt-1 text-xs font-semibold ${nbsOnline === null ? 'text-gray-400' : nbsOnline ? 'text-green-400' : 'text-red-400'}`}>
-                {nbsOnline === null ? 'Checking...' : nbsOnline ? 'Online' : 'Offline'}
-              </span>
             </div>
+            
             {/* Partner 3: Blank Tapes */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="http://192.168.9.83:5173/src/img/logowhite.png" alt="Blank Tapes Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="http://192.168.9.83:5173/src/img/logowhite.png" alt="Blank Tapes Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">BlankTapes</h4>
+                <div className={`flex items-center gap-1.5 ${blanktapes === null ? 'text-gray-500' : blanktapes ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{blanktapes === null ? 'Checking...' : blanktapes ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-xs sm:text-sm">Blank Tapes</p>
-              <span className={`mt-1 text-xs font-semibold ${blanktapes === null ? 'text-gray-400' : blanktapes ? 'text-green-400' : 'text-red-400'}`}>
-                {blanktapes === null ? 'Checking...' : blanktapes ? 'Online' : 'Offline'}
-              </span>
             </div>
+            
             {/* Partner 4: PNB */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/images/pnb.png" alt="PNB Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/pnb.png" alt="PNB Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">PNB</h4>
+                <div className={`flex items-center gap-1.5 ${pnb === null ? 'text-gray-500' : pnb ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{pnb === null ? 'Checking...' : pnb ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-xs sm:text-sm">PNB</p>
-              <span className={`mt-1 text-xs font-semibold ${pnb === null ? 'text-gray-400' : pnb ? 'text-green-400' : 'text-red-400'}`}>
-                {pnb === null ? 'Checking...' : pnb ? 'Online' : 'Offline'}
-              </span>
             </div>
+            
             {/* Partner 5: Jollibee */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/images/jabee.png" alt="Jollibee Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/jabee.png" alt="Jollibee Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">Jollibee</h4>
+                <div className={`flex items-center gap-1.5 ${jollibee === null ? 'text-gray-500' : jollibee ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-xs sm:text-sm">Jollibee</p>
-              <span className={`mt-1 text-xs font-semibold ${jollibee === null ? 'text-gray-400' : jollibee ? 'text-green-400' : 'text-red-400'}`}>
-                {jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}
-              </span>
             </div>
+            
             {/* Partner 6: ITBytes */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2 shadow-md" style={{ background: '#232526' }}>
-                <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer">
-                  <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="w-12 h-12 object-contain" />
-                </a>
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.9.4:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">ITBytes</h4>
+                <div className={`flex items-center gap-1.5 ${ITBytes === null ? 'text-gray-500' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}</span>
+                </div>
               </div>
-              <p className="text-gray-400 text-sm">ITBytes</p>
-              <span className={`mt-1 text-xs font-semibold ${ITBytes === null ? 'text-gray-400' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
-                {ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}
-              </span>
             </div>
           </div>
         </div>
