@@ -89,7 +89,28 @@ function RegisterArtisan() {
   const [pendingReg, setPendingReg] = useState(null);
   const [infoMsg, setInfoMsg] = useState('');
   const [otp, setOtp] = useState('');
+  const [otpArray, setOtpArray] = useState(['', '', '', '', '', '']);
   const [otpError, setOtpError] = useState('');
+  const [otpFocused, setOtpFocused] = useState(false);
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
+
+  const handleOtpChange = (e, idx) => {
+    const val = e.target.value.replace(/\D/g, '');
+    if (val.length > 1) return; // Only allow one digit
+    const newArr = [...otpArray];
+    newArr[idx] = val;
+    setOtpArray(newArr);
+    setOtp(newArr.join(''));
+    if (val && idx < 5) {
+      document.getElementById(`otp-box-${idx + 1}`)?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, idx) => {
+    if (e.key === 'Backspace' && !otpArray[idx] && idx > 0) {
+      document.getElementById(`otp-box-${idx - 1}`)?.focus();
+    }
+  };
 
   const handleRegister = async () => {
     if (!validateForm()) return;
@@ -98,7 +119,10 @@ function RegisterArtisan() {
       const res = await axios.post(`${API_BASE}/users/register`, submitData);
       setPendingReg({ email: submitData.email, role: submitData.role });
       setOtpDialogOpen(true);
-      setInfoMsg(res.data.message || 'OTP sent to your email. Please enter it below.');
+      // Reset OTP fields when opening dialog
+      setOtpArray(['', '', '', '', '', '']);
+      setOtp('');
+      setOtpError('');
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         toast.error(err.response.data.message);
@@ -111,21 +135,30 @@ function RegisterArtisan() {
 
   const handleOtpVerify = async () => {
     setOtpError('');
-    if (!otp.trim()) {
+    const otpValue = otpArray.join('');
+    if (!otpValue) {
       setOtpError('OTP is required.');
+      return;
+    }
+    if (otpValue.length !== 6) {
+      setOtpError('OTP must be 6 digits.');
       return;
     }
     try {
       await axios.post(`${API_BASE}/users/verify-registration-otp`, {
         email: pendingReg.email,
         role: pendingReg.role,
-        otp: otp.trim(),
+        otp: otpValue,
       });
-      setInfoMsg('Registration successful! You can now log in.');
+      
+      // Show success state
+      setVerificationSuccess(true);
+      
+      // Navigate after delay
       setTimeout(() => {
         setOtpDialogOpen(false);
         navigate('/Login');
-      }, 1500);
+      }, 2000);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setOtpError(err.response.data.message);
@@ -465,23 +498,120 @@ function RegisterArtisan() {
           >
             Register
           </button>
-          <Dialog open={otpDialogOpen} onClose={() => setOtpDialogOpen(false)}>
-            <DialogTitle>Email Verification</DialogTitle>
+          <Dialog 
+            open={otpDialogOpen} 
+            onClose={() => setOtpDialogOpen(false)}
+            PaperProps={{
+              style: {
+                borderRadius: '16px',
+                padding: '16px',
+                maxWidth: '400px',
+                width: '90%',
+                fontFamily: 'Poppins, Verdana, monospace',
+                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)',
+                border: '1px solid #000'
+              }
+            }}
+          >
+            <DialogTitle style={{ 
+              textAlign: 'center', 
+              fontFamily: 'Poppins, Verdana, monospace',
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              color: '#111'
+            }}>
+              Account Verification
+            </DialogTitle>
             <DialogContent>
-              <div style={{ marginBottom: 12 }}>{infoMsg}</div>
-              <TextField
-                label="Enter OTP"
-                value={otp}
-                onChange={e => setOtp(e.target.value)}
-                fullWidth
-                error={!!otpError}
-                helperText={otpError}
-                autoFocus
-              />
+              <div style={{ 
+                marginBottom: '20px',
+                textAlign: 'center',
+                fontFamily: 'Poppins, Verdana, monospace',
+                color: '#333' 
+              }}>
+                {verificationSuccess ? (
+                  <div className="text-center text-green-600 p-4">
+                    <div className="flex items-center justify-center mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <p className="text-xl font-semibold mb-2">Registration successful!</p>
+                    <p className="text-base">You can now log in to your account.</p>
+                  </div>
+                ) : (
+                  <>
+                    Enter the OTP sent to your email to verify your account.
+                  
+                    <div className="flex justify-center items-center gap-2 my-6">
+                      {[0,1,2,3,4,5].map((i) => (
+                        <input
+                          key={i}
+                          id={`otp-box-${i}`}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={otpArray[i]}
+                          onChange={(e) => handleOtpChange(e, i)}
+                          onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                          onFocus={() => setOtpFocused(true)}
+                          onBlur={() => setOtpFocused(false)}
+                          className={`w-12 h-12 text-center text-2xl border-2 rounded-lg focus:outline-none focus:border-black transition-all bg-white font-mono ${otpFocused ? 'border-black' : 'border-gray-400'}`}
+                          style={{ 
+                            fontFamily: 'Poppins, Verdana, monospace', 
+                            boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)'
+                          }}
+                          autoFocus={i === 0}
+                          autoComplete="off"
+                          required
+                        />
+                      ))}
+                    </div>
+                    
+                    {otpError && (
+                      <div className="text-center text-red-600 mt-2 p-2 bg-red-50 border border-red-200 rounded-md" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
+                        {otpError}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOtpDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleOtpVerify} variant="contained">Verify</Button>
+            <DialogActions style={{ justifyContent: 'center', padding: '16px' }}>
+              {!verificationSuccess && (
+                <>
+                  <Button 
+                    onClick={() => setOtpDialogOpen(false)}
+                    style={{
+                      fontFamily: 'Poppins, Verdana, monospace',
+                      backgroundColor: '#f5f5f5',
+                      color: '#000',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      margin: '0 8px',
+                      border: '1px solid #ddd'
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleOtpVerify} 
+                    variant="contained"
+                    style={{
+                      fontFamily: 'Poppins, Verdana, monospace',
+                      backgroundColor: '#000',
+                      color: '#fff',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      margin: '0 8px',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                      border: 'none'
+                    }}
+                  >
+                    Verify Account
+                  </Button>
+                </>
+              )}
             </DialogActions>
           </Dialog>
           <p className="text-center text-black mt-4 text-sm" style={{ fontFamily: 'Poppins, Verdana, monospace' }}>
