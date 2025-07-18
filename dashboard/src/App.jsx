@@ -23,6 +23,7 @@ import ArtisanProfile from "./artisan/ArtisanProfile";
 import ArtisanOrders from "./artisan/ArtisanOrders";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from './pages/ResetPassword';
+import RequireAuth from "./utils/RequireAuth";
 
 function App() {
   return (
@@ -35,20 +36,20 @@ function App() {
         <Route path="/Home" element={<Home />} />
         <Route path="/AboutBuyer" element={<AboutBuyer />} />
         <Route path="/AboutArtisan" element={<AboutArtisan />} />
-        <Route path="/Admin" element={<Admin />} />
+        <Route path="/Admin" element={<RequireAuth><Admin /></RequireAuth>} />
         <Route path="/Buyer" element={<Buyer />} />
-        <Route path="/BuyerProfile" element={<BuyerProfile />} />
+        <Route path="/BuyerProfile" element={<RequireAuth><BuyerProfile /></RequireAuth>} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/buyer/Checkout" element={<Checkout />} />
-        <Route path="/Artisan" element={<Artisan />} />
+        <Route path="/buyer/Checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
+        <Route path="/Artisan" element={<RequireAuth><Artisan /></RequireAuth>} />
         <Route path="/registerartisan" element={<RegisterArtisan />} />
         <Route path="/registerbuyer" element={<RegisterBuyer />} />
-        <Route path="/artisan/dashboard" element={<ArtisanDashboard />} />
-        <Route path="/artisan/add-product" element={<AddProductPage />} />
-        <Route path="/artisan/products" element={<AddProduct />} />
-        <Route path="/artisan/manage-products" element={<ManageProducts />} />
-        <Route path="/artisan/profile" element={<ArtisanProfile />} />
-        <Route path="/artisan/orders" element={<ArtisanOrders />} />
+        <Route path="/artisan/dashboard" element={<RequireAuth><ArtisanDashboard /></RequireAuth>} />
+        <Route path="/artisan/add-product" element={<RequireAuth><AddProductPage /></RequireAuth>} />
+        <Route path="/artisan/products" element={<RequireAuth><AddProduct /></RequireAuth>} />
+        <Route path="/artisan/manage-products" element={<RequireAuth><ManageProducts /></RequireAuth>} />
+        <Route path="/artisan/profile" element={<RequireAuth><ArtisanProfile /></RequireAuth>} />
+        <Route path="/artisan/orders" element={<RequireAuth><ArtisanOrders /></RequireAuth>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
