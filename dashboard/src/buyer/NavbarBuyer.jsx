@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-function Navbar({ showLinks = true }) {
+function Navbar({ showLinks = true, onLogoutDialogState }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [hovered, setHovered] = useState("");
@@ -18,6 +18,7 @@ function Navbar({ showLinks = true }) {
       navigate("/Login");
     } else {
       setOpenDialog(true);
+      if (onLogoutDialogState) onLogoutDialogState(true);
     }
   };
 
@@ -25,12 +26,16 @@ function Navbar({ showLinks = true }) {
     localStorage.removeItem("user");
     sessionStorage.removeItem("user");
     setOpenDialog(false);
+    if (onLogoutDialogState) onLogoutDialogState(false);
     setOpenSnackbar(true);
     setTimeout(() => {
       window.location.href = "/Login";
     }, 1000);
   };
-  const handleCancelLogout = () => setOpenDialog(false);
+  const handleCancelLogout = () => {
+    setOpenDialog(false);
+    if (onLogoutDialogState) onLogoutDialogState(false);
+  };
 
   const navLinks = [
     { to: "/home", label: "Home" },
@@ -267,10 +272,12 @@ function Navbar({ showLinks = true }) {
 
       {/* Snackbar */}
       {openSnackbar && (
-        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn">
-          <div className="bg-[#324a5f] text-white px-8 py-3 rounded-xl shadow font-semibold border-l-4 border-[#1b2a41] flex items-center gap-2" style={{ fontFamily: 'Source Code Pro, monospace' }}>
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-            Successfully logged out!
+        <div className="fixed left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn" style={{ top: '80px' }}>
+          <div className="bg-gradient-to-r from-[#5e503f] to-[#6d5c49] text-white px-6 py-3 rounded-2xl shadow-lg font-semibold border-b-2 border-[#3c2f27] flex items-center gap-3" style={{ fontFamily: 'Source Code Pro, monospace', letterSpacing: '0.5px' }}>
+            <div className="bg-[#eaddcf] rounded-full p-1.5 flex items-center justify-center">
+              <svg className="w-5 h-5 text-[#5e503f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <span>Successfully logged out!</span>
           </div>
         </div>
       )}

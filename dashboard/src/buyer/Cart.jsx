@@ -233,8 +233,16 @@ function Cart() {
               <div className="text-lg font-bold mb-3 text-[#1b2a41]">Login Required</div>
               <div className="mb-5 text-[#1b2a41]">You must be logged in to buy products. Do you want to log in now?</div>
               <div className="flex justify-end gap-3">
-                <button onClick={() => setLoginPromptOpen(false)} className="px-5 py-2 rounded-lg bg-[#ccc9dc] hover:bg-[#324a5f] hover:text-white text-[#1b2a41] font-semibold shadow-sm transition">No</button>
-                <button onClick={() => { setLoginPromptOpen(false); navigate('/Login'); }} className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow-sm transition">Yes</button>
+                <button 
+                  onClick={() => setLoginPromptOpen(false)} 
+                  className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" 
+                  style={{ fontFamily: 'Source Code Pro, monospace' }}
+                >No</button>
+                <button 
+                  onClick={() => { setLoginPromptOpen(false); navigate('/Login'); }} 
+                  className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" 
+                  style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}
+                >Yes</button>
               </div>
             </div>
           </div>

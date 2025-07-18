@@ -5,12 +5,18 @@ import { faMoon as faMoonRegular, faSun as faSunRegular } from '@fortawesome/fre
 
 function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, darkMode, toggleDarkMode }) {
   const [showLogoutCard, setShowLogoutCard] = useState(false);
+  const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
 
   const handleLogoutClick = () => setShowLogoutCard(true);
   const handleCancelLogout = () => setShowLogoutCard(false);
   const handleConfirmLogout = () => {
     setShowLogoutCard(false);
-    handleLogout();
+    setShowLogoutSuccess(true);
+    
+    // Delay the actual logout to show the success message
+    setTimeout(() => {
+      handleLogout();
+    }, 1000);
   };
 
   return (
@@ -91,6 +97,18 @@ function AdminSidebar({ view, setView, handleLogout, sidebarOpen, navItems, dark
               <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer text-[#22223b]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
               <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}>Logout</button>
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Successful Logout Notification */}
+      {showLogoutSuccess && (
+        <div className="fixed left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn" style={{ top: '80px' }}>
+          <div className="bg-gradient-to-r from-[#5e503f] to-[#6d5c49] text-white px-6 py-3 rounded-2xl shadow-lg font-semibold border-b-2 border-[#3c2f27] flex items-center gap-3" style={{ fontFamily: 'Source Code Pro, monospace', letterSpacing: '0.5px' }}>
+            <div className="bg-[#eaddcf] rounded-full p-1.5 flex items-center justify-center">
+              <svg className="w-5 h-5 text-[#5e503f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <span>Successfully logged out!</span>
           </div>
         </div>
       )}

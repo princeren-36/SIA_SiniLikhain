@@ -6,6 +6,9 @@ import { API_BASE } from "../utils/api";
 import { toast } from 'react-toastify';
 
 function Buyer() {
+  // Track if logout dialog is open in NavbarBuyer
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const handleLogoutDialogState = (open) => setLogoutDialogOpen(open);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
@@ -123,7 +126,7 @@ function Buyer() {
 
   return (
     <div className="overflow-x-hidden" style={{ overflowY: 'visible' }}>
-      <NavbarBuyer />
+      <NavbarBuyer onLogoutDialogState={handleLogoutDialogState} />
       {/* Full-width hero section with AboutBuyer.jsx design */}
       <div
         className="relative h-[40vh] min-h-[200px] w-screen left-1/2 right-1/2 -translate-x-1/2 overflow-hidden flex items-center justify-center mb-0"
@@ -263,7 +266,8 @@ function Buyer() {
               maxHeight: scrollPosition > cartOffset && windowWidth >= 1024 ? 'calc(100vh - 50px)' : 'none',
               overflowY: scrollPosition > cartOffset && windowWidth >= 1024 ? 'auto' : 'visible',
               boxShadow: 'none', // Remove all shadow
-              transition: 'none' // Remove transition on box-shadow and position
+              transition: 'none', // Remove transition on box-shadow and position
+              filter: logoutDialogOpen ? 'blur(6px)' : undefined
             }}
           >
             {/* If sticky is not working, ensure no parent has overflow-y set! */}
