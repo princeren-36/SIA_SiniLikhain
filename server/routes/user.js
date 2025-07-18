@@ -41,8 +41,28 @@ router.post("/register", async (req, res) => {
       await transporter.sendMail({
         from: 'SiniLikhain <sinilikhain.noreply@gmail.com>',
         to: email,
-        subject: 'SiniLikhain Registration OTP',
-        text: `Your OTP for SiniLikhain registration is: ${otp}. It will expire in 10 minutes.`
+        subject: 'SiniLikhain Registration: Your One-Time Password (OTP)',
+        html: `
+          <div style="font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #e7d7c1 0%, #f4f1ee 100%); padding: 32px 0;">
+            <div style="max-width: 480px; margin: 0 auto; background: #fff8f1; border-radius: 18px; box-shadow: 0 4px 24px rgba(94,80,63,0.10), 0 1.5px 6px rgba(94,80,63,0.04); padding: 40px 28px; border: 1.5px solid #e7d7c1;">
+              <div style="text-align: center; margin-bottom: 28px;">
+                <h2 style="color: #5e503f; margin: 0 0 10px 0; font-size: 1.7rem; letter-spacing: 0.01em; font-weight: 700;">Welcome to SiniLikhain!</h2>
+              </div>
+              <p style="font-size: 1.13rem; color: #5e503f; margin-bottom: 20px; text-align: center;">Thank you for registering with <b>SiniLikhain</b>.<br>To complete your registration, please verify your email address by entering the following One-Time Password (OTP):</p>
+              <div style="text-align: center; margin: 36px 0;">
+                <span style="display: inline-block; font-size: 2.4rem; letter-spacing: 0.35em; background: linear-gradient(90deg, #e7d7c1 60%, #f4f1ee 100%); color: #5e503f; padding: 18px 38px; border-radius: 12px; font-weight: bold; border: 2px dashed #5e503f; box-shadow: 0 2px 8px #e7d7c1;">${otp}</span>
+              </div>
+              <div style="margin-bottom: 18px; text-align: center;">
+                <span style="display: inline-block; background: #f4e7d7; color: #5e503f; font-size: 0.98rem; font-weight: 600; padding: 6px 18px; border-radius: 6px; letter-spacing: 0.04em; border: 1px solid #e7d7c1;">Valid for 10 minutes</span>
+              </div>
+              <p style="color: #5e503f; font-size: 1rem; margin-bottom: 14px; text-align: center;">Please <b>do not share</b> this code with anyone for your account's security.</p>
+              <div style="margin: 18px 0 0 0; padding: 16px 0 0 0; border-top: 1px solid #e7d7c1; text-align: center;">
+                <p style="color: #a68a6d; font-size: 0.97rem; margin-bottom: 0;">If you did not request this registration, you can safely ignore this email.</p>
+                <div style="margin-top: 24px; text-align: center; color: #5e503f; font-size: 0.93rem;">&copy; ${new Date().getFullYear()} <span style="color:#5e503f;font-weight:600;">SiniLikhain</span>. All rights reserved.</div>
+              </div>
+            </div>
+          </div>
+        `,
       });
     } catch (err) {
       console.error('Error sending registration OTP:', err);
@@ -263,8 +283,27 @@ router.post('/forgot-password', async (req, res) => {
     await transporter.sendMail({
       from: '"SiniLikhain" <sinilikhain.noreply@gmail.com>', // sender (your Gmail)
       to: email, // recipient (the user's input)
-      subject: 'Your OTP Code',
-      text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`
+      subject: 'SiniLikhain Password Reset: Your One-Time Password (OTP)',
+      html: `
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #e7d7c1 0%, #f4f1ee 100%); padding: 32px 0;">
+          <div style="max-width: 480px; margin: 0 auto; background: #fff8f1; border-radius: 18px; box-shadow: 0 4px 24px rgba(94,80,63,0.10), 0 1.5px 6px rgba(94,80,63,0.04); padding: 40px 28px; border: 1.5px solid #e7d7c1;">
+            <div style="text-align: center; margin-bottom: 28px;">
+              <h2 style="color: #5e503f; margin: 0 0 10px 0; font-size: 1.7rem; letter-spacing: 0.01em; font-weight: 700;">Password Reset Request</h2>
+            </div>
+            <p style="font-size: 1.13rem; color: #5e503f; margin-bottom: 20px; text-align: center;">We received a request to reset the password for your <b>SiniLikhain</b> account.<br>If you did not make this request, you can safely ignore this email.<br><br>To proceed, please enter the following One-Time Password (OTP):</p>
+            <div style="text-align: center; margin: 36px 0;">
+              <span style="display: inline-block; font-size: 2.4rem; letter-spacing: 0.35em; background: linear-gradient(90deg, #e7d7c1 60%, #f4f1ee 100%); color: #5e503f; padding: 18px 38px; border-radius: 12px; font-weight: bold; border: 2px dashed #5e503f; box-shadow: 0 2px 8px #e7d7c1;">${otp}</span>
+            </div>
+            <div style="margin-bottom: 18px; text-align: center;">
+              <span style="display: inline-block; background: #f4e7d7; color: #5e503f; font-size: 0.98rem; font-weight: 600; padding: 6px 18px; border-radius: 6px; letter-spacing: 0.04em; border: 1px solid #e7d7c1;">Valid for 10 minutes</span>
+            </div>
+            <p style="color: #5e503f; font-size: 1rem; margin-bottom: 14px; text-align: center;">Please <b>do not share</b> this code with anyone for your account's security.</p>
+            <div style="margin: 18px 0 0 0; padding: 16px 0 0 0; border-top: 1px solid #e7d7c1; text-align: center;">
+              <div style="margin-top: 24px; text-align: center; color: #5e503f; font-size: 0.93rem;">&copy; ${new Date().getFullYear()} <span style="color:#5e503f;font-weight:600;">SiniLikhain</span>. All rights reserved.</div>
+            </div>
+          </div>
+        </div>
+      `,
     });
     res.json({ message: 'OTP sent to email.' });
   } catch (err) {

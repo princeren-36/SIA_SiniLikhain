@@ -21,6 +21,7 @@ function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [otpFocused, setOtpFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [otpArray, setOtpArray] = useState(['', '', '', '', '', '']);
   const email = location.state?.email || '';
 
   // Strong password validation
@@ -59,6 +60,24 @@ function ResetPassword() {
     }
   };
 
+  const handleOtpChange = (e, idx) => {
+    const val = e.target.value.replace(/\D/g, '');
+    if (val.length > 1) return; // Only allow one digit
+    const newArr = [...otpArray];
+    newArr[idx] = val;
+    setOtpArray(newArr);
+    setOtp(newArr.join(''));
+    if (val && idx < 5) {
+      document.getElementById(`otp-box-${idx + 1}`)?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, idx) => {
+    if (e.key === 'Backspace' && !otpArray[idx] && idx > 0) {
+      document.getElementById(`otp-box-${idx - 1}`)?.focus();
+    }
+  };
+
   return (
     <div
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center poppins-font"
@@ -88,57 +107,25 @@ function ResetPassword() {
           </p>
         </div>
         
-        <div className="w-full mb-4 relative">
-          <TextField
-            type="text"
-            name="otp"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            onFocus={() => setOtpFocused(true)}
-            onBlur={() => setOtpFocused(false)}
-            label="One-Time Password (OTP)"
-            variant="outlined"
-            fullWidth
-            autoComplete="off"
-            required
-            id="otp"
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'black',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'black',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'black',
-                },
-                backgroundColor: 'white',
-              },
-              '& .MuiInputLabel-root': {
-                color: 'black',
-                fontFamily: 'Poppins, Verdana, monospace',
-              },
-              '& .MuiInputLabel-root.Mui-focused': {
-                color: 'black',
-              },
-              fontFamily: 'Poppins, Verdana, monospace',
-              marginBottom: '16px',
-            }}
-            InputProps={{
-              style: {
-                color: 'black',
-                fontFamily: 'Poppins, Verdana, monospace',
-                fontWeight: 400,
-              },
-            }}
-            InputLabelProps={{
-              style: {
-                fontFamily: 'Poppins, Verdana, monospace',
-                fontWeight: 400,
-              },
-            }}
-          />
+        <div className="w-full mb-4 relative flex justify-center gap-2">
+          {[0,1,2,3,4,5].map((i) => (
+            <input
+              key={i}
+              id={`otp-box-${i}`}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={otpArray[i]}
+              onChange={(e) => handleOtpChange(e, i)}
+              onKeyDown={(e) => handleOtpKeyDown(e, i)}
+              onFocus={() => setOtpFocused(true)}
+              onBlur={() => setOtpFocused(false)}
+              className={`w-12 h-12 text-center text-2xl border-2 rounded-lg focus:outline-none focus:border-black transition-all bg-white font-mono ${otpFocused ? 'border-black' : 'border-gray-400'}`}
+              style={{ fontFamily: 'Poppins, Verdana, monospace', boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)' }}
+              autoComplete="off"
+              required
+            />
+          ))}
         </div>
         
         <div className="w-full mb-4 relative">
