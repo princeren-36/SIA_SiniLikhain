@@ -23,6 +23,16 @@ const ArtisanDashboard = () => {
   const [recentSales, setRecentSales] = useState([]);
   const [artisanOrders, setArtisanOrders] = useState([]);
 
+  // Add state for pagination
+  const [recentSalesPage, setRecentSalesPage] = useState(0);
+  const RECENT_SALES_PER_PAGE = 10;
+  const paginatedRecentSales = recentSales.slice(
+    recentSalesPage * RECENT_SALES_PER_PAGE,
+    (recentSalesPage + 1) * RECENT_SALES_PER_PAGE
+  );
+  const canGoPrev = recentSalesPage > 0;
+  const canGoNext = (recentSalesPage + 1) * RECENT_SALES_PER_PAGE < recentSales.length;
+
   // Memoize user to avoid re-parsing on every render
   const user = useMemo(() => {
     try {
@@ -423,17 +433,45 @@ const ArtisanDashboard = () => {
                       </svg>
                       Products by Category
                     </h3>
-                    <ResponsiveContainer width="100%" height={180}>
-                      <PieChart>
-                        <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                          {pieData.map((entry, idx) => (
-                            <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Legend />
-                        <Tooltip contentStyle={isDarkMode ? { backgroundColor: '#23232b', border: '1px solid #333', color: '#e5e7eb' } : undefined} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    {pieData.length === 0 ? (
+                      <div className={`flex items-center justify-center h-[180px] sm:h-[250px] text-center text-gray-400 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                        No category data available.
+                      </div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height={220}>
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={90}
+                            label={({ name, value }) => `${name}: ${value}`}
+                            labelLine={false}
+                          >
+                            {pieData.map((entry, idx) => (
+                              <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Legend
+                            verticalAlign="bottom"
+                            iconType="circle"
+                            wrapperStyle={{
+                              color: isDarkMode ? '#e5e7eb' : '#222',
+                              fontWeight: 500,
+                              fontSize: 13,
+                              marginTop: 10
+                            }}
+                          />
+                          <Tooltip
+                            contentStyle={isDarkMode ? { backgroundColor: '#23232b', border: '1px solid #333', color: '#e5e7eb' } : {}}
+                            formatter={(value, name) => [`${value} unit${value !== 1 ? 's' : ''}`, 'Quantity']}
+                            labelFormatter={label => `Category: ${label}`}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
                   </div>
                 </div>
                 {/* Stock Analysis Section */}
@@ -560,8 +598,8 @@ const ArtisanDashboard = () => {
                         </tr> 
                       </thead> 
                       <tbody> 
-                        {recentSales.length > 0 ? (
-                          recentSales.map((sale, idx) => ( 
+                        {paginatedRecentSales.length > 0 ? (
+                          paginatedRecentSales.map((sale, idx) => ( 
                             <tr key={`${sale.orderId}-${idx}`} className={`${isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200'} hover:bg-opacity-10 hover:bg-gray-500`}> 
                               <td className="py-2 pr-1" title={sale.productName}>
                                 {sale.productName.length > 12 ? `${sale.productName.substring(0, 12)}...` : sale.productName}
@@ -582,26 +620,38 @@ const ArtisanDashboard = () => {
                       </tbody> 
                     </table> 
                   </div>
+                  {/* Pagination Controls */}
+                  {recentSales.length > RECENT_SALES_PER_PAGE && (
+                    <div className="flex justify-center items-center gap-2 mt-2">
+                      <button
+                        onClick={() => canGoPrev && setRecentSalesPage(recentSalesPage - 1)}
+                        disabled={!canGoPrev}
+                        className={`p-1 rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400/60 ${canGoPrev ? (isDarkMode ? 'border-blue-700 hover:bg-blue-800 bg-blue-700/10 text-blue-300' : 'border-blue-600 hover:bg-blue-100 bg-blue-50 text-blue-700') : 'border-gray-300 bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed'}`}
+                        aria-label="Previous"
+                      >
+                        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-700 font-semibold'}`}>Page {recentSalesPage + 1} of {Math.ceil(recentSales.length / RECENT_SALES_PER_PAGE)}</span>
+                      <button
+                        onClick={() => canGoNext && setRecentSalesPage(recentSalesPage + 1)}
+                        disabled={!canGoNext}
+                        className={`p-1 rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400/60 ${canGoNext ? (isDarkMode ? 'border-blue-700 hover:bg-blue-800 bg-blue-700/10 text-blue-300' : 'border-blue-600 hover:bg-blue-100 bg-blue-50 text-blue-700') : 'border-gray-300 bg-gray-100 text-gray-400 opacity-40 cursor-not-allowed'}`}
+                        aria-label="Next"
+                      >
+                        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                   {recentSales.length > 0 && artisanOrders.length > recentSales.length && (
                     <div className={`text-xs text-center mt-2 pt-2 border-t ${isDarkMode ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'}`}>
-                      Showing {recentSales.length} most recent sales from {artisanOrders.length} orders
+                      Showing {Math.min(recentSales.length, RECENT_SALES_PER_PAGE)} most recent sales from {artisanOrders.length} orders
                     </div>
                   )}
                 </div> 
-                {/* Realtime Calendar as a separate card */} 
-                <div className={`p-3 sm:p-5 rounded-2xl shadow-xl border border-gray-800/60 sm:border flex-1 flex flex-col justify-between mt-2 ${isDarkMode ? 'bg-[#1f1f23] border-purple-900 react-calendar-dark' : 'bg-gradient-to-br from-purple-100 to-purple-50 border-purple-400 react-calendar-light'}`}>  
-                  <h4 className={`text-lg font-bold mb-3 flex items-center gap-2 ${isDarkMode ? 'text-purple-400' : 'text-purple-700'}`}> 
-                    <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"> 
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> 
-                    </svg> 
-                    Calendar 
-                  </h4> 
-                  <Calendar value={currentDate} className={`${isDarkMode ? 'react-calendar-dark' : 'react-calendar-light'} w-full text-xs md:text-sm flex-1`} />
-                  <div className={`text-xs text-center mt-3 font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}> 
-                    Today: {currentDate.toLocaleDateString()}<br/> 
-                    Time: {currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} 
-                  </div> 
-                </div>
               </div>
             </div>
           )}

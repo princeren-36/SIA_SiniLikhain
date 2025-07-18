@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { FaUserCircle, FaEdit, FaSave, FaMapMarkerAlt, FaCalendarAlt, FaShoppingBag, FaStar } from "react-icons/fa";
 import { MdEmail, MdDescription, MdCloudUpload } from "react-icons/md";
@@ -625,8 +624,13 @@ const ArtisanProfile = () => {
             )}
           </div>
           {isLoading ? (
-            <div className="flex justify-center items-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
+            <div className="flex flex-col justify-center items-center py-16">
+              <div className="w-16 h-16 relative flex items-center justify-center">
+                <span className="sr-only">Loading...</span>
+                <span className="absolute inline-block w-16 h-16 rounded-full border-4 border-[#5e503f] border-t-transparent animate-spin"></span>
+                <span className="absolute inline-block w-10 h-10 rounded-full border-2 border-white border-t-transparent opacity-60 animate-spin-slow"></span>
+              </div>
+              <span className="mt-4 text-[#5e503f] font-semibold text-lg animate-pulse">Loading profile...</span>
             </div>
           ) : (
             <>
