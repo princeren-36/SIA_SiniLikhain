@@ -8,7 +8,7 @@ import image4 from "../images/Fernando.jpg";
 import image5 from "../images/Juan.jpg";
 import image6 from "../images/Vicente.jpg";
 import React, { useState, useEffect } from "react";
-import { FaHandHoldingHeart, FaShoppingBag, FaPalette, FaUserFriends, FaArrowRight, FaArrowDown, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaHandHoldingHeart, FaShoppingBag, FaPalette, FaUserFriends, FaArrowRight, FaArrowDown, FaFacebook, FaTwitter, FaInstagram, FaUserCircle, FaStar } from 'react-icons/fa';
 
 
 
@@ -255,6 +255,7 @@ function Home() {
   const [pnb, setPnb] = useState(null);
   const [jollibee, setJollibee] = useState(null);
   const [ITBytes, setITBytes] = useState(null);
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
   useEffect(() => {
     const checkStatus = async (url, setter) => {
@@ -679,6 +680,97 @@ function Home() {
           </div>
         </div>
       </div>
+
+      {/* Profile Section */}
+      <div id="profile" className="bg-[#eae0d5] py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8">
+        <div className="max-w-7xl mx-auto opacity-0 landing-section translate-y-8 transition-all duration-700">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <span className="inline-block px-3 py-1 bg-[#5e503f]/10 text-[#5e503f] rounded-full text-xs sm:text-sm font-medium mb-2">
+              Your Account
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1b2a41] font-mono mb-2 sm:mb-3">
+              Manage Your Profile
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+              View your order history, update personal information, and connect with artisans
+            </p>
+            <div className="w-10 sm:w-16 md:w-24 h-1 bg-[#5e503f] mx-auto mt-2 sm:mt-4 md:mt-6"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-10 md:mt-12">
+            <div className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center flex flex-col items-center justify-center">
+              <div className="bg-[#5e503f]/10 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 sm:mb-5">
+                <FaUserCircle className="text-[#5e503f] text-3xl sm:text-4xl" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 sm:mb-3">Personal Info</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5">
+                Update your profile details and manage your personal information.
+              </p>
+              <button 
+                onClick={() => {
+                  const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+                  if (!user) {
+                    setLoginPromptOpen(true);
+                  } else {
+                    navigate('/buyerprofile');
+                  }
+                }}
+                className="px-6 py-2 sm:px-8 sm:py-3 bg-[#5e503f] text-black rounded-lg hover:bg-[#7c6a58] transition-colors font-semibold shadow-lg border-2 border-[#5e503f] focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2"
+              >
+                View Profile
+              </button>
+            </div>
+            
+            <div className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center flex flex-col items-center justify-center">
+              <div className="bg-[#5e503f]/10 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 sm:mb-5">
+                <FaShoppingBag className="text-[#5e503f] text-3xl sm:text-4xl" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 sm:mb-3">Order History</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5">
+                Track your previous orders and view order status and details.
+              </p>
+              <button 
+                onClick={() => {
+                  const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+                  if (!user) {
+                    setLoginPromptOpen(true);
+                  } else {
+                    navigate('/buyerprofile');
+                  }
+                }}
+                className="px-6 py-2 sm:px-8 sm:py-3 bg-[#5e503f] text-black rounded-lg hover:bg-[#7c6a58] transition-colors font-semibold shadow-lg border-2 border-[#5e503f] focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2"
+                style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}
+              >
+                View Orders
+              </button>
+            </div>
+            
+            <div className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center flex flex-col items-center justify-center">
+              <div className="bg-[#5e503f]/10 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 sm:mb-5">
+                <FaStar className="text-[#5e503f] text-3xl sm:text-4xl" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 sm:mb-3">My Reviews</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-5">
+                Manage your product reviews and share your experiences.
+              </p>
+              <button 
+                onClick={() => {
+                  const user = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
+                  if (!user) {
+                    setLoginPromptOpen(true);
+                  } else {
+                    navigate('/buyerprofile');
+                  }
+                }}
+                className="px-6 py-2 sm:px-8 sm:py-3 bg-[#5e503f] text-black rounded-lg hover:bg-[#7c6a58] transition-colors font-semibold shadow-lg border-2 border-[#5e503f] focus:outline-none focus:ring-2 focus:ring-[#5e503f] focus:ring-offset-2"
+                style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.12)' }}
+              >
+                View Reviews
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       
       {/* Impact Statistics Section */}
       <div id="impact" className="bg-white py-6 sm:py-10 md:py-16 px-2 sm:px-4 md:px-8 relative overflow-hidden">
@@ -778,6 +870,35 @@ function Home() {
         jollibee={jollibee}
         ITBytes={ITBytes}
       />
+      
+      {/* Login Prompt Modal */}
+      {loginPromptOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="bg-white rounded-2xl shadow-lg p-8 w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
+            <div className="text-lg font-bold mb-3 text-[#1b2a41]">Login Required</div>
+            <div className="mb-5 text-[#1b2a41]">You must be logged in to view your profile. Do you want to log in now?</div>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setLoginPromptOpen(false)} 
+                className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" 
+                style={{ fontFamily: 'Source Code Pro, monospace' }}
+              >
+                No
+              </button>
+              <button 
+                onClick={() => { 
+                  setLoginPromptOpen(false); 
+                  navigate('/Login'); 
+                }} 
+                className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" 
+                style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Add keyframes for fadeIn animation */}
       <style jsx>{`

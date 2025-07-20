@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 function Navbar({ showLinks = true, onLogoutDialogState }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
   const [hovered, setHovered] = useState("");
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const [cartCount, setCartCount] = useState(0);
@@ -152,21 +153,26 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
               </Link>
               {/* Render the rest of the nav links */}
               {navLinks.slice(1).map(link => {
-                // Only show Profile link if user is logged in
+                // Always show Profile link, we'll handle authentication in click handler
                 if (link.to === "/buyerprofile") {
-                  if (!user) return null;
                   return (
                     <Link
                       key={link.to}
-                      to={link.to}
+                      to={user ? link.to : "#"} // Only navigate if logged in
                       ref={el => navRefs.current[link.to] = el}
+                      onClick={(e) => {
+                        if (!user) {
+                          e.preventDefault();
+                          setOpenProfileDialog && setOpenProfileDialog(true);
+                        }
+                      }}
                       className={
                         `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
                         (location.pathname === link.to ? "text-white" : "text-[#ccc9dc]")
                       }
                       style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
                       onMouseEnter={() => handleMouseEnter(link.to)}
-                      aria-label={typeof link.label === 'string' ? link.label : 'Cart'}
+                      aria-label={typeof link.label === 'string' ? link.label : 'Profile'}
                     >
                       {link.label}
                     </Link>
@@ -224,7 +230,28 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
         {showLinks && mobileMenuOpen && (
           <div className="flex flex-col gap-2 px-4 pb-4 md:hidden bg-black">
             {navLinks.map(link => {
-              if (link.to === "/buyerprofile" && !user) return null;
+              // Always show Profile in mobile menu too
+              if (link.to === "/buyerprofile") {
+                return (
+                  <Link
+                    key={link.to}
+                    to={user ? link.to : "#"}
+                    className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
+                    style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
+                    onClick={(e) => {
+                      if (!user) {
+                        e.preventDefault();
+                        setMobileMenuOpen(false);
+                        setOpenProfileDialog && setOpenProfileDialog(true);
+                      } else {
+                        setMobileMenuOpen(false);
+                      }
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={link.to}
@@ -278,6 +305,35 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
               <svg className="w-5 h-5 text-[#5e503f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
             </div>
             <span>Successfully logged out!</span>
+          </div>
+        </div>
+      )}
+      
+      {/* Profile Login Required Dialog */}
+      {openProfileDialog && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="bg-white rounded-2xl shadow-lg p-8 w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
+            <div className="text-lg font-bold mb-3 text-[#1b2a41]">Login Required</div>
+            <div className="mb-5 text-[#1b2a41]">You must be logged in to view your profile. Do you want to log in now?</div>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setOpenProfileDialog(false)} 
+                className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" 
+                style={{ fontFamily: 'Source Code Pro, monospace' }}
+              >
+                No
+              </button>
+              <button 
+                onClick={() => { 
+                  setOpenProfileDialog(false); 
+                  navigate('/Login'); 
+                }} 
+                className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" 
+                style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}
+              >
+                Yes
+              </button>
+            </div>
           </div>
         </div>
       )}
