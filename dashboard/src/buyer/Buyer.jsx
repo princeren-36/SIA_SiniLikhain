@@ -253,7 +253,8 @@ function Buyer() {
             className={`${windowWidth < 1024 ? 'w-full mt-4' : ''} ${windowWidth < 1024 && scrollPosition > cartOffset ? 'hidden' : ''} lg:w-[300px] shrink-0`}
             style={{ 
               position: scrollPosition > cartOffset && windowWidth >= 1024 ? 'fixed' : windowWidth < 1024 ? 'static' : 'static',
-              top: scrollPosition > cartOffset && windowWidth >= 1024 ? '20px' : 'auto',
+              top: scrollPosition > cartOffset && windowWidth >= 1024 ? '80px' : 'auto',
+              bottom: scrollPosition > cartOffset && windowWidth >= 1024 ? '16px' : 'auto',
               right: scrollPosition > cartOffset && windowWidth >= 1024 ? '20px' : 'auto',
               height: 'fit-content', 
               background: 'white', 
@@ -263,7 +264,7 @@ function Buyer() {
               padding: '15px',
               marginLeft: windowWidth >= 1024 ? '30px' : '0',
               width: windowWidth < 1024 ? '100%' : '300px',
-              maxHeight: scrollPosition > cartOffset && windowWidth >= 1024 ? 'calc(100vh - 50px)' : 'none',
+              maxHeight: scrollPosition > cartOffset && windowWidth >= 1024 ? 'calc(100vh - 32px)' : 'none',
               overflowY: scrollPosition > cartOffset && windowWidth >= 1024 ? 'auto' : 'visible',
               boxShadow: 'none', // Remove all shadow
               transition: 'none', // Remove transition on box-shadow and position
