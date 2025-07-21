@@ -72,6 +72,8 @@ const BuyerProfile = () => {
   const fileInputRef = useRef(null);
   const [userId, setUserId] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(5);
   const [refreshOrders, setRefreshOrders] = useState(0);
   const navigate = useNavigate();
   
@@ -379,6 +381,7 @@ const getAvatarUrl = (avatar) => {
   
   const handleRefreshOrders = () => {
     setRefreshOrders(prev => prev + 1);
+    setCurrentPage(1); // Reset to first page when refreshing
   };
   
   return (
@@ -396,7 +399,11 @@ const getAvatarUrl = (avatar) => {
             <div className="flex-1 flex flex-col">
               {isLoading ? (
                 <div className="flex justify-center items-center h-64 flex-1">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5e503f]" />
+                  <div className="w-16 h-16 relative flex items-center justify-center">
+                    <span className="sr-only">Loading...</span>
+                    <span className="absolute inline-block w-16 h-16 rounded-full border-4 border-[#5e503f] border-t-transparent animate-spin"></span>
+                    <span className="absolute inline-block w-10 h-10 rounded-full border-2 border-gray-400 border-t-transparent opacity-60 animate-spin-slow"></span>
+                  </div>
                 </div>
               ) : (
                 <>
@@ -545,7 +552,7 @@ const getAvatarUrl = (avatar) => {
                             >
                               {isSaving ? (
                                 <>
-                                  <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+                                  <span className="inline-block w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin mr-2"></span>
                                   Saving...
                                 </>
                               ) : (
@@ -654,7 +661,7 @@ const getAvatarUrl = (avatar) => {
                         </div>
                       </div>
                     </div>
-                    {/* Orders Table */}
+                    {/* Orders Table - Minimalist with Pagination */}
                     <div className="mt-10">
                       <div className="mt-10 flex items-center justify-between">
                         <h3 className="text-xl font-semibold mb-3 text-[#5e503f] flex items-center gap-2">
@@ -673,59 +680,91 @@ const getAvatarUrl = (avatar) => {
                       {orders.length === 0 ? (
                         <div className="text-gray-500 text-sm">No orders found.</div>
                       ) : (
-                        <div className="overflow-x-auto w-full">
-                          <table className="min-w-full border border-gray-200 bg-white rounded-lg hidden sm:table">
-                            <thead>
-                              <tr className="bg-[#f5eee6] text-[#5e503f]">
-                                <th className="px-3 py-2 text-left">Order ID</th>
-                                <th className="px-3 py-2 text-left">Date</th>
-                                <th className="px-3 py-2 text-left">Status</th>
-                                <th className="px-3 py-2 text-left">Items & Artisan Status</th>
-                                <th className="px-3 py-2 text-right">Total</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {orders.map(order => (
-                                <tr key={order._id} className="border-t border-gray-100 hover:bg-[#f8f5f2]">
-                                  <td className="px-3 py-2 font-mono text-xs">{order._id.slice(-8)}</td>
-                                  <td className="px-3 py-2">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
-                                  <td className="px-3 py-2 capitalize">{order.status}</td>
-                                  <td className="px-3 py-2">
-                                    <ul className="list-disc pl-4">
-                                      {order.items && order.items.length > 0 ? order.items.map((item, idx) => (
-                                        <li key={idx} className="mb-1">
-                                          <span className="font-semibold">{item.name}</span>
-                                        </li>
-                                      )) : <li>No items</li>}
-                                    </ul>
-                                  </td>
-                                  <td className="px-3 py-2 text-right">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                          {/* Mobile card view */}
-                          <div className="sm:hidden flex flex-col gap-4">
-                            {orders.map(order => (
-                              <div key={order._id} className="border border-gray-200 rounded-lg bg-white p-4 shadow-sm">
-                                <div className="flex justify-between items-center mb-2">
-                                  <span className="font-mono text-xs text-[#5e503f]">Order #{order._id.slice(-8)}</span>
-                                  <span className="text-xs text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</span>
+                        <div className="w-full">
+                          {/* Calculate pagination */}
+                          {(() => {
+                            const indexOfLastOrder = currentPage * ordersPerPage;
+                            const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+                            const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+                            const totalPages = Math.ceil(orders.length / ordersPerPage);
+                            
+                            return (
+                              <>
+                                {/* Desktop View */}
+                                <div className="overflow-x-auto w-full hidden sm:block">
+                                  <table className="min-w-full border border-gray-200 bg-white rounded-lg">
+                                    <thead>
+                                      <tr className="bg-[#f5eee6] text-[#5e503f]">
+                                        <th className="px-3 py-2 text-left">Order ID</th>
+                                        <th className="px-3 py-2 text-left">Date</th>
+                                        <th className="px-3 py-2 text-left">Status</th>
+                                        <th className="px-3 py-2 text-right">Total</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {currentOrders.map(order => (
+                                        <tr key={order._id} className="border-t border-gray-100 hover:bg-[#f8f5f2]">
+                                          <td className="px-3 py-3 font-mono text-xs">{order._id.slice(-8)}</td>
+                                          <td className="px-3 py-3">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
+                                          <td className="px-3 py-3 capitalize">{order.status}</td>
+                                          <td className="px-3 py-3 text-right">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
                                 </div>
-                                <div className="mb-1 text-sm"><span className="font-semibold">Status:</span> <span className="capitalize">{order.status}</span></div>
-                                <div className="mb-1 text-sm"><span className="font-semibold">Items:</span>
-                                  <ul className="list-disc pl-4">
-                                    {order.items && order.items.length > 0 ? order.items.map((item, idx) => (
-                                      <li key={idx} className="mb-1">
-                                        <span>{item.name}</span>
-                                      </li>
-                                    )) : <li>No items</li>}
-                                  </ul>
+                                
+                                {/* Mobile card view */}
+                                <div className="sm:hidden flex flex-col gap-4">
+                                  {currentOrders.map(order => (
+                                    <div key={order._id} className="border border-gray-200 rounded-lg bg-white p-4 shadow-sm">
+                                      <div className="flex justify-between items-center mb-2">
+                                        <span className="font-mono text-xs text-[#5e503f]">Order #{order._id.slice(-8)}</span>
+                                        <span className="text-xs text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</span>
+                                      </div>
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-sm capitalize"><span className="font-semibold">Status:</span> {order.status}</span>
+                                        <span className="font-bold text-[#5e503f]">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</span>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
-                                <div className="mt-2 text-right font-bold text-[#5e503f]">₱{order.totalAmount ? order.totalAmount.toLocaleString(undefined, {minimumFractionDigits:2}) : '0.00'}</div>
-                              </div>
-                            ))}
-                          </div>
+                                
+                                {/* Pagination Controls */}
+                                <div className="flex justify-between items-center mt-4 px-2">
+                                  <div className="text-sm text-gray-600">
+                                    Showing {indexOfFirstOrder + 1}-{Math.min(indexOfLastOrder, orders.length)} of {orders.length} orders
+                                  </div>
+                                  <div className="flex space-x-2">
+                                    <button 
+                                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                      disabled={currentPage === 1}
+                                      className="px-3 py-1 rounded border text-sm font-medium transition-colors"
+                                      style={{ 
+                                        backgroundColor: currentPage === 1 ? '#f5f5f5' : '#fff',
+                                        color: currentPage === 1 ? '#a0aec0' : '#5e503f',
+                                        borderColor: currentPage === 1 ? '#e2e8f0' : '#5e503f'
+                                      }}
+                                    >
+                                      Previous
+                                    </button>
+                                    <button
+                                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                      disabled={currentPage === totalPages}
+                                      className="px-3 py-1 rounded border text-sm font-medium transition-colors"
+                                      style={{ 
+                                        backgroundColor: currentPage === totalPages ? '#f5f5f5' : '#fff',
+                                        color: currentPage === totalPages ? '#a0aec0' : '#5e503f',
+                                        borderColor: currentPage === totalPages ? '#e2e8f0' : '#5e503f'
+                                      }}
+                                    >
+                                      Next
+                                    </button>
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })()}
                         </div>
                       )}
                     </div>
