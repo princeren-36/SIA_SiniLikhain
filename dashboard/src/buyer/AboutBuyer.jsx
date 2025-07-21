@@ -19,6 +19,7 @@ function About() {
   const [pnb, setPnb] = useState(null);
   const [jollibee, setJollibee] = useState(null);
   const [ITBytes, setITBytes] = useState(null);
+  const [bpiOnline, setBpiOnline] = useState(null);
 
   useEffect(() => {
     const checkStatus = async (url, setter) => {
@@ -35,6 +36,7 @@ function About() {
     checkStatus('http://192.168.9.23:5173/', setPnb);
     checkStatus('http://192.168.9.37:5173/', setJollibee);
     checkStatus('http://192.168.9.4:5173/', setITBytes);
+    checkStatus('http://192.168.8.201:5173/', setBpiOnline);
   }, []);
 
   // Animation function for scroll reveal
@@ -89,6 +91,56 @@ function About() {
       answer: "Shipping options vary by artisan location and product type. Each product page displays detailed shipping information, including estimated delivery times and shipping costs."
     }
   ];
+
+  // Business partners data
+  const partners = [
+    {
+      name: 'Kahit Saan',
+      url: 'http://192.168.9.69:5173/',
+      img: '/src/images/LogoWhite.webp',
+      online: kahitSaanOnline,
+    },
+    {
+      name: 'National Book Store',
+      url: 'http://192.168.9.19:5173/',
+      img: '/src/images/nbs.svg',
+      online: nbsOnline,
+    },
+    {
+      name: 'BlankTapes',
+      url: 'http://192.168.9.83:5173/',
+      img: '/src/images/logowhite.png',
+      online: blanktapes,
+    },
+    {
+      name: 'PNB',
+      url: 'http://192.168.9.23:5173/',
+      img: '/src/images/pnb.png',
+      online: pnb,
+    },
+    {
+      name: 'Jollibee',
+      url: 'http://192.168.9.37:5173/',
+      img: '/src/images/jabee.png',
+      online: jollibee,
+    },
+    {
+      name: 'ITBytes',
+      url: 'http://192.168.9.4:5173/',
+      img: '/src/images/itbytes.png',
+      online: ITBytes,
+    },
+    {
+      name: 'BPI',
+      url: 'http://192.168.8.201:5173/',
+      img: '/src/images/bpi1.png',
+      online: bpiOnline,
+    },
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const partnersPerSlide = 5;
+  const totalSlides = Math.ceil(partners.length / partnersPerSlide);
+  const visiblePartners = partners.slice(currentSlide * partnersPerSlide, (currentSlide + 1) * partnersPerSlide);
 
   return (
     <>
@@ -480,103 +532,40 @@ function About() {
               </p>
               <div className="w-10 sm:w-16 h-0.5 bg-[#f8d49f]/50 mx-auto mt-3"></div>
             </div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 mt-6">
-              {/* Partner 1: Kahit Saan */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.69:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/LogoWhite.webp" alt="Kahit Saan Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">Kahit Saan</h4>
-                  <div className={`flex items-center gap-1.5 ${kahitSaanOnline === null ? 'text-gray-500' : kahitSaanOnline ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{kahitSaanOnline === null ? 'Checking...' : kahitSaanOnline ? 'Online' : 'Offline'}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Partner 2: National Book Store */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.19:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/nbs.svg" alt="National Book Store Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">National Book Store</h4>
-                  <div className={`flex items-center gap-1.5 ${nbsOnline === null ? 'text-gray-500' : nbsOnline ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{nbsOnline === null ? 'Checking...' : nbsOnline ? 'Online' : 'Offline'}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Partner 3: Blank Tapes */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.83:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/logowhite.png" alt="Blank Tapes Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">BlankTapes</h4>
-                  <div className={`flex items-center gap-1.5 ${blanktapes === null ? 'text-gray-500' : blanktapes ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{blanktapes === null ? 'Checking...' : blanktapes ? 'Online' : 'Offline'}</span>
+            <div className="flex justify-center items-center gap-4 mb-4">
+              <button
+                className="px-3 py-1 rounded bg-[#232526] text-[#f8d49f] font-bold disabled:opacity-40"
+                onClick={() => setCurrentSlide(s => Math.max(0, s - 1))}
+                disabled={currentSlide === 0}
+              >
+                Previous
+              </button>
+              <span className="text-[#f8d49f] font-mono text-sm">{currentSlide + 1} / {totalSlides}</span>
+              <button
+                className="px-3 py-1 rounded bg-[#232526] text-[#f8d49f] font-bold disabled:opacity-40"
+                onClick={() => setCurrentSlide(s => Math.min(totalSlides - 1, s + 1))}
+                disabled={currentSlide === totalSlides - 1}
+              >
+                Next
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 mt-6">
+              {visiblePartners.map((partner, idx) => (
+                <div key={partner.name} className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                  <div className="flex flex-col items-center h-full">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                      <a href={partner.url} target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                        <img src={partner.img} alt={`${partner.name} Logo`} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                      </a>
+                    </div>
+                    <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">{partner.name}</h4>
+                    <div className={`flex items-center gap-1.5 ${partner.online === null ? 'text-gray-500' : partner.online ? 'text-green-400' : 'text-red-400'}`}>
+                      <span className="w-2 h-2 rounded-full bg-current"></span>
+                      <span className="text-xs">{partner.online === null ? 'Checking...' : partner.online ? 'Online' : 'Offline'}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Partner 4: PNB */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.23:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/pnb.png" alt="PNB Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">PNB</h4>
-                  <div className={`flex items-center gap-1.5 ${pnb === null ? 'text-gray-500' : pnb ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{pnb === null ? 'Checking...' : pnb ? 'Online' : 'Offline'}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Partner 5: Jollibee */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.37:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/jabee.png" alt="Jollibee Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">Jollibee</h4>
-                  <div className={`flex items-center gap-1.5 ${jollibee === null ? 'text-gray-500' : jollibee ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{jollibee === null ? 'Checking...' : jollibee ? 'Online' : 'Offline'}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Partner 6: ITBytes */}
-              <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-                <div className="flex flex-col items-center h-full">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
-                    <a href="http://192.168.9.4:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src="/src/images/itbytes.png" alt="ITBytes Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
-                    </a>
-                  </div>
-                  <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">ITBytes</h4>
-                  <div className={`flex items-center gap-1.5 ${ITBytes === null ? 'text-gray-500' : ITBytes ? 'text-green-400' : 'text-red-400'}`}>
-                    <span className="w-2 h-2 rounded-full bg-current"></span>
-                    <span className="text-xs">{ITBytes === null ? 'Checking...' : ITBytes ? 'Online' : 'Offline'}</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           <div className="pt-4">

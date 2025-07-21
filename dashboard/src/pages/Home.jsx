@@ -73,7 +73,7 @@ function SiniLikhainBaybayin() {
   );
 }
 
-function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}) {
+function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes, bpiOnline}) {
   return (
     <footer className="bg-gradient-to-t from-[#181818] to-[#232526] text-white pt-10 md:pt-14 pb-6 md:pb-8 border-t border-[#232526] shadow-inner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -138,7 +138,7 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
             <div className="w-10 sm:w-16 h-0.5 bg-[#f8d49f]/50 mx-auto mt-3"></div>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 md:gap-8 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 sm:gap-6 md:gap-8 mt-6">
             {/* Partner 1: Kahit Saan */}
             <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
               <div className="flex flex-col items-center h-full">
@@ -234,6 +234,22 @@ function Footer({kahitSaanOnline, nbsOnline, blanktapes, pnb, jollibee, ITBytes}
                 </div>
               </div>
             </div>
+            
+            {/* Partner 7: BPI */}
+            <div className="bg-gradient-to-b from-[#282828] to-[#222222] p-3 sm:p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex flex-col items-center h-full">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mb-3 rounded-lg overflow-hidden bg-[#1e1e1e] p-2">
+                  <a href="http://192.168.8.201:5173/" target="_blank" rel="noopener noreferrer" className="w-full h-full flex items-center justify-center">
+                    <img src="/src/images/bpi1.png" alt="BPI Logo" className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                </div>
+                <h4 className="text-[#f8d49f] text-sm sm:text-base font-medium mb-1">BPI</h4>
+                <div className={`flex items-center gap-1.5 ${bpiOnline === null ? 'text-gray-500' : bpiOnline ? 'text-green-400' : 'text-red-400'}`}>
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  <span className="text-xs">{bpiOnline === null ? 'Checking...' : bpiOnline ? 'Online' : 'Offline'}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="pt-4">
@@ -255,6 +271,7 @@ function Home() {
   const [pnb, setPnb] = useState(null);
   const [jollibee, setJollibee] = useState(null);
   const [ITBytes, setITBytes] = useState(null);
+  const [bpiOnline, setBpiOnline] = useState(null);
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
   useEffect(() => {
@@ -272,6 +289,7 @@ function Home() {
     checkStatus('http://192.168.9.23:5173/', setPnb);
     checkStatus('http://192.168.9.37:5173/', setJollibee);
     checkStatus('http://192.168.9.4:5173/', setITBytes);
+    checkStatus('http://192.168.8.201:5173/', setBpiOnline);
   }, []);
 
   // Animation function for scroll reveal
@@ -862,13 +880,14 @@ function Home() {
         </div>
       </div>
       
-      <Footer 
+      <Footer
         kahitSaanOnline={kahitSaanOnline}
         nbsOnline={nbsOnline}
         blanktapes={blanktapes}
         pnb={pnb}
         jollibee={jollibee}
         ITBytes={ITBytes}
+        bpiOnline={bpiOnline}
       />
       
       {/* Login Prompt Modal */}
