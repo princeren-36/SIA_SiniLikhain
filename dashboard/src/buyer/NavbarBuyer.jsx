@@ -1,7 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+// Add useLayoutEffect to ensure responsive viewport settings
 function Navbar({ showLinks = true, onLogoutDialogState }) {
+  // Add useLayoutEffect to set viewport meta for proper mobile scaling
+  React.useLayoutEffect(() => {
+    // Check if viewport meta tag exists
+    let viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (!viewportMeta) {
+      // Create viewport meta tag if it doesn't exist
+      viewportMeta = document.createElement('meta');
+      viewportMeta.name = 'viewport';
+      document.head.appendChild(viewportMeta);
+    }
+    // Set proper viewport settings for responsive design
+    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    
+    return () => {
+      // Optional cleanup if needed
+    };
+  }, []);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [openProfileDialog, setOpenProfileDialog] = useState(false);
@@ -38,6 +57,7 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
     if (onLogoutDialogState) onLogoutDialogState(false);
   };
 
+  // Modify the navLinks array to include responsive styling
   const navLinks = [
     { to: "/home", label: "Home" },
     { to: "/buyer", label: "Products" },
@@ -45,11 +65,11 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
     { to: "/buyerprofile", label: "Profile" },
     { to: "/cart", label: (
       <span className="relative">
-        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-9V6a2 2 0 10-4 0v3" />
         </svg>
         {cartCount > 0 && (
-          <span className="absolute -top-2 -right-2 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] flex items-center justify-center" style={{fontSize:'0.75rem',lineHeight:'1rem',background:'#5e503f'}}>
+          <span className="absolute -top-2 -right-2 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] flex items-center justify-center" style={{fontSize:'0.7rem',lineHeight:'1rem',background:'#5e503f'}}>
             {cartCount}
           </span>
         )}
@@ -104,6 +124,24 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
     if (activeKey) updateUnderline(activeKey); else clearUnderline();
   }, [location.pathname]);
 
+  // Add media query handling for responsive design
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      // Close mobile menu when switching to desktop
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -112,37 +150,39 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full z-[100] bg-black backdrop-blur-md" style={{position:'fixed', width:'100%', zIndex:100}}>
-        <div className="flex items-center justify-between px-4 md:px-8 py-3 gap-5">
-          <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-2xl flex items-center gap-4" style={{ fontFamily: 'Source Code Pro, monospace' }}>
-            SiniLikhain
+        <div className="flex items-center justify-between px-3 sm:px-4 md:px-8 py-2 md:py-3 gap-3 md:gap-5">
+          <div className="select-none text-[#ccc9dc] font-bold tracking-widest text-xl sm:text-2xl flex items-center gap-2 sm:gap-4" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+            <Link to="/home" className="focus:outline-none focus:ring-2 focus:ring-[#5e503f] rounded">
+              SiniLikhain
+            </Link>
           </div>
           {/* Mobile menu button */}
-          <button className="md:hidden p-2 group flex items-center justify-center" aria-label="Open menu" onClick={() => setMobileMenuOpen(v => !v)}>
-            <span className={`relative block w-6 h-6 transition-transform duration-300 ${mobileMenuOpen ? 'scale-110 opacity-80' : 'scale-100 opacity-100'}`}>
+          <button className="md:hidden p-1.5 sm:p-2 group flex items-center justify-center" aria-label="Open menu" onClick={() => setMobileMenuOpen(v => !v)}>
+            <span className={`relative block w-5 sm:w-6 h-5 sm:h-6 transition-transform duration-300 ${mobileMenuOpen ? 'scale-110 opacity-80' : 'scale-100 opacity-100'}`}>
               {/* Top bar */}
               <span
-                className={`absolute left-0 top-1 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-3' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+                className={`absolute left-0 top-1 w-5 sm:w-6 h-0.5 sm:h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 top-2 sm:top-3' : ''} bg-white`}
               ></span>
               {/* Middle bar */}
               <span
-                className={`absolute left-0 top-3 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+                className={`absolute left-0 top-2 sm:top-3 w-5 sm:w-6 h-0.5 sm:h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''} bg-white`}
               ></span>
               {/* Bottom bar */}
               <span
-                className={`absolute left-0 top-5 w-6 h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-3' : ''} ${document.body.classList.contains('dark') ? 'bg-white' : 'bg-black'}`}
+                className={`absolute left-0 top-3 sm:top-5 w-5 sm:w-6 h-0.5 sm:h-1 rounded-full transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 top-2 sm:top-3' : ''} bg-white`}
               ></span>
             </span>
           </button>
           {/* Desktop links */}
           {showLinks && (
-            <div className="hidden md:flex gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
+            <div className="hidden md:flex gap-1 lg:gap-2 items-center relative" onMouseLeave={handleMouseLeave}>
               {/* Home link */}
               <Link
                 key={navLinks[0].to}
                 to={navLinks[0].to}
                 ref={el => navRefs.current[navLinks[0].to] = el}
                 className={
-                  `px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center ` +
+                  `px-2 lg:px-4 py-1 transition-colors duration-150 relative z-10 flex items-center justify-center text-sm lg:text-base ` +
                   (location.pathname === navLinks[0].to ? "text-white" : "text-[#ccc9dc]")
                 }
                 style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
@@ -197,14 +237,14 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
               })}
               {/* Username after cart, before logout */}
               {user && user.role === 'buyer' && (
-                <span className="text-base font-semibold text-[#fff] px-3 py-1 rounded-lg" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
+                <span className="text-xs sm:text-sm md:text-base font-semibold text-[#fff] px-2 md:px-3 py-1 rounded-lg truncate max-w-[100px] md:max-w-[120px] lg:max-w-none" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1, background: '#5e503f'}}>
                   {user.username}
                 </span>
               )}
               <button
                 ref={el => navRefs.current.logout = el}
                 onClick={handleLogoutClick}
-                className={`px-4 py-1 font-semibold transition-colors duration-150 relative z-10 ` +
+                className={`px-2 lg:px-4 py-1 font-semibold text-sm lg:text-base transition-colors duration-150 relative z-10 ` +
                   (location.pathname === "/login" ? "text-white bg-black" : "text-[#ccc9dc]")
                 }
                 style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, background: location.pathname === "/login" ? '#000' : 'transparent', color: location.pathname === "/login" ? '#fff' : '#ccc9dc' }}
@@ -228,7 +268,7 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
         </div>
         {/* Mobile menu */}
         {showLinks && mobileMenuOpen && (
-          <div className="flex flex-col gap-2 px-4 pb-4 md:hidden bg-black">
+          <div className="flex flex-col gap-2 px-3 pb-4 md:hidden bg-black animate-fadeIn border-t border-gray-800">
             {navLinks.map(link => {
               // Always show Profile in mobile menu too
               if (link.to === "/buyerprofile") {
@@ -236,7 +276,7 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
                   <Link
                     key={link.to}
                     to={user ? link.to : "#"}
-                    className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
+                    className={`py-2 px-3 rounded text-base sm:text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
                     style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
                     onClick={(e) => {
                       if (!user) {
@@ -256,7 +296,7 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
+                  className={`py-2 px-3 rounded text-base sm:text-lg font-semibold ${location.pathname === link.to ? 'bg-[#5e503f] text-white' : 'text-[#ccc9dc]'}`}
                   style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 500 }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -265,13 +305,13 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
               );
             })}
             {user && user.role === 'buyer' && (
-              <span className="text-base font-semibold text-[#fff] px-3 py-2 rounded-lg bg-[#5e503f] mt-2" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1}}>
+              <span className="text-sm sm:text-base font-semibold text-[#fff] px-3 py-2 rounded-lg bg-[#5e503f] mt-1 truncate" style={{fontFamily:'Source Code Pro, monospace', letterSpacing:1}}>
                 {user.username}
               </span>
             )}
             <button
               onClick={handleLogoutClick}
-              className={`py-2 px-3 rounded text-lg font-semibold ${location.pathname === "/login" ? 'bg-black text-white' : 'text-[#ccc9dc]'}`}
+              className={`py-2 px-3 rounded text-base sm:text-lg font-semibold ${location.pathname === "/login" ? 'bg-black text-white' : 'text-[#ccc9dc]'}`}
               style={{ fontFamily: 'Source Code Pro, monospace', fontWeight: 600, background: location.pathname === "/login" ? '#000' : 'transparent', color: location.pathname === "/login" ? '#fff' : '#ccc9dc' }}
             >
               {user ? "Logout" : "Login"}
@@ -282,16 +322,16 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
 
       {/* Logout Dialog */}
       {openDialog && user && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-lg p-8 w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
-            <div className="text-lg font-bold mb-3 text-[#1b2a41] flex items-center gap-2" style={{ fontFamily: 'Source Code Pro, monospace' }}>
-              <svg className="w-6 h-6 text-[#324a5f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0V7a3 3 0 016 0v1" /></svg>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-xs sm:w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
+            <div className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-[#1b2a41] flex items-center gap-2" style={{ fontFamily: 'Source Code Pro, monospace' }}>
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#324a5f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0V7a3 3 0 016 0v1" /></svg>
               Confirm Logout
             </div>
-            <div className="mb-5 text-[#1b2a41]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you sure you want to log out of your account?</div>
-            <div className="flex justify-end gap-3">
-              <button onClick={handleCancelLogout} className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
-              <button onClick={handleConfirmLogout} className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}>Logout</button>
+            <div className="mb-4 sm:mb-5 text-sm sm:text-base text-[#1b2a41]" style={{ fontFamily: 'Source Code Pro, monospace' }}>Are you sure you want to log out of your account?</div>
+            <div className="flex justify-end gap-2 sm:gap-3">
+              <button onClick={handleCancelLogout} className="px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer text-sm sm:text-base" style={{ fontFamily: 'Source Code Pro, monospace' }}>Cancel</button>
+              <button onClick={handleConfirmLogout} className="px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer text-sm sm:text-base" style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}>Logout</button>
             </div>
           </div>
         </div>
@@ -299,26 +339,26 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
 
       {/* Snackbar */}
       {openSnackbar && (
-        <div className="fixed left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn" style={{ top: '80px' }}>
-          <div className="bg-gradient-to-r from-[#5e503f] to-[#6d5c49] text-white px-6 py-3 rounded-2xl shadow-lg font-semibold border-b-2 border-[#3c2f27] flex items-center gap-3" style={{ fontFamily: 'Source Code Pro, monospace', letterSpacing: '0.5px' }}>
-            <div className="bg-[#eaddcf] rounded-full p-1.5 flex items-center justify-center">
-              <svg className="w-5 h-5 text-[#5e503f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+        <div className="fixed left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn px-4 w-full sm:w-auto" style={{ top: '80px' }}>
+          <div className="bg-gradient-to-r from-[#5e503f] to-[#6d5c49] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-lg font-semibold border-b-2 border-[#3c2f27] flex items-center gap-2 sm:gap-3 max-w-[280px] sm:max-w-none mx-auto" style={{ fontFamily: 'Source Code Pro, monospace', letterSpacing: '0.5px' }}>
+            <div className="bg-[#eaddcf] rounded-full p-1 sm:p-1.5 flex items-center justify-center">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#5e503f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
             </div>
-            <span>Successfully logged out!</span>
+            <span className="text-sm sm:text-base">Successfully logged out!</span>
           </div>
         </div>
       )}
       
       {/* Profile Login Required Dialog */}
       {openProfileDialog && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="bg-white rounded-2xl shadow-lg p-8 w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
-            <div className="text-lg font-bold mb-3 text-[#1b2a41]">Login Required</div>
-            <div className="mb-5 text-[#1b2a41]">You must be logged in to view your profile. Do you want to log in now?</div>
-            <div className="flex justify-end gap-3">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-xs sm:w-80 border-t-4 border-[#1b2a41] animate-fadeIn">
+            <div className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-[#1b2a41]">Login Required</div>
+            <div className="mb-4 sm:mb-5 text-sm sm:text-base text-[#1b2a41]">You must be logged in to view your profile. Do you want to log in now?</div>
+            <div className="flex justify-end gap-2 sm:gap-3">
               <button 
                 onClick={() => setOpenProfileDialog(false)} 
-                className="px-5 py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer" 
+                className="px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg bg-[#ccc9dc] font-semibold shadow-sm transition cursor-pointer text-sm sm:text-base" 
                 style={{ fontFamily: 'Source Code Pro, monospace' }}
               >
                 No
@@ -328,7 +368,7 @@ function Navbar({ showLinks = true, onLogoutDialogState }) {
                   setOpenProfileDialog(false); 
                   navigate('/Login'); 
                 }} 
-                className="px-5 py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer" 
+                className="px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg !bg-[#660708] hover:!bg-red-700 text-white font-semibold shadow-sm transition cursor-pointer text-sm sm:text-base" 
                 style={{ fontFamily: 'Source Code Pro, monospace', boxShadow: 'none', outline: 'none', border: 'none' }}
               >
                 Yes
